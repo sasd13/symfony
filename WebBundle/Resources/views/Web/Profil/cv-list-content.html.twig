@@ -1,0 +1,13 @@
+<div class="contact_form list-content border">
+	<div class="list-content-left">{{ cv.disponibilite }} - {{ cv.intitule | truncate(40, true, '...') }}</div>
+	{% if cv.actif == true %}
+		<div class="list-content-right">
+			<button type="button" /><a href="{{ path('mywebsiteweb_profil_cv_afficher', {'idCv': cv.id}) }}">Modifier</a></button>
+		</div>
+	{% else %}
+		<div class="list-content-right2">
+			<button type="button" /><a href="{{ path('mywebsiteweb_profil_cv_modifier', {'idCv': cv.id, 'activate': true}) }}">Activer</a></button>
+			<button type="button" /><a href="{{ path('mywebsiteweb_profil_cv_afficher', {'idCv': cv.id}) }}">Modifier</a></button>
+		</div>
+	{% endif %}
+</div>

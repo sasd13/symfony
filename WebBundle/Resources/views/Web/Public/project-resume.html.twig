@@ -1,0 +1,21 @@
+<div class="feature-grid">
+	<div class="feature-grid-left">
+		<a href="#"><img src="{{ asset('bundles/mywebsiteweb/') }}images/{{ project.photo }}" alt="" /></a>	
+	</div>
+	<div class="feature-grid-right">
+		<h3 class="titreProjet">{{ project.intitule | truncate(400, true, '...') }}</h3>
+		<p>
+			author : {{ project.profil.prenom }} {{ project.profil.nom }}
+			<br/>
+			year : {{ project.periode }}
+			<br/>
+			technologies : {{ project.technologie }}
+			<br/><br/>
+			<span class="description">
+				{{ project.description | truncate(400, true, '...') }}
+			</span>
+		</p>
+		<a class="btn" href="{{ path('mywebsiteweb_project_afficher', {'idProject': project.id}) }}">Read More</a>
+	</div>
+	<div class="clear"> </div>
+</div>

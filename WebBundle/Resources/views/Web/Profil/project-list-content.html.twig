@@ -1,0 +1,6 @@
+<div class="contact_form list-content border">
+	<div class="list-content-left">{{ project.periode }} - {{ project.intitule | truncate(50, true, '...') }}</div>
+	<div class="list-content-right">
+		<button type="button" /><a href="{{ path('mywebsiteweb_profil_project_afficher', {'idProject': project.id}) }}">Modifier</a></button>
+	</div>
+</div>

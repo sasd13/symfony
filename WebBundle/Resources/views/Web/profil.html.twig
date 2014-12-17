@@ -1,0 +1,112 @@
+{% extends "MyWebsiteWebBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - MyProfil{% endblock %}
+
+{% block css %} 
+	{% stylesheets
+			'bundles/mywebsiteweb/css/form-style.css'
+			'bundles/mywebsiteweb/css/tabs.css'
+			filter='cssrewrite' %}
+			<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+	{% endstylesheets %}
+{% endblock %}
+
+{% block class_header %}header2{% endblock %}
+
+{% block section %}
+	<!---Start-content---->
+	<div class="content">
+		<div class="wrap">
+			<!---start-portfolio---->
+			<div class="portfolio">
+				<div class="left-sidebar2">
+					<div class="side-head">
+						<div class="feature-grid-head">
+							<h3><span>My</span>Profil</h3>
+						</div>
+					</div>
+					<!----side-bar---->
+					<div class="recent-posts">
+						<div class="side-heading side-heading1">
+							<label> </label><span>Infos</span><label> </label>
+							<div class="clear"> </div>
+						</div>
+						<div class="recent-post-list">
+							<ul>
+								<li><a href="{{ path('mywebsiteweb_profil_afficher') }}">Modifier profil</a></li>
+								<li><a href="{{ path('mywebsiteweb_profil_mdp_afficher') }}">Modifier mot de passe</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="recent-posts">
+						<div class="side-heading side-heading1">
+							<label> </label><span>Projects</span><label> </label>
+							<div class="clear"> </div>
+						</div>
+						<div class="recent-post-list">
+							<ul>
+								<li><a href="{{ path('mywebsiteweb_profil_project_afficher') }}">Nouveau Projet</a></li>
+								<li><a href="{{ path('mywebsiteweb_profil_project_list') }}">Gérer les Projets</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="recent-posts">
+						<div class="side-heading side-heading1">
+							<label> </label><span>CV</span><label> </label>
+							<div class="clear"> </div>
+						</div>
+						<div class="recent-post-list">
+							<ul>
+								<li><a href="{{ path('mywebsiteweb_profil_cv_afficher') }}">Nouveau CV</a></li>
+								<li><a href="{{ path('mywebsiteweb_profil_cv_list') }}">Gérer les CV</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="recent-posts">
+						<div class="side-heading side-heading1">
+							<label> </label><span>Portfolio</span><label> </label>
+							<div class="clear"> </div>
+						</div>
+						<div class="recent-post-list">
+							<ul>
+								<li><a href="{{ path('mywebsiteweb_profil_portfolio_afficher') }}">Nouvel Album</a></li>
+								<li><a href="{{ path('mywebsiteweb_profil_portfolio_list') }}">Gérer le Portfolio</a></li>
+							</ul>
+						</div>
+					</div>
+					<!---end-side-bar-->
+				</div>
+				<!---->
+				<div class="right-protfolio-grids2">
+					{% include "MyWebsiteWebBundle:Web:Profil/" ~ layout ~ ".html.twig" %}
+				</div>
+				<div class="clear"> </div>
+				<!---End-portfolio---->
+			</div>
+        </div>
+	</div>
+	<!---End-content---->
+{% endblock %}
+
+{% block js %}
+	<script>
+		$(document).ready(function() {
+			$("#content").find("[id^='tab']").hide(); // Hide all content
+			$("#tabs li:first").attr("id","current"); // Activate the first tab
+			$("#content #tab1").fadeIn(); // Show first tab's content
+    
+			$('#tabs a').click(function(e) {
+				e.preventDefault();
+				if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+					return;       
+				}
+				else{             
+					$("#content").find("[id^='tab']").hide(); // Hide all content
+					$("#tabs li").attr("id",""); //Reset id's
+					$(this).parent().attr("id","current"); // Activate this
+					$('#' + $(this).attr('name')).fadeIn(); // Show content for the current tab
+				}
+			});
+		});
+	</script>
+{% endblock %}

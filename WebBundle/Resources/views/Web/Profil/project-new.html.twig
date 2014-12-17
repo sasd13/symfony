@@ -1,0 +1,46 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Nouveau</span> Projet</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="new-project-form">
+		<form class="contact_form" action="{{ path('mywebsiteweb_profil_project_nouveau') }}" method="post" name="contact_form">
+			<ul class="form-content">
+				<li>
+					<h2>Détails du projet</h2>
+					<span class="required_notification">* Denotes Required Field</span>
+				</li>
+				<li>
+					<label for="intitule">Intitule:</label>
+					<input type="text" name="intitule" placeholder="Mon Projet" maxlength="50" required />
+				</li>
+				<li>
+					<label for="periode">Période:</label>
+					<input type="text" name="periode" placeholder="2014" required />
+				</li>
+				<li>
+					<label for="technologie">Technologie:</label>
+					<input type="text" name="technologie" placeholder="XML" required />
+				</li>
+				<li>
+					<label for="website">Site web:</label>
+					<input type="url" name="website" placeholder="http://sitewebprojet.com" pattern="(http|https)://.+"/>
+					<span class="form_hint">Proper format "http://sitewebprojet.com"</span>
+				</li>
+				<li>
+					<label for="description">Description:</label>
+					<textarea name="description" cols="40" rows="6" required ></textarea>
+				</li>
+			</ul>
+			<ul class="form-submit">
+				<li>
+					<input type="submit" class="submit" value="Créer Projet"/>
+				</li>
+			</ul>
+		</form>
+	</div>
+	<div class="clear"> </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Nouvelle</span> Catégorie</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="new-project-form">
+		<form class="contact_form" action="{{ path('mywebsiteweb_profil_cv_categorie_nouveau', {'idCv': cv.id}) }}" method="post" name="contact_form">
+			<ul class="form-content">
+				<li>
+					<h2>Détails de la Catégorie</h2>
+					<span class="required_notification">* Denotes Required Field</span>
+				</li>
+				<li>
+					<label for="intitule">Intitule:</label>
+					<input type="text" name="intitule" placeholder="Expérience professionnelle" maxlength="50" required />
+				</li>
+				<li>
+					<label for="tag">Tag:</label>
+					<input type="text" name="tag" placeholder="experience" required />
+				</li>
+			</ul>
+			<ul class="form-submit">
+				<li>
+					<input type="submit" class="submit" value="Créer Catégorie"/>
+				</li>
+			</ul>
+		</form>
+	</div>
+	<div class="clear"> </div>
+</div>
