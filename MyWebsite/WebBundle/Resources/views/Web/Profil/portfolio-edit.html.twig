@@ -1,0 +1,19 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Tous les</span> Albums</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="new-project-form">
+		{% if list_albums | length == 0 %}
+			<p>Aucun Album créé...</p>
+			<br/>
+			<div class="list-content">
+				<button type="button" /><a href="{{ path('mywebsiteweb_profil_portfolio_afficher') }}">Ajouter Cv</a></button>
+			</div>
+		{% endif %}
+	</div>
+	<div class="clear"> </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Modifier</span> Curriculum Vitae</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="cv-tabs">	
+		<!---start-tabs--->
+		<ul id="tabs">
+			<li><a href="#" name="tab1">Liste des Catégories</a></li>
+			<li><a href="#" name="tab2">Ajouter Catégorie</a></li>
+			<li><a href="#" name="tab3">Gestion Cv</a></li>
+		</ul>
+		
+		<div id="content"> 
+			<div id="tab1">
+				<div class="new-project-form">
+					{% if list_categories | length == 0 %}
+						<br/>
+						<p>Aucune Catégorie créée...</p>
+					{% else %}
+						{% for categorie in list_categories %}
+							{% include "MyWebsiteWebBundle:Web:Profil/cv-categorie-list-content.html.twig" %}
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			
+			<div id="tab2">
+				<div class="contact_form border">
+					<h2>Nouvelle catégorie</h2>
+					<span class="required_notification">* Denotes Required Field</span>
+				</div>
+				{% include "MyWebsiteWebBundle:Web:Profil/cv-categorie-new.html.twig" %}
+			</div>
+			
+			<div id="tab3">
+				<div class="new-project-form">
+					<form class="contact_form" action="{{ path('mywebsiteweb_profil_cv_modifier') }}" method="post" name="contact_form_modifier">
+						<ul class="form-content">
+							<li>
+								<h2>Détails du Cv: "{{ cv.intitule | truncate(30, true, '...') }}"</h2>
+								<span class="required_notification">* Denotes Required Field</span>
+								<input type="hidden" name="idCv" value="{{ cv.id }}" required />
+							</li>
+							<li>
+								<label for="intitule">Intitule:</label>
+								<input type="text" name="intitule" placeholder="Mon Cv" maxlength="50" value="{{ cv.intitule }}" required />
+							</li>
+							<li>
+								<label for="disponibilite">Disponibilité:</label>
+								<input type="text" name="disponibilite" placeholder="Juillet 2014" value="{{ cv.disponibilite }}" required/>
+							</li>
+							<li>
+								<label for="mobilite">Mobilité:</label>
+								<input type="text" name="mobilite" placeholder="Ile-de-France" value="{{ cv.mobilite }}" />
+							</li>
+							<li>
+								<label for="description">Description:</label>
+								<textarea name="description" cols="40" rows="6" >{{ cv.description }}</textarea>
+							</li>
+						</ul>
+						<ul class="form-submit">
+							<li>
+								<input type="submit" class="submit" value="Modifier"/>
+								<a href="{{ path('mywebsiteweb_profil_cv_supprimer', {'idCv': cv.id}) }}"><input type="button" value="Supprimer"/></a>
+							</li>
+						</ul>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="clear"> </div>
+</div>

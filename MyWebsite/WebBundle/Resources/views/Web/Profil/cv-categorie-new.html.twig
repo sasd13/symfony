@@ -1,0 +1,21 @@
+<div class="new-project-form">
+	<form class="contact_form" action="{{ path('mywebsiteweb_profil_cv_categorie_nouveau') }}" method="post" name="contact_form">
+		<ul class="form-content">
+			<li>
+				<input type="hidden" name="idCv" value="{{ cv.id }}" required />
+				<label for="intitule">Intitule:</label>
+				<input type="text" name="intitule" placeholder="Expérience professionnelle" maxlength="100" required />
+			</li>
+			<li>
+				<label for="tag">Tag:</label>
+				<input type="text" name="tag" placeholder="experience" maxlength="20" required />
+			</li>
+		</ul>
+		<ul class="form-submit">
+			<li>
+				<input type="submit" class="submit" value="Créer Catégorie"/>
+			</li>
+		</ul>
+	</form>
+	<div class="clear"> </div>
+</div>

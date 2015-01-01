@@ -1,0 +1,132 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>{% block title %}SAMWEB{% endblock %}</title>
+		{% stylesheets
+			'bundles/mywebsiteweb/css/style.css'
+			'bundles/mywebsiteweb/css/animate.css' 
+			filter='cssrewrite' %}
+			<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+		{% endstylesheets %}
+		<link href="http://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet" type="text/css">
+		{% block css %}{% endblock %}
+	</head>
+
+	<body>
+		<!-- Panel -->
+		<div id="toppanel">
+			<div id="panel">
+				
+			</div> <!-- /login -->	
+			<!-- The tab on top -->	
+			<div class="tab">
+				
+			</div> 
+			<!-- / top -->
+		</div>
+		<!---End-panel--->
+		<!---Header--->
+		<div class="{% block class_header %}{% endblock %}">
+			<div class="wrap">
+				<!--start-top-nav---->
+				<div class="top-header animated bounceInDown">
+					<!---start-logo---->
+					<div class="logo">
+						<a href="{{ path('mywebsiteweb_home') }}"><img src="{{ asset('bundles/mywebsiteweb/') }}images/logo.png" title="Webworld" /></a>
+					</div>
+					<!---End-logo---->
+					<!---start-top-nav---->
+					<div class="top-nav" id="navigation">
+						<ul>
+							<li><a href="{{ path('mywebsiteweb_home') }}">Home</a></li>
+							<li><a href="{{ path('mywebsiteweb_project_list') }}">Projects</a></li>
+							<li><a href="{{ path('mywebsiteweb_cv_list') }}">CV</a></li>
+							<li><a href="{{ path('mywebsiteweb_portfolio') }}">Portfolio</a></li>
+							<li><a href="{{ path('mywebsiteweb_contact') }}">Contact</a></li>
+							{% set login = app.session.get('idMembre') %}
+							{% if  login != null %}
+								<li><a href="{{ path('mywebsiteweb_profil_afficher') }}">Profil</a></li>
+								<li><a href="{{ path('mywebsiteweb_logout') }}">D&eacuteonnexion</a></li>
+							{% endif %}
+							<div class="clear"> </div>
+						</ul>
+					</div>
+					<div class="clear"> </div>
+					<!---//End-top-nav---->
+				</div>
+				
+				{% block slider %}{% endblock %}
+			</div>
+		</div>
+		<!---End-header---->
+		
+		{% block section %}{% endblock %}
+		
+		<!---Footer---->
+			<!---Start-first-footer--->
+			<div class="footer">
+				<div class="wrap">
+					<div class="footer-grid footer-grid1">
+						<h4><a href="#"><img src="{{ asset('bundles/mywebsiteweb/') }}images/flogo.png" alt="" /></a></h4>
+						<p>This website is within the scope of a personal project presentation and desire to control different technologies for creating and web development</p>
+						<p>Regards,</p>
+						<p>The administrator</p>
+					</div>
+					<div class="footer-grid footer-grid2">
+						<h4>Contact</h4>
+						<ul>
+							<li><span> </span> <label>Paris</label></li>
+							<li><span> </span> <label>samir(8)saidali(at)yahoo(dot)fr</label></li>
+							<li><span> </span> <label>+336-98-33-01-53</label></li>
+						</ul>
+					</div>
+					<div class="footer-grid footer-grid4">
+						<h4>News Letter</h4>
+						<p>If you want to follow my latest news, please insert your email</p>
+						<form>
+							<input type="text" value="Email Address" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email Address';}">
+							<input type="submit" value="Go" />
+						</form>
+						<br/>
+						{% if  login == null %}
+							<p><a id="log" href="{{ path('mywebsiteweb_login') }}">Go to Administration</a></p>
+						{% endif %}
+					</div>					
+					<div class="clear"> </div>
+				</div>
+			</div>
+			<!---End-first-footer--->
+			<!---Start-copy-right---->
+			<div class="copy-right">
+				<div class="wrap">
+					<div class="copy-right-left">
+						<p>&#169; All rights reserved. &copy 2014 Designed by Webworld</p>
+					</div>
+					<div class="copy-right-right">
+						<ul>
+							<li><a class="twitter" href="#"><span> </span></a></li>
+							<li><a class="facebook" href="#"><span> </span></a></li>
+							<li><a class="linkedin"  href="#"><span> </span></a></li>
+						</ul>
+					</div>
+					<div class="clear"> </div>
+				</div>
+			</div>
+			<!---End-copy-right---->
+		</div>
+		<!---End-footer---->
+		{% javascripts
+			'bundles/mywebsiteweb/js/jquery.min.js' %}
+			<script type="text/javascript" src="{{ asset_url }}"></script>
+		{% endjavascripts %}
+
+		{% block js %}{% endblock %}
+	</body>
+</html>
