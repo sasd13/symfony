@@ -22,28 +22,22 @@ class Content
     private $id;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="level", type="smallint")
+     * @ORM\Column(name="title", type="string", length=45)
      */
-    private $level;
+    private $title;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="priority", type="smallint")
+     * @ORM\Column(name="priority", type="integer")
      */
     private $priority;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="text", type="text")
-     */
-    private $text;
-	
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category")
+	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $category;
 
@@ -57,28 +51,28 @@ class Content
     {
         return $this->id;
     }
-
-    /**
-     * Set level
+	
+	/**
+     * Set title
      *
-     * @param integer $level
+     * @param string $title
      * @return Content
      */
-    public function setLevel($level)
+    public function setTitle($title)
     {
-        $this->level = $level;
+        $this->title = $title;
 
         return $this;
     }
 
     /**
-     * Get level
+     * Get title
      *
-     * @return integer 
+     * @return string 
      */
-    public function getLevel()
+    public function getTitle()
     {
-        return $this->level;
+        return $this->title;
     }
 
     /**
@@ -105,35 +99,12 @@ class Content
     }
 
     /**
-     * Set text
-     *
-     * @param string $text
-     * @return Content
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-
-        return $this;
-    }
-
-    /**
-     * Get text
-     *
-     * @return string 
-     */
-    public function getText()
-    {
-        return $this->text;
-    }
-
-    /**
      * Set category
      *
      * @param \MyWebsite\WebBundle\Entity\Category $category
      * @return Content
      */
-    public function setCategory(\MyWebsite\WebBundle\Entity\Category $category = null)
+    public function setCategory(\MyWebsite\WebBundle\Entity\Category $category)
     {
         $this->category = $category;
 

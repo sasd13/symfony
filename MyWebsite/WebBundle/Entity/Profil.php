@@ -24,55 +24,22 @@ class Profil
     /**
      * @var string
      *
-     * @ORM\Column(name="firstName", type="string", length=45)
+     * @ORM\Column(name="pictureLink", type="string", length=255)
      */
-    private $firstName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="lastName", type="string", length=45)
-     */
-    private $lastName;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateBirth", type="date", nullable=true)
-     */
-    private $dateBirth;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255)
-     */
-    private $email;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="phoneNumber", type="string", length=45, nullable=true)
-     */
-    private $phoneNumber;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="city", type="string", length=45, nullable=true)
-     */
-    private $city;
+    private $pictureLink;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\Country", cascade={"persist"})
-	 */
-	private $country;
-	
-	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\MyTime", cascade={"persist", "remove"})
+     * @var boolean
+     *
+     * @ORM\Column(name="pictureDisplay", type="boolean")
+     */
+    private $pictureDisplay;
+
+    /**
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\EditManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false)
 	 */
-	private $myTime;
+	private $editManager;
 
 
     /**
@@ -86,186 +53,71 @@ class Profil
     }
 
     /**
-     * Set firstName
+     * Set pictureLink
      *
-     * @param string $firstName
+     * @param string $pictureLink
      * @return Profil
      */
-    public function setFirstName($firstName)
+    public function setPictureLink($pictureLink)
     {
-        $this->firstName = $firstName;
+        $this->pictureLink = $pictureLink;
 
         return $this;
     }
 
     /**
-     * Get firstName
+     * Get pictureLink
      *
      * @return string 
      */
-    public function getFirstName()
+    public function getPictureLink()
     {
-        return $this->firstName;
+        return $this->pictureLink;
     }
-
-    /**
-     * Set lastName
+	
+	/**
+     * Set pictureDisplay
      *
-     * @param string $lastName
+     * @param boolean $pictureDisplay
      * @return Profil
      */
-    public function setLastName($lastName)
+    public function setPictureDisplay($pictureDisplay)
     {
-        $this->lastName = $lastName;
+        $this->pictureDisplay = $pictureDisplay;
 
         return $this;
     }
 
     /**
-     * Get lastName
+     * Get pictureDisplay
      *
-     * @return string 
+     * @return boolean 
      */
-    public function getLastName()
+    public function getPictureDisplay()
     {
-        return $this->lastName;
+        return $this->pictureDisplay;
     }
-
-    /**
-     * Set dateBirth
+	
+	/**
+     * Set editManager
      *
-     * @param \DateTime $dateBirth
+     * @param \MyWebsite\WebBundle\Entity\EditManager $editManager
      * @return Profil
      */
-    public function setDateBirth($dateBirth)
+    public function setEditManager(\MyWebsite\WebBundle\Entity\EditManager $editManager)
     {
-        $this->dateBirth = $dateBirth;
+        $this->editManager = $editManager;
 
         return $this;
     }
 
     /**
-     * Get dateBirth
+     * Get editManager
      *
-     * @return \DateTime 
+     * @return \MyWebsite\WebBundle\Entity\EditManager 
      */
-    public function getDateBirth()
+    public function getEditManager()
     {
-        return $this->dateBirth;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     * @return Profil
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string 
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * Set phoneNumber
-     *
-     * @param string $phoneNumber
-     * @return Profil
-     */
-    public function setPhoneNumber($phoneNumber)
-    {
-        $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get phoneNumber
-     *
-     * @return string 
-     */
-    public function getPhoneNumber()
-    {
-        return $this->phoneNumber;
-    }
-
-    /**
-     * Set city
-     *
-     * @param string $city
-     * @return Profil
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * Get city
-     *
-     * @return string 
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * Set country
-     *
-     * @param \MyWebsite\WebBundle\Entity\Country $country
-     * @return Profil
-     */
-    public function setCountry(\MyWebsite\WebBundle\Entity\Country $country = null)
-    {
-        $this->country = $country;
-
-        return $this;
-    }
-
-    /**
-     * Get country
-     *
-     * @return \MyWebsite\WebBundle\Entity\Country 
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
-     * Set myTime
-     *
-     * @param \MyWebsite\WebBundle\Entity\MyTime $myTime
-     * @return Profil
-     */
-    public function setMyTime(\MyWebsite\WebBundle\Entity\MyTime $myTime)
-    {
-        $this->myTime = $myTime;
-
-        return $this;
-    }
-
-    /**
-     * Get myTime
-     *
-     * @return \MyWebsite\WebBundle\Entity\MyTime 
-     */
-    public function getMyTime()
-    {
-        return $this->myTime;
-    }
+        return $this->editManager;
+    }    
 }
