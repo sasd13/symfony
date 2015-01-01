@@ -119,5 +119,5 @@ class Profil
     public function getEditManager()
     {
         return $this->editManager;
-    }    
+    }
 }
