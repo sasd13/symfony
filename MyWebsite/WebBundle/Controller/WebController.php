@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class WebController extends Controller
 {
 	public function indexAction()
-    {		
+    {
 		return $this->render('MyWebsiteWebBundle:Web:index.html.twig');
     }
 	

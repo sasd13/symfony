@@ -26,8 +26,8 @@ web_profil_picture_supprimer:
 
 web_profil_admin_afficher:
     pattern:  /profil/admin
-    defaults: { _controller: MyWebsiteWebBundle:Profil:afficherMdp}
+    defaults: { _controller: MyWebsiteWebBundle:Profil:afficherAdministrator}
 
 web_profil_admin_modifier:
     pattern:  /profil/admin/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Profil:modifierMdp}
+    defaults: { _controller: MyWebsiteWebBundle:Profil:modifierAdministrator}

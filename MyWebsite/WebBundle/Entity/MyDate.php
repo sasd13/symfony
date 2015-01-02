@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * MyDate
@@ -25,13 +26,15 @@ class MyDate
      * @var \DateTime
      *
      * @ORM\Column(name="beginDate", type="datetime")
+	 * @Assert\DateTime
      */
     private $beginDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="endDate", type="datetime")
+     * @ORM\Column(name="endDate", type="datetime", nullable=true)
+	 * @Assert\DateTime
      */
     private $endDate;
 	

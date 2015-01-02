@@ -7,14 +7,14 @@
 		</div>
 	</div>
 	<div class="new-project-form">
-		<form class="contact_form" action="{{ path('web_profil_mdp_modifier') }}" {{ form_enctype(formAdmin) }}>
+		<form class="contact_form" {{ form_enctype(formAdmin) }}>
 			<ul class="form-content">
 				<li>
 					<h2>Détails du mot de passe</h2>
 					<span class="required_notification">* Denotes Required Field</span>
 				</li>
 				<li>
-					{{ form_label(formAdmin.emailBackUp, "Email") }}
+					{{ form_label(formAdmin.emailBackup, "Email") }}
 					{{ form_widget(formAdmin.emailBackup) }}
 				</li>
 				<li>
@@ -23,11 +23,11 @@
 				</li>
 				<li>
 					<label for="newpassword">Nouveau mot de passe:</label>
-					<input type="password" name="newpassword" placeholder="nouveau mot de passe" maxlength="20" required />
+					<input type="password" name="newpassword" placeholder="nouveau mot de passe" maxlength="20" />
 				</li>
 				<li>
-					<label for="confirmnewpassword">Confirmation:</label>
-					<input type="password" name="confirmnewpassword" placeholder="confirmez nouveau mot de passe" maxlength="20" required />
+					<label for="confirmnewpassword">Confirmer:</label>
+					<input type="password" name="confirmnewpassword" placeholder="confirmer nouveau mot de passe" maxlength="20" />
 				</li>
 			</ul>
 			<ul class="form-submit">

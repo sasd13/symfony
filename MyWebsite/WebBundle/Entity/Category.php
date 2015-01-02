@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Category
@@ -25,6 +26,7 @@ class Category
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=45)
+	 * @Assert\NotBlank
      */
     private $title;
 
@@ -32,6 +34,7 @@ class Category
      * @var string
      *
      * @ORM\Column(name="tag", type="string", length=45)
+	 * @Assert\NotBlank
      */
     private $tag;
 	

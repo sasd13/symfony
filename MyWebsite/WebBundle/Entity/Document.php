@@ -33,7 +33,12 @@ class Document
     public $path;
 	
 	/**
-     * @Assert\File(maxSize="6000000")
+     * @Assert\File(
+     *     maxSize = "5120k",
+     *     mimeTypes = {"image/gif", "image/jpeg", "image/jpg", "image/png"},
+     *     mimeTypesMessage = "Choisissez un fichier JPEG, PNG ou GIF valide"
+	 *     maxSizeMessage = "Fichier trop volumineux"
+     * )
      */
     public $file;
 	

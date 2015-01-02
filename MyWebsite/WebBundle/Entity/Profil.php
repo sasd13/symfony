@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Profil
@@ -25,6 +26,7 @@ class Profil
      * @var boolean
      *
      * @ORM\Column(name="pictureDisplay", type="boolean")
+	 * @Assert\Type
      */
     private $pictureDisplay;
 

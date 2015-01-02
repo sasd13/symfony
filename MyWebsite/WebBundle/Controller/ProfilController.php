@@ -17,57 +17,29 @@ class ProfilController extends Controller
 		$session = $this->getRequest()->getSession();		
 		$em = $this->getDoctrine()->getManager();
 		
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);
 		if ($request->getMethod() == 'POST')
 		{
-			$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->findOneBy(array('login' => $request->request->get('login'), 'password' => $request->request->get('password')));
-			if ($admin == null) return $this->redirect($this->generateUrl('web_login'));
-			else
-			{
-				$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);
-				$session->set('idProfil', $profil->getId());
-				
-				$document = new Document();
-				$formPicture = $this->createFormBuilder($document)
-					->add('name')
-					->add('file')
-					->getForm();
-				
-				$formAdmin = $this->createFormBuilder($admin)
-					->add('emailBackUp', 'email')
-					->add('password', 'password')
-					->getForm();
-				
-				$layout = 'profil-edit';				
-				return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
-																						'layout' => $layout, 
-																						'profil' => $profil, 
-																						'formPicture' => $formPicture->createView()
-				));
-			}
+			$session->set('idProfil', $profil->getId());
 		}
 		else 
 		{
 			$idProfil = $session->get('idProfil');
-	
 			if ($idProfil == null) return $this->redirect($this->generateUrl('mywebsiteweb_login'));
-			else 
-			{
-				$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find($idProfil);
-				
-				$document = new Document();
-				$form = $this->createFormBuilder($document)
-					->add('name')
-					->add('file')
-					->getForm();
-				
-				$layout = 'profil-edit';				
-				return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
-																						'layout' => $layout, 
-																						'profil' => $profil, 
-																						'form' => $formPicture->createView()
-				));
-			}	
 		}
+		
+		$document = new Document();
+		$formPicture = $this->createFormBuilder($document)
+			->add('name')
+			->add('file')
+			->getForm();
+		
+		$layout = 'profil-edit';				
+		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
+																				'layout' => $layout, 
+																				'profil' => $profil, 
+																				'formPicture' => $formPicture->createView()
+		));
 	}
 	
 	public function modifierAction($displayPicture)
@@ -76,24 +48,24 @@ class ProfilController extends Controller
 		$session = $this->getRequest()->getSession();
 		$em = $this->getDoctrine()->getManager();
 		
-		$idProfil = $session->get('idProfil');		
-		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find($idProfil);
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);
+		$profil->setDisplayPicture($displaPicture);
 		
-		if($profil != null)
-		{
-			$profil->setDisplayPicture($displaPicture);
-			
-			$em->persist($profil);
-			$em->flush();
-			
-			
-			$layout = 'profil-edit';			
-			return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
-																					'layout' => $layout,
-																					'profil' => $profil
-			));
-		}
-		else return $this->redirect($this->generateUrl('web_logout'));
+		$em->persist($profil);
+		$em->flush();
+		
+		$document = new Document();
+		$formPicture = $this->createFormBuilder($document)
+			->add('name')
+			->add('file')
+			->getForm();
+		
+		$layout = 'profil-edit';				
+		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
+																				'layout' => $layout, 
+																				'profil' => $profil, 
+																				'formPicture' => $formPicture->createView()
+		));
     }
 	
 	/**
@@ -130,13 +102,51 @@ class ProfilController extends Controller
 		));
 	}
 	
-	public function modifierAdminAction()
+	public function afficherAdministratorAction()
+    {
+		$request = $this->getRequest();
+		$session = $this->getRequest()->getSession();		
+		$em = $this->getDoctrine()->getManager();
+		
+		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
+		
+		$formAdmin = $this->createFormBuilder($admin)
+			->add('emailBackup', 'email')
+			->add('password', 'password')
+			->getForm();
+			
+		if($request->getMethod() == 'POST')
+		{
+			$formAdmin->bind($request);
+			if($formAdmin->isValid())
+			{
+				$em->persist($admin);
+				$em->flush();
+				
+				$formAdmin = $this->createFormBuilder($admin)
+					->add('emailBackup', 'email')
+					->add('password', 'password')
+					->getForm();
+			}
+		}
+		
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);
+		
+		$layout = 'profil-admin-edit';				
+		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
+																				'layout' => $layout, 
+																				'profil' => $profil,
+																				'formAdmin' => $formAdmin->createView()
+		));
+	}
+	
+	public function modifierAdministratorAction()
     {
 		$request = $this->getRequest();
 		$session = $this->getRequest()->getSession();
 		$em = $this->getDoctrine()->getManager();		
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
+		$admin = $em->getRepository('MyWebsiteWebBundle:Administratoristrator')->find(1);
 		$admin->setPassword($request->request->get('newpassword'));
 		
 		if ($request->hasParameter('password') AND ($admin->get('password') == $request->request->get('password')) AND ($request->request->get('newpassword') == $request->request->get('confirmnewpassword')))

@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Content
@@ -25,6 +26,7 @@ class Content
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=45)
+	 * @Assert\NotBlank
      */
     private $type;
 
@@ -39,6 +41,10 @@ class Content
      * @var integer
      *
      * @ORM\Column(name="priority", type="integer")
+	 * @Assert\Range(
+     *      min = 0,
+     *      minMessage = "La priorité doit être au moins de 0"
+     * )
      */
     private $priority;
 

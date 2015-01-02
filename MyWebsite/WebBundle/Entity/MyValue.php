@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * MyValue
@@ -25,6 +26,8 @@ class MyValue
      * @var integer
      *
      * @ORM\Column(name="level", type="smallint")
+	 * @Assert\Min(1)
+	 * @Assert\Max(3)
      */
     private $level;
 

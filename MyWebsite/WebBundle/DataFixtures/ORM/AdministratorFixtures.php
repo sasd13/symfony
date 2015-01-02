@@ -12,9 +12,9 @@ class AdminFixtures implements FixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
-		$admin = new Admin();
-		$admin->setLogin("root");
-		$admin->setPassword(null);
+		$admin = new Administrator();
+		$admin->setLogin('root');
+		$admin->setPassword('root');
 		$admin->setEmailBackup(null);
 		
 		$editManager = new EditManager();

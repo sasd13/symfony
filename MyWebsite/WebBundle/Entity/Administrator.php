@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Administrator
@@ -25,13 +26,20 @@ class Administrator
      * @var string
      *
      * @ORM\Column(name="login", type="string", length=45)
+	 * @Assert\NotBlank
+	 * @Assert\MinLength(4)
      */
     private $login;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=45, nullable=true)
+     * @ORM\Column(name="password", type="string", length=45)
+	 * @Assert\NotBlank
+	 * @Assert\Length(
+	 *		min = "4",
+	 *		minMessage = "Le mot de passe doit faire au moins {{ limit }} caractères",
+	 * )
      */
     private $password;
 
@@ -39,6 +47,10 @@ class Administrator
      * @var string
      *
      * @ORM\Column(name="email_backup", type="string", length=255, nullable=true)
+	 * @Assert\Email(
+     *     message = "'{{ value }}' n'est pas un email valide",
+     *     checkMX = true
+     * )
      */
     private $emailBackup;
 	
