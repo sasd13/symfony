@@ -32,6 +32,7 @@ class ProfilController extends Controller
 		$formPicture = $this->createFormBuilder($document)
 			->add('name')
 			->add('file')
+			->add('file')
 			->getForm();
 		
 		$layout = 'profil-edit';				
@@ -48,24 +49,26 @@ class ProfilController extends Controller
 		$session = $this->getRequest()->getSession();
 		$em = $this->getDoctrine()->getManager();
 		
-		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);
-		$profil->setDisplayPicture($displaPicture);
-		
-		$em->persist($profil);
-		$em->flush();
-		
 		$document = new Document();
 		$formPicture = $this->createFormBuilder($document)
 			->add('name')
 			->add('file')
 			->getForm();
 		
-		$layout = 'profil-edit';				
-		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
-																				'layout' => $layout, 
-																				'profil' => $profil, 
-																				'formPicture' => $formPicture->createView()
-		));
+		$messagePicture = "La photo n'a pas pu &eacyte;t&eacute; modifi&eacute;e";
+		if($request->getMethod() == 'POST')
+		{
+			$formPicture->handleRequest($request);
+			if($formPicture->isValid())
+			{
+				$em->persist($document);
+				$em->flush();
+				
+				$messagePicture = "La photo a &eacyte;t&eacute; modifi&eacute; avec succ&egrave;";
+			}
+		}
+		
+		return $this->redirect($this->generateUrl('web_profil_afficher', array('messagePucture' => $messagePicture)));
     }
 	
 	/**
@@ -82,7 +85,7 @@ class ProfilController extends Controller
 		
 		if ($this->getRequest()->isMethod('POST')) 
 		{
-			$form->handleRequest($this->getRequest());
+			$form->handleRequest($request);
 			if ($form->isValid()) 
 			{
 				$em = $this->getDoctrine()->getManager();
@@ -93,8 +96,9 @@ class ProfilController extends Controller
 				$this->redirect($this->generateUrl('web_profil'));
 			}
 		}
-
-		$layout = 'profil-edit';				
+		
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);	
+		$layout = 'profil-edit';
 		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
 																				'layout' => $layout, 
 																				'profil' => $profil, 
@@ -109,29 +113,13 @@ class ProfilController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		
 		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
-		
 		$formAdmin = $this->createFormBuilder($admin)
-			->add('emailBackup', 'email')
-			->add('password', 'password')
+			->setAction($this->generateUrl('web_profil_admin_modifier'))
+			->add('emailBackup', 'email', array('required' => false))
+			->add('password', 'password', array('required' => false))
 			->getForm();
-			
-		if($request->getMethod() == 'POST')
-		{
-			$formAdmin->bind($request);
-			if($formAdmin->isValid())
-			{
-				$em->persist($admin);
-				$em->flush();
-				
-				$formAdmin = $this->createFormBuilder($admin)
-					->add('emailBackup', 'email')
-					->add('password', 'password')
-					->getForm();
-			}
-		}
 		
-		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);
-		
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);		
 		$layout = 'profil-admin-edit';				
 		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
 																				'layout' => $layout, 
@@ -146,18 +134,25 @@ class ProfilController extends Controller
 		$session = $this->getRequest()->getSession();
 		$em = $this->getDoctrine()->getManager();		
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Administratoristrator')->find(1);
-		$admin->setPassword($request->request->get('newpassword'));
+		$admin = new Admin();
+		$formAdmin = $this->createFormBuilder($admin)
+			->add('emailBackup', 'email')
+			->add('password', 'password')
+			->getForm();
 		
-		if ($request->hasParameter('password') AND ($admin->get('password') == $request->request->get('password')) AND ($request->request->get('newpassword') == $request->request->get('confirmnewpassword')))
+		$message = "Le mot de passe n'a pas pu &eacyte;t&eacute; modifi&eacute;";
+		if($request->getMethod() == 'POST')
 		{
-			$admin->setPassword($request->request->get('newpassword'));
-			$em->persist($profil);
-			$em->flush();
-		}
+			$formAdmin->handleRequest($request);
+			if($formAdmin->isValid())
+			{
+				$em->persist($admin);
+				$em->flush();
 				
-		$layout = 'profil-admin-edit';
+				$message = "Le mot de passe a &eacyte;t&eacute; modifi&eacute; avec succ&egrave;";
+			}
+		}
 		
-		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array('layout' => $layout));
+		return $this->redirect($this->generateUrl('web_profil_admin_afficher', array('message' => $message)));
     }
 }

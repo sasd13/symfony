@@ -27,7 +27,9 @@ class Administrator
      *
      * @ORM\Column(name="login", type="string", length=45)
 	 * @Assert\NotBlank
-	 * @Assert\MinLength(4)
+	 * @Assert\Length(
+	 *		min = "4",
+	 * )
      */
     private $login;
 

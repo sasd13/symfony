@@ -26,7 +26,7 @@ class Profil
      * @var boolean
      *
      * @ORM\Column(name="pictureDisplay", type="boolean")
-	 * @Assert\Type
+	 * @Assert\Type(type="bool")
      */
     private $pictureDisplay;
 

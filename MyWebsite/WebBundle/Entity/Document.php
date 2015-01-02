@@ -35,8 +35,8 @@ class Document
 	/**
      * @Assert\File(
      *     maxSize = "5120k",
-     *     mimeTypes = {"image/gif", "image/jpeg", "image/jpg", "image/png"},
-     *     mimeTypesMessage = "Choisissez un fichier JPEG, PNG ou GIF valide"
+     *     mimeTypes = {"image/gif", "image/jpeg", "image/png"},
+     *     mimeTypesMessage = "Choisissez un fichier JPEG, PNG ou GIF valide",
 	 *     maxSizeMessage = "Fichier trop volumineux"
      * )
      */

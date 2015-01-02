@@ -11,22 +11,21 @@
 			<ul class="form-content">
 				<li>
 					<h2>Détails du mot de passe</h2>
+					{% if message is defined %}
+						{{ message }}
+					{% endif %}
 					<span class="required_notification">* Denotes Required Field</span>
 				</li>
 				<li>
-					{{ form_label(formAdmin.emailBackup, "Email") }}
+					{{ form_label(formAdmin.emailBackup, "Email :") }}
 					{{ form_widget(formAdmin.emailBackup) }}
 				</li>
 				<li>
-					{{ form_label(formAdmin.password, "Actuel mot de passe") }}
+					{{ form_label(formAdmin.password, "Mot de passe :") }}
 					{{ form_widget(formAdmin.password) }}
 				</li>
 				<li>
-					<label for="newpassword">Nouveau mot de passe:</label>
-					<input type="password" name="newpassword" placeholder="nouveau mot de passe" maxlength="20" />
-				</li>
-				<li>
-					<label for="confirmnewpassword">Confirmer:</label>
+					<label for="confirmnewpassword">Confirmer :</label>
 					<input type="password" name="confirmnewpassword" placeholder="confirmer nouveau mot de passe" maxlength="20" />
 				</li>
 			</ul>
