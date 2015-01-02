@@ -19,6 +19,6 @@ class WebController extends Controller
 		$idProfil = $session->get('idProfil');
 		
 		if ($idProfil != null) $session->remove('idProfil');
-        return $this->redirect($this->generateUrl('web_home'));
+        return $this->render('MyWebsiteWebBundle:Web:index.html.twig');
     }
 }
