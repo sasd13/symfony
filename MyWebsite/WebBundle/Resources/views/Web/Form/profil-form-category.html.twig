@@ -1,0 +1,54 @@
+<div class="new-form">
+	<form class="contact_form" action="{{ path('web_profil_modifier') }}" method="post" name="contact_form">
+		<ul class="form-content">
+			<li>
+				<h2>Détails du profil</h2>
+				<span class="required_notification">* Denotes Required Field</span>
+				<input type="hidden" name="id" value="{{ profil.id }}" required />
+			</li>
+			<li>
+				<label for="login">Pseudo:</label>
+				<input type="text" name="login" value="{{ membre.login }}" required disabled/>
+			</li>
+			<li>
+				<label for="nom">Nom:</label>
+				<input type="text" name="nom" placeholder="nom" value="{{ membre.profil.nom }}" required />
+			</li>
+			<li>
+				<label for="prenom">Prénom:</label>
+				<input type="text" name="prenom" placeholder="prenom" value="{{ membre.profil.prenom }}" required />
+			</li>
+			<li>
+				<label for="email">Email:</label>
+				<input type="email" name="email" placeholder="email" value="{{ membre.profil.email }}" required/>
+				<span class="form_hint">Proper format "xyz@exemple.com"</span>
+			</li>
+			<li>
+				<label for="pays">Pays:</label>
+				<select name="pays" placeholder="pays">
+					{% for pays in list_pays %}
+						{% if pays.nom == membre.profil.pays %}
+							<option value="{{ pays.nom }}" selected>{{ pays.nom }}</option>
+						{% else %}
+							<option value="{{ pays.nom }}">{{ pays.nom }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+			</li>
+			<li>
+				<label for="ville">Ville:</label>
+				<input type="text" name="ville" placeholder="ville" value="{{ membre.profil.ville }}" />
+			</li>
+			<li>
+				<label for="telephone">Téléphone:</label>
+				<input type="text" name="telephone" placeholder="telephone" value="{{ membre.profil.telephone }}" />
+			</li>
+		</ul>
+		<ul class="form-submit">
+			<li>
+				<input type="submit" class="submit" value="Modifier"/>
+				<a href="{{ path('mywebsiteweb_profil_supprimer', {'idMembre': membre.id}) }}"><input type="button" value="Supprimer"/></a>
+			</li>
+		</ul>
+	</form>
+</div>
