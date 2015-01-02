@@ -2,10 +2,6 @@ web_home:
     pattern:  /
     defaults: { _controller: MyWebsiteWebBundle:Web:index}
 
-web_login:
-    pattern:  /login
-    defaults: { _controller: MyWebsiteWebBundle:Web:login}
-
 web_logout:
     pattern:  /logout
     defaults: { _controller: MyWebsiteWebBundle:Web:logout}

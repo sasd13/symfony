@@ -51,7 +51,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							{% set login = app.session.get('idProfil') %}
 							{% if  login != null %}
 								<li><a href="{{ path('web_profil_afficher') }}">Profil</a></li>
-								<li><a href="{{ path('web_logout') }}">D&eacuteonnexion</a></li>
+								<li><a href="{{ path('web_logout') }}">D&eacute;connexion</a></li>
 							{% endif %}
 							<div class="clear"> </div>
 						</ul>
@@ -94,7 +94,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						</form>
 						<br/>
 						{% if  login == null %}
-							<p><a id="log" href="{{ path('web_login') }}">Go to Administration</a></p>
+							<p><a id="log" href="{{ path('web_profil_afficher') }}">Go to Administration</a></p>
 						{% endif %}
 					</div>					
 					<div class="clear"> </div>

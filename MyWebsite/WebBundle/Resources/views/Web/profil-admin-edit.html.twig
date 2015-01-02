@@ -7,13 +7,10 @@
 		</div>
 	</div>
 	<div class="new-project-form">
-		<form class="contact_form" {{ form_enctype(formAdmin) }}>
+		<form class="contact_form" action="{{ path('web_profil_admin_modifier') }}" method="post" name="contact_form">
 			<ul class="form-content">
 				<li>
 					<h2>Détails du mot de passe</h2>
-					{% if message is defined %}
-						{{ message }}
-					{% endif %}
 					<span class="required_notification">* Denotes Required Field</span>
 				</li>
 				<li>
@@ -26,12 +23,15 @@
 				</li>
 				<li>
 					<label for="confirmnewpassword">Confirmer :</label>
-					<input type="password" name="confirmnewpassword" placeholder="confirmer nouveau mot de passe" maxlength="20" />
+					<input type="password" name="confirmpassword" placeholder="confirmer mot de passe" maxlength="20" />
 				</li>
 			</ul>
 			<ul class="form-submit">
 				<li>
 					<input type="submit" class="submit" value="Modifier"/>
+					{% if message is defined %}
+						<div class="required_notification">{{ message }}</div>
+					{% endif %}
 				</li>
 			</ul>
 		</form>

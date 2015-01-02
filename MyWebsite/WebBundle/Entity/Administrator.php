@@ -29,6 +29,7 @@ class Administrator
 	 * @Assert\NotBlank
 	 * @Assert\Length(
 	 *		min = "4",
+	 *		max = "20"
 	 * )
      */
     private $login;
@@ -40,7 +41,9 @@ class Administrator
 	 * @Assert\NotBlank
 	 * @Assert\Length(
 	 *		min = "4",
-	 *		minMessage = "Le mot de passe doit faire au moins {{ limit }} caractères",
+	 *		max = "20",
+	 *		minMessage = "Le mot de passe doit faire plus de {{ limit }} caractères",
+	 *		maxMessage = "Le mot de passe doit faire moins de {{ limit }} caractères"
 	 * )
      */
     private $password;

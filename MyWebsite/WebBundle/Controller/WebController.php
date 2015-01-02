@@ -13,15 +13,6 @@ class WebController extends Controller
 		return $this->render('MyWebsiteWebBundle:Web:index.html.twig');
     }
 	
-	public function loginAction()
-    {
-		$session = $this->getRequest()->getSession();
-		$idProfil = $session->get('idProfil');
-			
-		if ($idProfil != null) return $this->redirect($this->generateUrl('web_profil'));
-		else return $this->render('MyWebsiteWebBundle:Web:login.html.twig');
-    }
-	
 	public function logoutAction()
     {
 		$session = $this->getRequest()->getSession();

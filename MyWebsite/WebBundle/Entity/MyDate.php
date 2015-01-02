@@ -26,7 +26,7 @@ class MyDate
      * @var \DateTime
      *
      * @ORM\Column(name="beginDate", type="datetime")
-	 * @Assert\DateTime
+	 * @Assert\Type("\DateTime")
      */
     private $beginDate;
 
@@ -34,7 +34,7 @@ class MyDate
      * @var \DateTime
      *
      * @ORM\Column(name="endDate", type="datetime", nullable=true)
-	 * @Assert\DateTime
+	 * @Assert\Type("\DateTime")
      */
     private $endDate;
 	

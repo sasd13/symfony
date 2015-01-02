@@ -26,8 +26,12 @@ class MyValue
      * @var integer
      *
      * @ORM\Column(name="level", type="smallint")
-	 * @Assert\Min(1)
-	 * @Assert\Max(3)
+	 * @Assert\Range(
+     *      min = 1,
+	 *      max = 3,
+     *      minMessage = "La priorité doit être plus de {{ limit }}",
+	 *      maxMessage = "La priorité doit être moins de {{ limit }}"
+     * )
      */
     private $level;
 

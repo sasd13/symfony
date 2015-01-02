@@ -26,7 +26,7 @@ class EditManager
      * @var \DateTime
      *
      * @ORM\Column(name="createTime", type="datetime")
-	 * @Assert\DateTime
+	 * @Assert\Type("\DateTime")
      */
     private $createTime;
 
@@ -34,7 +34,7 @@ class EditManager
      * @var \DateTime
      *
      * @ORM\Column(name="updateTime", type="datetime", nullable=true)
-	 * @Assert\DateTime
+	 * @Assert\Type("\DateTime")
      */
     private $updateTime;
 	
