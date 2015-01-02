@@ -20,6 +20,13 @@ class Content
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=45)
+     */
+    private $type;
 
     /**
      * @var string
@@ -50,6 +57,29 @@ class Content
     public function getId()
     {
         return $this->id;
+    }
+	
+	/**
+     * Set type
+     *
+     * @param string $type
+     * @return Content
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string 
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 	
 	/**

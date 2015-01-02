@@ -22,13 +22,6 @@ class Profil
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="pictureLink", type="string", length=255)
-     */
-    private $pictureLink;
-	
-	/**
      * @var boolean
      *
      * @ORM\Column(name="pictureDisplay", type="boolean")
@@ -44,7 +37,6 @@ class Profil
 	
 	public function __construct()
 	{
-		$this->pictureLink = __DIR__.'/../../../../web/uploads/avatar.jpg';
 		$this->pictureDisplay = true;
 	}
 
@@ -59,29 +51,6 @@ class Profil
     }
 
     /**
-     * Set pictureLink
-     *
-     * @param string $pictureLink
-     * @return Profil
-     */
-    public function setPictureLink($pictureLink)
-    {
-        $this->pictureLink = $pictureLink;
-
-        return $this;
-    }
-
-    /**
-     * Get pictureLink
-     *
-     * @return string 
-     */
-    public function getPictureLink()
-    {
-        return $this->pictureLink;
-    }
-	
-	/**
      * Set pictureDisplay
      *
      * @param boolean $pictureDisplay

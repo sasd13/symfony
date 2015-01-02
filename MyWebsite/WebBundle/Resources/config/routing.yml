@@ -15,8 +15,10 @@ web_profil_afficher:
     defaults: { _controller: MyWebsiteWebBundle:Profil:afficher}
 
 web_profil_modifier:
-    pattern:  /profil/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Profil:modifier}
+    pattern:  /profil/picture/modifier
+    defaults: { _controller: MyWebsiteWebBundle:Profil:modifierPicture, displayPicture: true}
+    requirements:
+        displayPicture: true|false
 
 web_profil_picture_supprimer:
     pattern:  /profil/picture/supprimer
