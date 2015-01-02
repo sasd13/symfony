@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MyValue
  *
- * @ORM\Table()
+ * @ORM\Table(name="web_myvalue")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\MyValueRepository")
  */
 class MyValue

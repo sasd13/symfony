@@ -1,5 +1,5 @@
 parameters:
-#    mwebsiteweb.example.class: MyWebsite\WebBundle\Example
+#    mywebsiteweb.example.class: MyWebsite\WebBundle\Example
 
 services:
 #    mywebsiteweb.example:

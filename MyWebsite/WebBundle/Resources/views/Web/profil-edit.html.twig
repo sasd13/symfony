@@ -1,0 +1,35 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Informations</span> Personnelles</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="new-form">
+		<form class="contact_form" action="{{ path('web_profil_modifier') }}" method="post" name="contact_form" enctype="multipart/form-data>
+			<ul class="form-content">
+				<li>
+					<h2>Détails du profil</h2>
+					<span class="required_notification">* Denotes Required Field</span>
+					<input type="hidden" name="id" value="{{ profil.id }}" required />
+				</li>
+				<li>
+					<label for="file">Select picture (JPEG, PNG):</label>
+					<td><input type="hidden" name="MAX_FILE_SIZE" value="200000"/><input type="file" name="file" id="file" /></td>
+				</li>
+				<li>
+					<label for="pictureDisplay">Hide picture:</label>
+					<input type="checkbox" name="pictureDisplay" />
+				</li>
+			</ul>
+			<ul class="form-submit">
+				<li>
+					<input type="submit" class="submit" value="Modifier"/>
+					<a href="{{ path('web_profil_picture_supprimer') }}"><input type="button" value="Supprimer photo"/></a>
+				</li>
+			</ul>
+		</form>
+	</div>
+	<div class="clear"> </div>
+</div>

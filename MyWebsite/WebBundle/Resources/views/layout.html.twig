@@ -39,21 +39,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<div class="top-header animated bounceInDown">
 					<!---start-logo---->
 					<div class="logo">
-						<a href="{{ path('mywebsiteweb_home') }}"><img src="{{ asset('bundles/mywebsiteweb/') }}images/logo.png" title="Webworld" /></a>
+						<a href="{{ path('web_home') }}"><img src="{{ asset('bundles/mywebsiteweb/') }}images/logo.png" title="Webworld" /></a>
 					</div>
 					<!---End-logo---->
 					<!---start-top-nav---->
 					<div class="top-nav" id="navigation">
 						<ul>
-							<li><a href="{{ path('mywebsiteweb_home') }}">Home</a></li>
-							<li><a href="{{ path('mywebsiteweb_project_list') }}">Projects</a></li>
-							<li><a href="{{ path('mywebsiteweb_cv_list') }}">CV</a></li>
-							<li><a href="{{ path('mywebsiteweb_portfolio') }}">Portfolio</a></li>
-							<li><a href="{{ path('mywebsiteweb_contact') }}">Contact</a></li>
-							{% set login = app.session.get('idMembre') %}
+							<li><a href="{{ path('web_home') }}">Home</a></li>
+							<li><a href="{{ path('project_list') }}">Projects</a></li>
+							<li><a href="{{ path('cv_list') }}">CV</a></li>
+							{% set login = app.session.get('idProfil') %}
 							{% if  login != null %}
-								<li><a href="{{ path('mywebsiteweb_profil_afficher') }}">Profil</a></li>
-								<li><a href="{{ path('mywebsiteweb_logout') }}">D&eacuteonnexion</a></li>
+								<li><a href="{{ path('web_profil_afficher') }}">Profil</a></li>
+								<li><a href="{{ path('web_logout') }}">D&eacuteonnexion</a></li>
 							{% endif %}
 							<div class="clear"> </div>
 						</ul>
@@ -96,7 +94,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						</form>
 						<br/>
 						{% if  login == null %}
-							<p><a id="log" href="{{ path('mywebsiteweb_login') }}">Go to Administration</a></p>
+							<p><a id="log" href="{{ path('web_login') }}">Go to Administration</a></p>
 						{% endif %}
 					</div>					
 					<div class="clear"> </div>

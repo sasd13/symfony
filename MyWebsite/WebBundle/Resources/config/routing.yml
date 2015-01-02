@@ -1,162 +1,31 @@
-mywebsiteweb_home:
+web_home:
     pattern:  /
     defaults: { _controller: MyWebsiteWebBundle:Web:index}
 
-mywebsiteweb_project_list:
-    pattern:  /projects-all
-    defaults: { _controller: MyWebsiteWebBundle:Project:afficherListProjects}
-
-mywebsiteweb_project_afficher:
-    pattern:  /project/{idProject}
-    defaults: { _controller: MyWebsiteWebBundle:Project:afficher, idProject:0}
-    requirements:
-        idProject: \d*
-
-mywebsiteweb_cv_list:
-    pattern:  /cvs-all
-    defaults: { _controller: MyWebsiteWebBundle:Cv:afficherListCvs}
-
-mywebsiteweb_cv_afficher:
-    pattern:  /cv/{idCv}
-    defaults: { _controller: MyWebsiteWebBundle:Cv:afficher, idCv:0}
-    requirements:
-        idCv: \d*
-
-mywebsiteweb_portfolio:
-    pattern:  /portfolio
-    defaults: { _controller: MyWebsiteWebBundle:Web:portfolio}
-
-mywebsiteweb_contact:
-    pattern:  /contact
-    defaults: { _controller: MyWebsiteWebBundle:Web:contact}
-
-mywebsiteweb_register:
-    pattern:  /register
-    defaults: { _controller: MyWebsiteWebBundle:Web:register}
-
-mywebsiteweb_login:
+web_login:
     pattern:  /login
     defaults: { _controller: MyWebsiteWebBundle:Web:login}
 
-mywebsiteweb_logout:
+web_logout:
     pattern:  /logout
     defaults: { _controller: MyWebsiteWebBundle:Web:logout}
 
-mywebsiteweb_profil_afficher:
+web_profil_afficher:
     pattern:  /profil
     defaults: { _controller: MyWebsiteWebBundle:Profil:afficher}
 
-mywebsiteweb_profil_nouveau:
-    pattern:  /profil/nouveau
-    defaults: { _controller: MyWebsiteWebBundle:Profil:nouveau}
-
-mywebsiteweb_profil_modifier:
+web_profil_modifier:
     pattern:  /profil/modifier
     defaults: { _controller: MyWebsiteWebBundle:Profil:modifier}
 
-mywebsiteweb_profil_supprimer:
-    pattern:  /profil/supprimer-{idMembre}
-    defaults: { _controller: MyWebsiteWebBundle:Profil:supprimer, idMembre: 0}
-    requirements:
-        idMembre: \d*
+web_profil_picture_supprimer:
+    pattern:  /profil/picture/supprimer
+    defaults: { _controller: MyWebsiteWebBundle:Profil:supprimerPicture}
 
-mywebsiteweb_profil_mdp_afficher:
-    pattern:  /profil/mdp
+web_profil_admin_afficher:
+    pattern:  /profil/admin
     defaults: { _controller: MyWebsiteWebBundle:Profil:afficherMdp}
 
-mywebsiteweb_profil_mdp_modifier:
-    pattern:  /profil/mdp/modifier
+web_profil_admin_modifier:
+    pattern:  /profil/admin/modifier
     defaults: { _controller: MyWebsiteWebBundle:Profil:modifierMdp}
-
-mywebsiteweb_profil_project_list:
-    pattern:  /profil/projects-all
-    defaults: { _controller: MyWebsiteWebBundle:Profil:listeProject}
-
-mywebsiteweb_profil_project_afficher:
-    pattern:  /profil/project-{idProject}
-    defaults: { _controller: MyWebsiteWebBundle:Profil:gestionProject, idProject: 0}
-    requirements:
-        idProject: \d*
-
-mywebsiteweb_profil_project_nouveau:
-    pattern:  /profil/project/nouveau
-    defaults: { _controller: MyWebsiteWebBundle:Project:nouveau}
-
-mywebsiteweb_profil_project_modifier:
-    pattern:  /profil/project/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Project:modifier}
-
-mywebsiteweb_profil_project_supprimer:
-    pattern:  /profil/project/supprimer-{idProject}
-    defaults: { _controller: MyWebsiteWebBundle:Project:supprimer, idProject: 0}
-    requirements:
-        idProject: \d*
-
-mywebsiteweb_profil_cv_list:
-    pattern:  /profil/cvs-all
-    defaults: { _controller: MyWebsiteWebBundle:Profil:listeCv}
-
-mywebsiteweb_profil_cv_afficher:
-    pattern:  /profil/cv-{idCv}
-    defaults: { _controller: MyWebsiteWebBundle:Profil:gestionCv, idCv: 0}
-    requirements:
-        idCv: \d*
-
-mywebsiteweb_profil_cv_nouveau:
-    pattern:  /profil/cv/nouveau
-    defaults: { _controller: MyWebsiteWebBundle:Cv:nouveau}
-
-mywebsiteweb_profil_cv_modifier:
-    pattern:  /profil/cv/modifier-{idCv}-{active}
-    defaults: { _controller: MyWebsiteWebBundle:Cv:modifier, idCv: 0, active: false}
-    requirements:
-        idCv: \d*
-        active: true|false
-
-mywebsiteweb_profil_cv_supprimer:
-    pattern:  /profil/cv/supprimer-{idCv}
-    defaults: { _controller: MyWebsiteWebBundle:Cv:supprimer, idCv: 0}
-    requirements:
-        idCv: \d*
-
-mywebsiteweb_profil_cv_categorie_afficher:
-    pattern:  /profil/cv/categorie-{idCategorie}
-    defaults: { _controller: MyWebsiteWebBundle:Profil:gestionCategorie, idCategorie: 0}
-    requirements:
-        idCategorie: \d*
-
-mywebsiteweb_profil_cv_categorie_nouveau:
-    pattern:  /profil/cv/categorie/nouveau
-    defaults: { _controller: MyWebsiteWebBundle:Categorie:nouveau}
-
-mywebsiteweb_profil_cv_categorie_modifier:
-    pattern:  /profil/cv/categorie/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Categorie:modifier}
-
-mywebsiteweb_profil_cv_categorie_supprimer:
-    pattern:  /profil/cv/categorie/supprimer-{idCategorie}
-    defaults: { _controller: MyWebsiteWebBundle:Categorie:supprimer, idCategorie: 0}
-    requirements:
-        idCv: \d*
-
-mywebsiteweb_profil_cv_categorie_contenu_nouveau:
-    pattern:  /profil/cv/categorie/contenu/nouveau
-    defaults: { _controller: MyWebsiteWebBundle:Contenu:nouveau}
-
-mywebsiteweb_profil_cv_categorie_contenu_modifier:
-    pattern:  /profil/cv/categorie/contenu/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Contenu:modifier}
-
-mywebsiteweb_profil_cv_categorie_contenu_supprimer:
-    pattern:  /profil/cv/categorie/contenu/supprimer-{idContenu}
-    defaults: { _controller: MyWebsiteWebBundle:Contenu:supprimer, idContenu: 0}
-    requirements:
-        idCv: \d*
-
-mywebsiteweb_profil_portfolio_list:
-    pattern:  /profil/portfolios
-    defaults: { _controller: MyWebsiteWebBundle:Profil:listePortfolio}
-
-mywebsiteweb_profil_portfolio_afficher:
-    pattern:  /profil/portfolio-{idPortfolio}
-    defaults: { _controller: MyWebsiteWebBundle:Profil:gestionPortfolio, idPortfolio: 0}

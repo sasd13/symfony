@@ -40,7 +40,13 @@ class Profil
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $editManager;
-
+	
+	
+	public function __construct()
+	{
+		$this->pictureLink = __DIR__.'/../../../../web/uploads/avatar.jpg';
+		$this->pictureDisplay = true;
+	}
 
     /**
      * Get id

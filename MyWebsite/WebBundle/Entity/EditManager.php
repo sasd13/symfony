@@ -34,6 +34,12 @@ class EditManager
      * @ORM\Column(name="updateTime", type="datetime", nullable=true)
      */
     private $updateTime;
+	
+	
+	public function __construct() 
+	{
+		$this->createTime = new \DateTime;
+	}
 
 
     /**
