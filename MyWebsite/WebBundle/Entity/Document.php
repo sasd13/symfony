@@ -6,8 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * EditManager
+ *
+ * @ORM\Table(name="web_document")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\DocumentRepository")
  */
+
 class Document
 {
     /**

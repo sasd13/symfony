@@ -27,16 +27,21 @@ class ProfilController extends Controller
 				$session->set('idProfil', $profil->getId());
 				
 				$document = new Document();
-				$form = $this->createFormBuilder($document)
+				$formPicture = $this->createFormBuilder($document)
 					->add('name')
 					->add('file')
+					->getForm();
+				
+				$formAdmin = $this->createFormBuilder($admin)
+					->add('emailBackUp', 'email')
+					->add('password', 'password')
 					->getForm();
 				
 				$layout = 'profil-edit';				
 				return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
 																						'layout' => $layout, 
 																						'profil' => $profil, 
-																						'form' => $formPicture->createView()
+																						'formPicture' => $formPicture->createView()
 				));
 			}
 		}
@@ -113,11 +118,16 @@ class ProfilController extends Controller
 				$em->persist($document);
 				$em->flush();
 
-				$this->redirect($this->generateUrl(...));
+				$this->redirect($this->generateUrl('web_profil'));
 			}
 		}
 
-		return array('form' => $form->createView());
+		$layout = 'profil-edit';				
+		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
+																				'layout' => $layout, 
+																				'profil' => $profil, 
+																				'form' => $formPicture->createView()
+		));
 	}
 	
 	public function modifierAdminAction()
@@ -127,6 +137,7 @@ class ProfilController extends Controller
 		$em = $this->getDoctrine()->getManager();		
 		
 		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
+		$admin->setPassword($request->request->get('newpassword'));
 		
 		if ($request->hasParameter('password') AND ($admin->get('password') == $request->request->get('password')) AND ($request->request->get('newpassword') == $request->request->get('confirmnewpassword')))
 		{

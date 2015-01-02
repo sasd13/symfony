@@ -1,26 +1,26 @@
 <div class="new-form">
-		<form class="contact_form" method="post" {{ form_enctype(formPicture) }}>
-			<ul class="form-content">
-				<li>
-					<h2>Détails du profil</h2>
-					<span class="required_notification">* Denotes Required Field</span>
-					<input type="hidden" name="id" value="{{ profil.id }}" required />
-				</li>
-				<li>
-					<label for="file">Select picture (JPEG, PNG):</label>
-					<td><input type="hidden" name="MAX_FILE_SIZE" value="200000"/><input type="file" name="file" id="file" /></td>
-				</li>
-			</ul>
-			<ul class="form-submit">
-				<li>
-					<input type="submit" class="submit" value="Modifier"/>
-					{% if profil.pictureDisplay == true %}
-						<a href="{{ path('web_profil_picture_modifier', {'displayPicture': true}) }}"><input type="button" value="Activer"/></a>
-					{% else %}
-						<a href="{{ path('web_profil_picture_modifier', {'displayPicture': false}) }}"><input type="button" value="Desactiver"/></a>
-					{% endif %}
-					<a href="{{ path('web_profil_picture_supprimer') }}"><input type="button" value="Supprimer photo"/></a>
-				</li>
-			</ul>
-		</form>
-	</div>
+	<form class="contact_form" method="post" {{ form_enctype(formPicture) }}>
+		<ul class="form-content">
+			<li>
+				<h2>Détails du profil</h2>
+				<span class="required_notification">* Denotes Required Field</span>
+				<input type="hidden" name="id" value="{{ profil.id }}" required />
+			</li>
+			<li>
+				<label for="file">Select picture (JPEG, PNG):</label>
+				<td><input type="hidden" name="MAX_FILE_SIZE" value="200000"/><input type="file" name="file" id="file" /></td>
+			</li>
+		</ul>
+		<ul class="form-submit">
+			<li>
+				<input type="submit" class="submit" value="Modifier"/>
+				{% if profil.pictureDisplay == true %}
+					<a href="{{ path('web_profil_picture_modifier', {'displayPicture': true}) }}"><input type="button" value="Activer"/></a>
+				{% else %}
+					<a href="{{ path('web_profil_picture_modifier', {'displayPicture': false}) }}"><input type="button" value="Desactiver"/></a>
+				{% endif %}
+				<a href="{{ path('web_profil_picture_supprimer') }}"><input type="button" value="Supprimer photo"/></a>
+			</li>
+		</ul>
+	</form>
+</div>

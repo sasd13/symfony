@@ -1,21 +1,25 @@
 <div class="feature-grid2">
 	<div class="feature-grid-head feature-grid-head3">
-		<h3><span>Informations</span> Personnelles</h3>
+		<h3><span>Informations</span> Administration</h3>
 		<div class="feature-grid-head-top">
 			<label> </label><label> </label>
 			<div class="clear"> </div>
 		</div>
 	</div>
 	<div class="new-project-form">
-		<form class="contact_form" action="{{ path('web_profil_mdp_modifier') }}" method="post" name="contact_form">
+		<form class="contact_form" action="{{ path('web_profil_mdp_modifier') }}" {{ form_enctype(formAdmin) }}>
 			<ul class="form-content">
 				<li>
 					<h2>Détails du mot de passe</h2>
 					<span class="required_notification">* Denotes Required Field</span>
 				</li>
 				<li>
-					<label for="password">Actuel mot de passe:</label>
-					<input type="password" name="password" placeholder="actuel mot de passe" maxlength="20" required/>
+					{{ form_label(formAdmin.emailBackUp, "Email") }}
+					{{ form_widget(formAdmin.emailBackup) }}
+				</li>
+				<li>
+					{{ form_label(formAdmin.password, "Actuel mot de passe") }}
+					{{ form_widget(formAdmin.password) }}
 				</li>
 				<li>
 					<label for="newpassword">Nouveau mot de passe:</label>
