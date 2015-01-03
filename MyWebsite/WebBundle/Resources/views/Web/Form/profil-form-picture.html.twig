@@ -1,5 +1,5 @@
 <div class="new-form">
-	<form class="contact_form" method="post" {{ form_enctype(formPicture) }}>
+	<form class="contact_form" action="{{ path('web_profil_modifier') }}" method="post" {{ form_enctype(formPicture) }}>
 		<ul class="form-content">
 			<li>
 				<h2>Photo de profil</h2>

@@ -12,13 +12,4 @@ class WebController extends Controller
     {
 		return $this->render('MyWebsiteWebBundle:Web:index.html.twig');
     }
-	
-	public function logoutAction()
-    {
-		$session = $this->getRequest()->getSession();
-		$idProfil = $session->get('idProfil');
-		
-		if ($idProfil != null) $session->remove('idProfil');
-        return $this->render('MyWebsiteWebBundle:Web:index.html.twig');
-    }
 }

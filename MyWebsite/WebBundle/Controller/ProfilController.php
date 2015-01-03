@@ -69,7 +69,7 @@ class ProfilController extends Controller
 			
 			$message = "Les informations n'ont pas été modifiées";
 			$formPicture->handleRequest($request);
-			if($formPicture->isValid() AND $session->get('idProfil') != null)
+			if($session->get('idProfil') != null AND $formPicture->isValid())
 			{
 				$em->persist($document);
 				$em->flush();
@@ -123,70 +123,11 @@ class ProfilController extends Controller
 		}
 	}
 	
-	public function afficherAdministratorAction()
+	public function logoutAction()
     {
-		$request = $this->getRequest();
-		$session = $this->getRequest()->getSession();		
-		$em = $this->getDoctrine()->getManager();
-		
-		if($session->get('idProfil') == null)
-		{
-			return $this->redirect($this->generateUrl('web_profil_afficher'));
-		}
-		else
-		{
-			$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
-			$formAdmin = $this->createFormBuilder($admin)
-				->add('emailBackup', 'email')
-				->add('password', 'password')
-				->getForm();
-		
-			$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);		
-			$layout = 'profil-admin-edit';				
-			return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
-																					'layout' => $layout, 
-																					'profil' => $profil,
-																					'formAdmin' => $formAdmin->createView()
-			));
-		}
-	}
-	
-	public function modifierAdministratorAction()
-    {
-		$request = $this->getRequest();
 		$session = $this->getRequest()->getSession();
-		$em = $this->getDoctrine()->getManager();		
 		
-		if($session->get('idProfil') == null)
-		{
-			return $this->redirect($this->generateUrl('web_profil_afficher'));
-		}
-		else
-		{
-			$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
-			$formAdmin = $this->createFormBuilder($admin)
-				->add('emailBackup', 'email')
-				->add('password', 'password')
-				->getForm();
-			
-			$message = "Les informations n'ont pas été modifiées";
-			$formAdmin->handleRequest($request);
-			
-			if ($session->get('idProfil') != null)
-			{
-				$em->persist($admin);
-				$em->flush();
-				$message = "Les informations ont été modifiées avec succès";
-			}
-		
-			$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);		
-			$layout = 'profil-admin-edit';	
-			return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
-																					'layout' => $layout, 
-																					'profil' => $profil,
-																					'formAdmin' => $formAdmin->createView(),
-																					'message' => $message
-			));
-		}
+		if ($session->get('idProfil') != null) $session->remove('idProfil');
+        return $this->redirect($this->generateUrl('web_home'));
     }
 }

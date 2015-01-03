@@ -51,7 +51,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							{% set login = app.session.get('idProfil') %}
 							{% if  login != null %}
 								<li><a href="{{ path('web_profil_afficher') }}">Profil</a></li>
-								<li><a href="{{ path('web_logout') }}">D&eacute;connexion</a></li>
+								<li><a href="{{ path('web_profil_logout') }}">D&eacute;connexion</a></li>
 							{% endif %}
 							<div class="clear"> </div>
 						</ul>
@@ -87,6 +87,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</div>
 					<div class="footer-grid footer-grid4">
 						<h4>News Letter</h4>
+						<br/>
 						<p>If you want to follow my latest news, please insert your email</p>
 						<form>
 							<input type="text" value="Email Address" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email Address';}">

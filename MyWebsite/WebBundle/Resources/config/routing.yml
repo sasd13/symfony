@@ -2,13 +2,13 @@ web_home:
     pattern:  /
     defaults: { _controller: MyWebsiteWebBundle:Web:index}
 
-web_logout:
-    pattern:  /logout
-    defaults: { _controller: MyWebsiteWebBundle:Web:logout}
-
 web_profil_afficher:
     pattern:  /profil
     defaults: { _controller: MyWebsiteWebBundle:Profil:afficher}
+
+web_profil_logout:
+    pattern:  /profil/logout
+    defaults: { _controller: MyWebsiteWebBundle:Profil:logout}
 
 web_profil_modifier:
     pattern:  /profil/picture/modifier
@@ -22,8 +22,8 @@ web_profil_picture_supprimer:
 
 web_profil_admin_afficher:
     pattern:  /profil/admin
-    defaults: { _controller: MyWebsiteWebBundle:Profil:afficherAdministrator}
+    defaults: { _controller: MyWebsiteWebBundle:Administrator:afficherAdministrator}
 
 web_profil_admin_modifier:
     pattern:  /profil/admin/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Profil:modifierAdministrator}
+    defaults: { _controller: MyWebsiteWebBundle:Administrator:modifierAdministrator}
