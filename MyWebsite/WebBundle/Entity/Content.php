@@ -25,17 +25,17 @@ class Content
 	/**
      * @var string
      *
+     * @ORM\Column(name="title", type="string", length=45, unique=true)
+     */
+    private $title;
+	
+	/**
+     * @var string
+     *
      * @ORM\Column(name="type", type="string", length=45)
 	 * @Assert\NotBlank
      */
     private $type;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=45)
-     */
-    private $title;
 
     /**
      * @var integer
@@ -53,8 +53,15 @@ class Content
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $category;
-
-
+	
+	
+	public function __construct($title, $type = "string", $priority = 0)
+	{
+		$this->title = $title;
+		$this->type = $type;
+		$this->priority = $priority;
+	}
+	
     /**
      * Get id
      *
@@ -63,29 +70,6 @@ class Content
     public function getId()
     {
         return $this->id;
-    }
-	
-	/**
-     * Set type
-     *
-     * @param string $type
-     * @return Content
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return string 
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 	
 	/**
@@ -109,6 +93,29 @@ class Content
     public function getTitle()
     {
         return $this->title;
+    }
+	
+	/**
+     * Set type
+     *
+     * @param string $type
+     * @return Content
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string 
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**

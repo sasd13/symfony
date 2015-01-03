@@ -43,13 +43,6 @@ class MyValue
     private $stringValue;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="textValue", type="text")
-     */
-    private $textValue;
-	
-	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Content")
 	 * @ORM\JoinColumn(nullable=false)
 	 */
@@ -110,29 +103,6 @@ class MyValue
     public function getStringValue()
     {
         return $this->stringValue;
-    }
-
-    /**
-     * Set textValue
-     *
-     * @param string $textValue
-     * @return MyValue
-     */
-    public function setTextValue($textValue)
-    {
-        $this->textValue = $textValue;
-
-        return $this;
-    }
-
-    /**
-     * Get textValue
-     *
-     * @return string 
-     */
-    public function getTextValue()
-    {
-        return $this->textValue;
     }
 	
 	/**

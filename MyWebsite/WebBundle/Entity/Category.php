@@ -25,7 +25,7 @@ class Category
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=45)
+     * @ORM\Column(name="title", type="string", length=45, unique=true)
 	 * @Assert\NotBlank
      */
     private $title;
@@ -33,7 +33,7 @@ class Category
     /**
      * @var string
      *
-     * @ORM\Column(name="tag", type="string", length=45)
+     * @ORM\Column(name="tag", type="string", length=45, unique=true)
 	 * @Assert\NotBlank
      */
     private $tag;
@@ -44,6 +44,12 @@ class Category
 	 */
 	private $editManager;
 	
+	
+	public function __construct($title, $tag = null)
+	{
+		$this->title = $title;
+		if($tag === null) $this->type = strtolower($title);
+	}	
 
     /**
      * Get id

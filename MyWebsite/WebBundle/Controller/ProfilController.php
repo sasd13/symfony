@@ -21,9 +21,9 @@ class ProfilController extends Controller
 		if ($session->get('idProfil') == null)
 		{
 			$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
-			if ($request->getMethod() != 'POST' OR strcmp($request->request->get('password'), $admin->getPassword()) !== 0)
+			if ($request->getMethod() !== 'POST' OR strcmp($request->request->get('password'), $admin->getPassword()) !== 0)
 			{
-				return $this->render('MyWebsiteWebBundle:Web:login.html.twig');
+				return $this->render('MyWebsiteWebBundle:Profil:login.html.twig');
 			}
 			
 			$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);
@@ -34,22 +34,20 @@ class ProfilController extends Controller
 			$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find($session->get('idProfil'));
 		}
 		
-		$document = new Document();
-		$formPicture = $this->createFormBuilder($document)
-			->add('name')
-			->add('file')
-			->add('file')
+		$formProfil = $this->createFormBuilder($profil)
+			->add('firstName')
+			->add('lastName')
 			->getForm();
 		
 		$layout = 'profil-edit';				
-		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
+		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
 																				'layout' => $layout, 
 																				'profil' => $profil, 
-																				'formPicture' => $formPicture->createView()
+																				'formProfil' => $formProfil->createView()
 		));
 	}
 	
-	public function modifierAction($displayPicture)
+	public function modifierAction()
     {
 		$request = $this->getRequest();
 		$session = $this->getRequest()->getSession();
@@ -59,26 +57,98 @@ class ProfilController extends Controller
 		{
 			return $this->redirect($this->generateUrl('web_profil_afficher'));
 		}
-		else
-		{
-			$document = new Document();
-			$formPicture = $this->createFormBuilder($document)
-				->add('name')
-				->add('file')
-				->getForm();
-			
-			$message = "Les informations n'ont pas été modifiées";
-			$formPicture->handleRequest($request);
-			if($session->get('idProfil') != null AND $formPicture->isValid())
-			{
-				$em->persist($document);
-				$em->flush();
-			
-				$message = "Les informations ont été modifiées avec succès";
-			}
 		
-			return $this->redirect($this->generateUrl('web_profil_afficher', array('messagePucture' => $messagePicture)));
+		$document = new Document();
+		$formPicture = $this->createFormBuilder($document)
+			->add('name')
+			->add('file')
+			->getForm();
+		
+		$message = "Les informations n'ont pas été modifiées";
+		$formPicture->handleRequest($request);
+		if($session->get('idProfil') != null AND $formPicture->isValid())
+		{
+			$em->persist($document);
+			$em->flush();
+		
+			$message = "Les informations ont été modifiées avec succès";
 		}
+		
+		$layout = 'profil-edit';
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find($session->get('idProfil'));
+		
+		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
+																					'layout' => $layout, 
+																					'profil' => $profil, 
+																					'formPicture' => $formPicture->createView(),
+																					'message' => $message
+		));
+    }
+	
+	public function afficherPictureAction()
+    {
+		$request = $this->getRequest();
+		$session = $this->getRequest()->getSession();		
+		$em = $this->getDoctrine()->getManager();
+		
+		if($session->get('idProfil') == null)
+		{
+			return $this->redirect($this->generateUrl('web_profil_afficher'));
+		}
+		
+		$document = new Document();
+		$formPicture = $this->createFormBuilder($document)
+			->add('name')
+			->add('file')
+			->add('file')
+			->getForm();
+		
+		$layout = 'profil-edit';
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find($session->get('idProfil'));
+		
+		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
+																					'layout' => $layout, 
+																					'profil' => $profil, 
+																					'formPicture' => $formPicture->createView()
+		));
+	}
+	
+	public function modifierPictureAction($displayPicture)
+    {
+		$request = $this->getRequest();
+		$session = $this->getRequest()->getSession();
+		$em = $this->getDoctrine()->getManager();
+		
+		if($session->get('idProfil') == null)
+		{
+			return $this->redirect($this->generateUrl('web_profil_afficher'));
+		}
+		
+		$document = new Document();
+		$formPicture = $this->createFormBuilder($document)
+			->add('name')
+			->add('file')
+			->getForm();
+		
+		$message = "Les informations n'ont pas été modifiées";
+		$formPicture->handleRequest($request);
+		if($session->get('idProfil') != null AND $formPicture->isValid())
+		{
+			$em->persist($document);
+			$em->flush();
+		
+			$message = "Les informations ont été modifiées avec succès";
+		}
+		
+		$layout = 'profil-edit';
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find($session->get('idProfil'));
+		
+		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
+																					'layout' => $layout, 
+																					'profil' => $profil, 
+																					'formPicture' => $formPicture->createView(),
+																					'message' => $message
+		));
     }
 	
 	/**
@@ -86,41 +156,44 @@ class ProfilController extends Controller
 	 */
 	public function uploadAction()
 	{
+		$request = $this->getRequest();
+		$session = $this->getRequest()->getSession();
+		$em = $this->getDoctrine()->getManager();
+		
 		if($session->get('idProfil') == null)
 		{
 			return $this->redirect($this->generateUrl('web_profil_afficher'));
 		}
-		else
+		
+		$document = new Document();
+		$form = $this->createFormBuilder($document)
+			->add('name')
+			->add('file')
+			->getForm()
+		;
+		
+		if ($this->getRequest()->isMethod('POST')) 
 		{
-			$document = new Document();
-			$form = $this->createFormBuilder($document)
-				->add('name')
-				->add('file')
-				->getForm()
-			;
-		
-			if ($this->getRequest()->isMethod('POST')) 
+			$form->handleRequest($request);
+			if ($form->isValid()) 
 			{
-				$form->handleRequest($request);
-				if ($form->isValid()) 
-				{
-					$em = $this->getDoctrine()->getManager();
-			
-					$em->persist($document);
-					$em->flush();
-
-					$this->redirect($this->generateUrl('web_profil'));
-				}
-			}
+				$em = $this->getDoctrine()->getManager();
 		
-			$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);	
-			$layout = 'profil-edit';
-			return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
-																					'layout' => $layout, 
-																					'profil' => $profil, 
-																					'form' => $formPicture->createView()
-			));
+				$em->persist($document);
+				$em->flush();
+
+				$this->redirect($this->generateUrl('web_profil'));
+			}
 		}
+		
+		$layout = 'profil-edit';
+		$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find($session->get('idProfil'));	
+		
+		return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
+																				'layout' => $layout, 
+																				'profil' => $profil, 
+																				'form' => $formPicture->createView()
+		));
 	}
 	
 	public function logoutAction()

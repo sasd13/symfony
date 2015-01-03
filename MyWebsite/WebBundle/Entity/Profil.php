@@ -4,6 +4,9 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Entity\EditManager;
+use MyWebsite\WebBundle\Entity\Category;
+use MyWebsite\WebBundle\Entity\Content;
 
 /**
  * Profil
@@ -21,6 +24,22 @@ class Profil
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="firstName", type="string", length=45)
+	 * @Assert\NotBlank
+     */
+    private $firstName;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="lastName", type="string", length=45, nullable=true)
+	 * @Assert\NotBlank
+     */
+    private $lastName;
 
     /**
      * @var boolean
@@ -37,9 +56,15 @@ class Profil
 	private $editManager;
 	
 	
-	public function __construct()
+	public function __construct($firstName, $lastName = null)
 	{
+		$this->firstName = $firstName;
+		$this->lastName = $lastName;
 		$this->pictureDisplay = true;
+		
+		$category = new Category("Informations personnelles", "info");
+		$this->editManager = new EditManager();
+		$category->setEditManager($this->editManager);
 	}
 
     /**
@@ -50,6 +75,52 @@ class Profil
     public function getId()
     {
         return $this->id;
+    }
+	
+	/**
+     * Set firstName
+     *
+     * @param string $firstName
+     * @return Profil
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * Get firstName
+     *
+     * @return string 
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     * @return Profil
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Get lastName
+     *
+     * @return string 
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
     }
 
     /**

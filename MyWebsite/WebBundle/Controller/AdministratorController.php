@@ -29,7 +29,7 @@ class AdministratorController extends Controller
 		
 			$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);		
 			$layout = 'profil-admin-edit';				
-			return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
+			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
 																					'layout' => $layout, 
 																					'profil' => $profil,
 																					'formAdmin' => $formAdmin->createView()
@@ -66,7 +66,7 @@ class AdministratorController extends Controller
 		
 			$profil = $em->getRepository('MyWebsiteWebBundle:Profil')->find(1);		
 			$layout = 'profil-admin-edit';	
-			return $this->render('MyWebsiteWebBundle:Web:profil.html.twig', array(
+			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
 																					'layout' => $layout, 
 																					'profil' => $profil,
 																					'formAdmin' => $formAdmin->createView(),

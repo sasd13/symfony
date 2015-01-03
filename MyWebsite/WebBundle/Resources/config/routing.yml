@@ -6,11 +6,19 @@ web_profil_afficher:
     pattern:  /profil
     defaults: { _controller: MyWebsiteWebBundle:Profil:afficher}
 
+web_profil_modifier:
+    pattern:  /profil/modifier
+    defaults: { _controller: MyWebsiteWebBundle:Profil:modifier}
+
 web_profil_logout:
     pattern:  /profil/logout
     defaults: { _controller: MyWebsiteWebBundle:Profil:logout}
 
-web_profil_modifier:
+web_profil_picture_afficher:
+    pattern:  /profil/picture
+    defaults: { _controller: MyWebsiteWebBundle:Profil:afficherPicture}
+
+web_profil_picture_modifier:
     pattern:  /profil/picture/modifier
     defaults: { _controller: MyWebsiteWebBundle:Profil:modifierPicture, displayPicture: true}
     requirements:
@@ -27,3 +35,9 @@ web_profil_admin_afficher:
 web_profil_admin_modifier:
     pattern:  /profil/admin/modifier
     defaults: { _controller: MyWebsiteWebBundle:Administrator:modifierAdministrator}
+
+web_error404:
+    pattern:  /{errorURL}
+    defaults: { _controller: MyWebsiteWebBundle:Exception:error404}
+    requirements:
+        errorURL: ".*"
