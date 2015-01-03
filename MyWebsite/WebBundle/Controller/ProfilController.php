@@ -107,7 +107,7 @@ class ProfilController extends Controller
 																							'profil' => $profil, 
 																							'category' => $category,
 																							'formProfil' => $formProfil->createView(),
-																							'formCategory' => $formCategory->createView()
+																							'formCategory' => $formCategory->createView(),
 																							'message' => $message
 				));
 			}
@@ -161,30 +161,34 @@ class ProfilController extends Controller
 			return $this->redirect($this->generateUrl('web_profil_afficher'));
 		}
 		
-		$document = new Document();
-		$formPicture = $this->createFormBuilder($document)
-			->add('name')
-			->add('file')
-			->getForm();
-		$formPicture->handleRequest($request);
-		
-		$message = null;
-		if($request->getSession()->get('idProfil') != null)
+		$picture = $em->getRepository('MyWebsiteWebBundle:Document')->find($request->getSession()->get('idPicture'));
+		if($picture != null)
 		{
-			$em->persist($document);
-			$em->flush();
-		}
-		else
-		{
-			$message = "Les informations n'ont pas été modifiées";
+			$formPicture = $this->createFormBuilder($document)
+				->add('name')
+				->add('file')
+				->getForm();
+			$formPicture->handleRequest($request);
+		
+			$message = "La photo de profil n'a pas été enregistrée";
+			if($request->getSession()->get('idProfil') != null)
+			{
+				$em->persist($document);
+				$em->flush();
+				
+				$message = "La photo de profil a été enregistrée avec succès";
+			}
+		
+			$layout = 'profil-picture-edit';
+			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
+																						'layout' => $layout,
+																						'picture' => $picture,
+																						'formPicture' => $formPicture->createView(),
+																						'message' => $message
+			));
 		}
 		
-		$layout = 'profil-picture-edit';
-		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
-																					'layout' => $layout,
-																					'formPicture' => $formPicture->createView(),
-																					'message' => $message
-		));
+		return $this->redirect($this->generateUrl('web_profil_error'));
     }
 	
 	/**
