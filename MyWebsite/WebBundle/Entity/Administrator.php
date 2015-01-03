@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Entity\EditManager;
 
 /**
  * Administrator
@@ -29,7 +30,7 @@ class Administrator
 	 * @Assert\NotBlank
 	 * @Assert\Length(
 	 *		min = "4",
-	 *		max = "20"
+	 *		max = "45"
 	 * )
      */
     private $login;
@@ -41,7 +42,7 @@ class Administrator
 	 * @Assert\NotBlank
 	 * @Assert\Length(
 	 *		min = "4",
-	 *		max = "20",
+	 *		max = "45",
 	 *		minMessage = "Le mot de passe doit faire plus de {{ limit }} caractères",
 	 *		maxMessage = "Le mot de passe doit faire moins de {{ limit }} caractères"
 	 * )
@@ -64,7 +65,12 @@ class Administrator
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $editManager;
-
+	
+	
+	public function __construct()
+	{
+		$this->editManager = new EditManager();
+	}
 
     /**
      * Get id

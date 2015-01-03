@@ -1,0 +1,40 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Informations</span> Administration</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="new-project-form">
+		<form class="contact_form" action="{{ path('web_profil_admin_modifier') }}" method="post" name="contact_form">
+			<ul class="form-content">
+				<li>
+					<h2>Détails du mot de passe</h2>
+					<span class="required_notification">* Denotes Required Field</span>
+				</li>
+				<li>
+					{{ form_label(formAdmin.emailBackup, "Email :") }}
+					{{ form_widget(formAdmin.emailBackup) }}
+				</li>
+				<li>
+					{{ form_label(formAdmin.password, "Mot de passe :") }}
+					{{ form_widget(formAdmin.password) }}
+				</li>
+				<li>
+					<label for="confirmpassword">Confirmer :</label>
+					<input type="password" name="confirmpassword" placeholder="confirmer mot de passe" maxlength="20" required/>
+				</li>
+			</ul>
+			<ul class="form-submit">
+				<li>
+					<input type="submit" class="submit" value="Modifier"/>
+					{% if message is defined %}
+						<div class="required_notification">{{ message }}</div>
+					{% endif %}
+				</li>
+			</ul>
+		</form>
+	</div>
+	<div class="clear"> </div>
+</div>

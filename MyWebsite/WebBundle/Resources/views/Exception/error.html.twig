@@ -1,0 +1,55 @@
+{% extends "MyWebsiteWebBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Accueil{% endblock %}
+
+{% block css %}
+	{% stylesheets
+		'bundles/mywebsiteweb/css/style2.css'
+		filter='cssrewrite' %}
+		<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+	{% endstylesheets %}
+{% endblock %}
+
+{% block class_header %}header2{% endblock %}
+
+{% block section %}
+	<!---Start-content---->
+	<div class="content">
+		<div class="wrap">
+			<!---start-welcome-note---->
+			<div class="wellcome-note">
+			</div>
+			<!---//End-welcome-note---->
+			<div class="test-monials">
+				<div class="feature-grid-head feature-grid-head2">
+					<div class="feature-grid-head-top feature-grid-head-top3">
+						<label> </label><span> </span> <label> </label>
+						<div class="clear"> </div>
+					</div>
+					<h3><span>Error 404</h3>
+					<br/>
+					<p>La page que vous avez demandée n'existe pas ou a été modifiée...</p>
+					<br/>
+					<p><a href="{{ path('web_home') }}">Page Home</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block js %}
+	{% javascripts
+		'bundles/mywebsiteweb/js/modernizr.custom.28468.js'
+		'bundles/mywebsiteweb/js/jquery.cslider.js' %}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+	
+	<script type="text/javascript">
+		$(function() {
+			$('#da-slider').cslider({
+				autoplay : true,
+				bgincrement	: 450
+			});
+		});
+	</script>  
+{% endblock %}

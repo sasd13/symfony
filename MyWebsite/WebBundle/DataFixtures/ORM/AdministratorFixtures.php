@@ -17,12 +17,6 @@ class AdminFixtures implements FixtureInterface
 		$admin->setPassword('root');
 		$admin->setEmailBackup(null);
 		
-		$editManager = new EditManager();
-		$editManager->setCreateTime(new DateTime());
-		$editManager->setUpdateTime(null);
-		
-		$admin->setEditManager($editManager);
-		
 		$manager->persist($admin);
 		$manager->flush();
 	}

@@ -30,14 +30,26 @@ class Profil
      *
      * @ORM\Column(name="firstName", type="string", length=45)
 	 * @Assert\NotBlank
+	 * @Assert\Length(
+	 *		min = "2",
+	 *		max = "45",
+	 *		minMessage = "Le prénom doit faire plus de {{ limit }} caractères",
+	 *		maxMessage = "Le prénom doit faire moins de {{ limit }} caractères"
+	 * )
      */
     private $firstName;
 	
 	/**
      * @var string
      *
-     * @ORM\Column(name="lastName", type="string", length=45, nullable=true)
+     * @ORM\Column(name="lastName", type="string", length=45)
 	 * @Assert\NotBlank
+	 * @Assert\Length(
+	 *		min = "2",
+	 *		max = "45",
+	 *		minMessage = "Le nom doit faire plus de {{ limit }} caractères",
+	 *		maxMessage = "Le nom doit faire moins de {{ limit }} caractères"
+	 * )
      */
     private $lastName;
 
@@ -56,15 +68,12 @@ class Profil
 	private $editManager;
 	
 	
-	public function __construct($firstName, $lastName = null)
+	public function __construct($firstName, $lastName)
 	{
 		$this->firstName = $firstName;
 		$this->lastName = $lastName;
 		$this->pictureDisplay = true;
-		
-		$category = new Category("Informations personnelles", "info");
 		$this->editManager = new EditManager();
-		$category->setEditManager($this->editManager);
 	}
 
     /**
