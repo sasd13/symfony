@@ -41,12 +41,6 @@ class MyText
      * @ORM\Column(name="textValue", type="text")
      */
     private $textValue;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Content")
-	 * @ORM\JoinColumn(nullable=false)
-	 */
-	private $content;
 
 
     /**
@@ -103,28 +97,5 @@ class MyText
     public function getTextValue()
     {
         return $this->textValue;
-    }
-	
-	/**
-     * Set content
-     *
-     * @param \MyWebsite\WebBundle\Entity\Content $content
-     * @return MyText
-     */
-    public function setContent(\MyWebsite\WebBundle\Entity\Content $content)
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * Get content
-     *
-     * @return \MyWebsite\WebBundle\Entity\Content 
-     */
-    public function getContent()
-    {
-        return $this->content;
     }
 }

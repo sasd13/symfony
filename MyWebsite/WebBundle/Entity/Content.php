@@ -49,10 +49,25 @@ class Content
     private $priority;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category")
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="contents")
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $category;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\MyValue", mappedBy="content", cascade={"persist", "remove"})
+	 */
+	private $myValues;
+	
+	/**
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\MyText", cascade={"persist", "remove"})
+	 */
+	private $myText;
+	
+	/**
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\MyDate", cascade={"persist", "remove"})
+	 */
+	private $myDate;
 	
 	
 	public function __construct($title, $type = "string", $priority = 0)
@@ -162,5 +177,84 @@ class Content
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Add myValues
+     *
+     * @param \MyWebsite\WebBundle\Entity\MyValue $myValues
+     * @return Content
+     */
+    public function addMyValue(\MyWebsite\WebBundle\Entity\MyValue $myValues)
+    {
+        $this->myValues[] = $myValues;
+
+        return $this;
+    }
+
+    /**
+     * Remove myValues
+     *
+     * @param \MyWebsite\WebBundle\Entity\MyValue $myValues
+     */
+    public function removeMyValue(\MyWebsite\WebBundle\Entity\MyValue $myValues)
+    {
+        $this->myValues->removeElement($myValues);
+    }
+
+    /**
+     * Get myValues
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMyValues()
+    {
+        return $this->myValues;
+    }
+
+    /**
+     * Set myText
+     *
+     * @param \MyWebsite\WebBundle\Entity\MyText $myText
+     * @return Content
+     */
+    public function setMyText(\MyWebsite\WebBundle\Entity\MyText $myText = null)
+    {
+        $this->myText = $myText;
+
+        return $this;
+    }
+
+    /**
+     * Get myText
+     *
+     * @return \MyWebsite\WebBundle\Entity\MyText 
+     */
+    public function getMyText()
+    {
+        return $this->myText;
+    }
+
+    /**
+     * Set myDate
+     *
+     * @param \MyWebsite\WebBundle\Entity\MyDate $myDate
+     * @return Content
+     */
+    public function setMyDate(\MyWebsite\WebBundle\Entity\MyDate $myDate = null)
+    {
+        $this->myDate = $myDate;
+
+        return $this;
+    }
+
+    /**
+     * Get myDate
+     *
+     * @return \MyWebsite\WebBundle\Entity\MyDate 
+     */
+    public function getMyDate()
+    {
+        return $this->myDate;
     }
 }

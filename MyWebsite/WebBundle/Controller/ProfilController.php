@@ -34,8 +34,8 @@ class ProfilController extends Controller
 		}
 		
 		$formProfil = $this->createFormBuilder($profil)
-			->add('firstName')
-			->add('lastName')
+			->add('firstName', 'text', array('required' => false))
+			->add('lastName', 'text', array('required' => false))
 			->getForm();
 		
 		$layout = 'profil-edit';			
@@ -94,8 +94,10 @@ class ProfilController extends Controller
 		
 		$document = new Document();
 		$formPicture = $this->createFormBuilder($document)
+			->add('idProfil', 'hidden', array(
+												'required' => true,
+												'data' => $document->get)
 			->add('name')
-			->add('file')
 			->add('file')
 			->getForm();
 		

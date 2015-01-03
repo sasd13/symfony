@@ -44,6 +44,16 @@ class Category
 	 */
 	private $editManager;
 	
+	/**
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Content", mappedBy="category", cascade={"persist", "remove"})
+	 */
+	private $contents;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Document", mappedBy="category", cascade={"persist", "remove"})
+	 */
+	private $documents;
+	
 	
 	public function __construct($title, $tag = null)
 	{
@@ -128,5 +138,71 @@ class Category
     public function getEditManager()
     {
         return $this->editManager;
+    }
+
+    /**
+     * Add contents
+     *
+     * @param \MyWebsite\WebBundle\Entity\Content $contents
+     * @return Category
+     */
+    public function addContent(\MyWebsite\WebBundle\Entity\Content $contents)
+    {
+        $this->contents[] = $contents;
+
+        return $this;
+    }
+
+    /**
+     * Remove contents
+     *
+     * @param \MyWebsite\WebBundle\Entity\Content $contents
+     */
+    public function removeContent(\MyWebsite\WebBundle\Entity\Content $contents)
+    {
+        $this->contents->removeElement($contents);
+    }
+
+    /**
+     * Get contents
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getContents()
+    {
+        return $this->contents;
+    }
+
+    /**
+     * Add documents
+     *
+     * @param \MyWebsite\WebBundle\Entity\Document $documents
+     * @return Category
+     */
+    public function addDocument(\MyWebsite\WebBundle\Entity\Document $documents)
+    {
+        $this->documents[] = $documents;
+
+        return $this;
+    }
+
+    /**
+     * Remove documents
+     *
+     * @param \MyWebsite\WebBundle\Entity\Document $documents
+     */
+    public function removeDocument(\MyWebsite\WebBundle\Entity\Document $documents)
+    {
+        $this->documents->removeElement($documents);
+    }
+
+    /**
+     * Get documents
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDocuments()
+    {
+        return $this->documents;
     }
 }

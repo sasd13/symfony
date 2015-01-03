@@ -1,5 +1,5 @@
 <div class="new-form">
-	<form class="contact_form" action="{{ path('web_profil_modifier') }}" method="post" {{ form_enctype(formPicture) }}>
+	<form class="contact_form" action="{{ path('web_profil_picture_modifier') }}" method="post" {{ form_enctype(formPicture) }}>
 		<ul class="form-content">
 			<li>
 				<h2>Photo de profil</h2>
@@ -7,7 +7,7 @@
 						{{ messagePicture }}
 				{% endif %}
 				<span class="required_notification">* Denotes Required Field</span>
-				<input type="hidden" name="id" value="{{ profil.id }}" required />
+				<input type="hidden" name="id" value={{ 1 }} required />
 			</li>
 			<li>
 				<label for="file">Choisir (JPEG, PNG):</label>

@@ -43,7 +43,7 @@ class MyValue
     private $stringValue;
 
     /**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Content")
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Content", inversedBy="myValues")
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $content;
@@ -104,8 +104,8 @@ class MyValue
     {
         return $this->stringValue;
     }
-	
-	/**
+
+    /**
      * Set content
      *
      * @param \MyWebsite\WebBundle\Entity\Content $content
