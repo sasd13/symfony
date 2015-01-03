@@ -1,12 +1,12 @@
+<br/>
 <li>
-	<h2>Informations personnelles</h2>
-	<span class="required_notification">* Denotes Required Field</span>
+	<h2>{{ category.title }}</h2>
 </li>
 <li>
-	{{ form_label(formProfil.firstName, "Prénom :") }}
-	{{ form_widget(formProfil.firstName) }}
+	{{ form_label(formCategory.title, "Title :") }}
+	{{ form_widget(formCategory.title) }}
 </li>
 <li>
-	{{ form_label(formProfil.lastName, "Nom :") }}
-	{{ form_widget(formProfil.lastName) }}
+	{{ form_label(formCategory.tag, "Tag :") }}
+	{{ form_widget(formCategory.tag) }}
 </li>

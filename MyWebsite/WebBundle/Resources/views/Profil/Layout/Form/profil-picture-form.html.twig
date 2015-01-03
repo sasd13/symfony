@@ -7,7 +7,7 @@
 						{{ messagePicture }}
 				{% endif %}
 				<span class="required_notification">* Denotes Required Field</span>
-				<input type="hidden" name="id" value={{ 1 }} required />
+				<input type="hidden" name="id" value="1" required />
 			</li>
 			<li>
 				<label for="file">Choisir (JPEG, PNG):</label>
@@ -18,9 +18,9 @@
 			<li>
 				<label for="file">Publier:</label>
 				{% if profil.pictureDisplay == true %}
-					<a href="{{ path('web_profil_modifier', {'displayPicture': true}) }}"><input type="button" value="Activer"/></a>
+					<a href="{{ path('web_profil_picture_modifier', {'displayPicture': true}) }}"><input type="button" value="Activer"/></a>
 				{% else %}
-					<a href="{{ path('web_profil_modifier', {'displayPicture': false}) }}"><input type="button" value="Desactiver"/></a>
+					<a href="{{ path('web_profil_picture_modifier', {'displayPicture': false}) }}"><input type="button" value="Desactiver"/></a>
 				{% endif %}
 			</li>
 			<li>

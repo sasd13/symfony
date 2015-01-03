@@ -55,10 +55,10 @@ class Category
 	private $documents;
 	
 	
-	public function __construct($title, $tag = null)
+	public function __construct($title, $tag)
 	{
 		$this->title = $title;
-		if($tag === null) $this->type = strtolower($title);
+		$this->tag = $tag;
 	}	
 
     /**

@@ -84,12 +84,12 @@ class Document
 
     protected function getUploadDir()
     {
-        // on se débarrasse de « __DIR__ » afin de ne pas avoir de problème lorsqu'on affiche le document dans la vue.
+        // on se débarrasse de « __DIR__ » afin de ne pas avoir de problème lorsqu'on affiche
+        // le document/image dans la vue.
         return 'uploads';
     }
-	
-	
-	/**
+
+    /**
      * Get id
      *
      * @return integer 
@@ -97,120 +97,5 @@ class Document
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     * @return Document
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string 
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set mimeType
-     *
-     * @param string $mimeType
-     * @return Document
-     */
-    public function setMimeType($mimeType)
-    {
-        $this->mimeType = $mimeType;
-
-        return $this;
-    }
-
-    /**
-     * Get mimeType
-     *
-     * @return string 
-     */
-    public function getMimeType()
-    {
-        return $this->mimeType;
-    }
-
-    /**
-     * Set display
-     *
-     * @param boolean $display
-     * @return Document
-     */
-    public function setDisplay($display)
-    {
-        $this->display = $display;
-
-        return $this;
-    }
-
-    /**
-     * Get display
-     *
-     * @return boolean 
-     */
-    public function getDisplay()
-    {
-        return $this->display;
-    }
-
-    /**
-     * Set path
-     *
-     * @param string $path
-     * @return Document
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    /**
-     * Get path
-     *
-     * @return string 
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     * Set category
-     *
-     * @param \MyWebsite\WebBundle\Entity\Category $category
-     * @return Document
-     */
-    public function setCategory(\MyWebsite\WebBundle\Entity\Category $category)
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    /**
-     * Get category
-     *
-     * @return \MyWebsite\WebBundle\Entity\Category 
-     */
-    public function getCategory()
-    {
-        return $this->category;
     }
 }

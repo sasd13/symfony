@@ -54,14 +54,6 @@ class Profil
     private $lastName;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="pictureDisplay", type="boolean")
-	 * @Assert\Type(type="bool")
-     */
-    private $pictureDisplay;
-
-    /**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\EditManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false)
 	 */
@@ -72,7 +64,6 @@ class Profil
 	{
 		$this->firstName = $firstName;
 		$this->lastName = $lastName;
-		$this->pictureDisplay = true;
 		$this->editManager = new EditManager();
 	}
 
@@ -133,29 +124,6 @@ class Profil
     }
 
     /**
-     * Set pictureDisplay
-     *
-     * @param boolean $pictureDisplay
-     * @return Profil
-     */
-    public function setPictureDisplay($pictureDisplay)
-    {
-        $this->pictureDisplay = $pictureDisplay;
-
-        return $this;
-    }
-
-    /**
-     * Get pictureDisplay
-     *
-     * @return boolean 
-     */
-    public function getPictureDisplay()
-    {
-        return $this->pictureDisplay;
-    }
-	
-	/**
      * Set editManager
      *
      * @param \MyWebsite\WebBundle\Entity\EditManager $editManager

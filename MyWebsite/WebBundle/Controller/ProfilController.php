@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use MyWebsite\WebBundle\Entity\Profil;
+use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Document;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -38,11 +39,21 @@ class ProfilController extends Controller
 			->add('lastName', 'text', array('required' => false))
 			->getForm();
 		
+		$category = new Category("Coordonnées", "coordonnees");
+		$category->setEditManager($profil->getEditManager());
+		
+		$formCategory = $this->createFormBuilder($category)
+			->add('title', 'text', array('required' => false))
+			->add('tag', 'text', array('required' => false))
+			->getForm();
+		
 		$layout = 'profil-edit';			
 		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
 																				'layout' => $layout, 
-																				'profil' => $profil, 
-																				'formProfil' => $formProfil->createView()
+																				'profil' => $profil,
+																				'category' => $category,
+																				'formProfil' => $formProfil->createView(),
+																				'formCategory' => $formCategory->createView()
 		));
 	}
 	
@@ -61,10 +72,16 @@ class ProfilController extends Controller
 			->add('firstName')
 			->add('lastName')
 			->getForm();
+		$formProfil->handleRequest($request);
+		
+		$category = $em->getRepository('MyWebsiteWebBundle:Profil')->find($request->getSession()->get('idProfil')); 
+		$formCategory = $this->createFormBuilder($category)
+			->add('title', 'text', array('required' => false))
+			->add('tag', 'text', array('required' => false))
+			->getForm();
 		
 		$message = "Les informations n'ont pas été modifiées";
-		$formProfil->handleRequest($request);
-		if($request->getSession()->get('idProfil') != null AND $formProfil->isValid())
+		if($request->getSession()->get('idProfil') != null)
 		{
 			$em->persist($profil);
 			$em->flush();
@@ -77,7 +94,9 @@ class ProfilController extends Controller
 		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
 																					'layout' => $layout, 
 																					'profil' => $profil, 
+																					'category' => $category,
 																					'formProfil' => $formProfil->createView(),
+																					'formCategory' => $formCategory->createView()
 																					'message' => $message
 		));
     }
@@ -94,9 +113,6 @@ class ProfilController extends Controller
 		
 		$document = new Document();
 		$formPicture = $this->createFormBuilder($document)
-			->add('idProfil', 'hidden', array(
-												'required' => true,
-												'data' => $document->get)
 			->add('name')
 			->add('file')
 			->getForm();
@@ -185,7 +201,7 @@ class ProfilController extends Controller
 	
 	public function logoutAction()
     {
-		if ($request->getSession()->get('idProfil') != null) $request->getSession()->remove('idProfil');
+		if ($this->getRequest()->getSession()->get('idProfil') != null) $this->getRequest()->getSession()->remove('idProfil');
 		
         return $this->redirect($this->generateUrl('web_home'));
     }

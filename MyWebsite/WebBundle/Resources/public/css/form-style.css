@@ -21,6 +21,10 @@
 	border-bottom:1px solid #eee;
 	position:relative;
 } 
+.contact_form .form-submit2 input{
+	padding:12px;
+	position:relative;
+} 
 .contact_form li:first-child, .contact_form li:last-child {
 	border-bottom:1px solid #E6E3E3;
 }
@@ -109,7 +113,7 @@
 .contact_form .form-content input:required:valid + .form_hint::before {color:#28921f;}
 	
 /* === Button Style === */
-.contact_form  .form-submit input, .contact_form  select {
+.contact_form  .form-submit input, .contact_form  .form-submit2 input, .contact_form  select {
 	background: #71B6D5;
 	padding: 0.8em;
 	display: inline;
@@ -130,7 +134,8 @@
    -ms-transition-delay: 0.1s;
    transition-delay: 0.1s;
 }
-.contact_form .form-submit input:hover {
+
+.contact_form .form-submit input:hover, .contact_form .form-submit2 input:hover {
 	background:#7AC1E1;
 }
 

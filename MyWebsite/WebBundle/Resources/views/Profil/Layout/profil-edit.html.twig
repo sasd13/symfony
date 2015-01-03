@@ -6,12 +6,21 @@
 			<div class="clear"> </div>
 		</div>
 	</div>
-	<div class="contact_form border">
+	<div class="new-form">
 		<form class="contact_form" action="{{ path('web_profil_modifier') }}" method="post" name="contact_form">
+			<div class="form-submit2">
+				<input type="submit" class="submit" value="Enregistrer"/>
+				{% if message is defined %}
+					<div class="required_notification">{{ message }}</div>
+				{% else %}
+					<span class="required_notification">* Denotes Required Field</span>
+				{% endif %}
+			</div>
+			<br/>
 			<ul class="form-content">
+				<br/>
 				<li>
 					<h2>Informations personnelles</h2>
-					<span class="required_notification">* Denotes Required Field</span>
 				</li>
 				<li>
 					{{ form_label(formProfil.firstName, "Prénom :") }}
@@ -22,14 +31,6 @@
 					{{ form_widget(formProfil.lastName) }}
 				</li>
 				{% include "MyWebsiteWebBundle:Profil:Layout/Form/profil-category-form.html.twig" %}
-			</ul>
-			<ul class="form-submit">
-				<li>
-					<input type="submit" class="submit" value="Modifier"/>
-					{% if message is defined %}
-						<div class="required_notification">{{ message }}</div>
-					{% endif %}
-				</li>
 			</ul>
 		</form>
 	</div>
