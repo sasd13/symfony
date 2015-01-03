@@ -1,6 +1,6 @@
 <div class="feature-grid2">
 	<div class="feature-grid-head feature-grid-head3">
-		<h3><span>Modifier</span> Administrateur</h3>
+		<h3><span>Gestion</span> Administrateur</h3>
 		<div class="feature-grid-head-top">
 			<label> </label><label> </label>
 			<div class="clear"> </div>
@@ -10,8 +10,9 @@
 		<form class="contact_form" action="{{ path('web_profil_admin_modifier') }}" method="post" name="contact_form">
 			<ul class="form-content">
 				<li>
-					<h2>Coordonn&eacute;es</h2>
+					<h2>Identifiants de connexion</h2>
 					<span class="required_notification">* Denotes Required Field</span>
+					<input type="hidden" name="idAdmin" value="{{ admin.id }}" required />
 				</li>
 				<li>
 					{{ form_label(formAdmin.emailBackup, "Email :") }}
@@ -28,7 +29,7 @@
 			</ul>
 			<ul class="form-submit">
 				<li>
-					<input type="submit" class="submit" value="Modifier"/>
+					<input type="submit" class="submit" value="Enregistrer"/>
 					{% if message is defined %}
 						<div class="required_notification">{{ message }}</div>
 					{% endif %}

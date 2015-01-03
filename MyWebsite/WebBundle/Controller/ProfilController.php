@@ -9,6 +9,7 @@ use MyWebsite\WebBundle\Entity\Profil;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Document;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use \DateTime;
 
 class ProfilController extends Controller
 {
@@ -40,22 +41,28 @@ class ProfilController extends Controller
 				->add('firstName', 'text', array('required' => false))
 				->add('lastName', 'text', array('required' => false))
 				->getForm();
-		
-			$category = new Category("Coordonnées", "coordonnees");
-			$category->setEditManager($profil->getEditManager());
-		
-			$formCategory = $this->createFormBuilder($category)
-				->add('title', 'text', array('required' => false))
-				->add('tag', 'text', array('required' => false))
-				->getForm();
-		
-			$layout = 'profil-edit';			
+			
+			$formsViews = null;
+			
+			$categories = $em->getRepository('MyWebsiteWebBundle:Category')->findByEditManager($profil->getEditManager()->getId());
+			if($categories != null)
+			{				
+				foreach($categories as $key => $category)
+				{
+					$formsViews[] = $this->createFormBuilder($category)
+						->add('title', 'text', array('required' => false))
+						->add('tag', 'text', array('required' => false))
+						->getForm()
+						->createView();
+				}
+			}
+			
 			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
-																					'layout' => $layout, 
-																					'profil' => $profil,
-																					'category' => $category,
-																					'formProfil' => $formProfil->createView(),
-																					'formCategory' => $formCategory->createView()
+																						'layout' => 'profil-edit',
+																						'profil' => $profil,
+																						'formProfil' => $formProfil->createView(),
+																						'categories' => $categories,
+																						'formsViews' => $formsViews
 			));
 		}
 		
@@ -93,6 +100,7 @@ class ProfilController extends Controller
 				$message = "Les informations n'ont pas été enregistrées";
 				if($request->getSession()->get('idProfil') != null)
 				{
+					$profil->getEditManager()->setUpdateTime(new DateTime());
 					$em->persist($profil);
 					$em->persist($category);
 					$em->flush();

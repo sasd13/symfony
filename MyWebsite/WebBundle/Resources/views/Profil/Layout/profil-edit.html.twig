@@ -30,7 +30,12 @@
 					{{ form_label(formProfil.lastName, "Nom :") }}
 					{{ form_widget(formProfil.lastName) }}
 				</li>
-				{% include "MyWebsiteWebBundle:Profil:Layout/Form/profil-category-form.html.twig" %}
+				{% if categories is defined %}
+					{% for formCategory in formsViews %}
+						{% set category = attribute(categories, loop.index0) %}
+						{% include "MyWebsiteWebBundle:Profil:Layout/Form/profil-category-form.html.twig" %}
+					{% endfor %}
+				{% endif %}
 			</ul>
 		</form>
 	</div>

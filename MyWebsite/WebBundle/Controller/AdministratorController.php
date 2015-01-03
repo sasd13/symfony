@@ -53,7 +53,7 @@ class AdministratorController extends Controller
 			$formAdmin->handleRequest($request);
 			
 			$message = "Les informations n'ont pas été enregistrées";
-			if ($request->getSession()->get('idProfil') != null AND strcmp($request->request->get('password'), $request->request->get('confirmpassword')) === 0)
+			if ($request->getSession()->get('idProfil') != null AND strcmp($admin->getPassword(), $request->request->get('confirmpassword')) === 0)
 			{
 				$em->persist($admin);
 				$em->flush();
@@ -64,6 +64,7 @@ class AdministratorController extends Controller
 			$layout = 'profil-admin-edit';
 			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
 																						'layout' => $layout,
+																						'admin' => $admin,
 																						'formAdmin' => $formAdmin->createView(),
 																						'message' => $message
 			));
