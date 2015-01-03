@@ -36,6 +36,10 @@ web_profil_admin_modifier:
     pattern:  /profil/admin/modifier
     defaults: { _controller: MyWebsiteWebBundle:Administrator:modifierAdministrator}
 
+web_profil_error:
+    pattern:  /profil/error
+    defaults: { _controller: MyWebsiteWebBundle:Exception:error}
+
 web_error404:
     pattern:  /{errorURL}
     defaults: { _controller: MyWebsiteWebBundle:Exception:error404}

@@ -28,6 +28,7 @@ class AdministratorController extends Controller
 		$layout = 'profil-admin-edit';
 		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
 																					'layout' => $layout,
+																					'admin' => $admin,
 																					'formAdmin' => $formAdmin->createView()
 		));
 	}
@@ -42,26 +43,32 @@ class AdministratorController extends Controller
 			return $this->redirect($this->generateUrl('web_profil_afficher'));
 		}
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
-		$formAdmin = $this->createFormBuilder($admin)
-			->add('emailBackup', 'email')
-			->add('password', 'password')
-			->getForm();
-			
-		$message = "Les informations n'ont pas été modifiées";
-		$formAdmin->handleRequest($request);
-		if ($request->getSession()->get('idProfil') != null AND strcmp($request->request->get('password'), $request->request->get('confirmpassword')) === 0)
+		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find($request->request->get('idAdmin'));
+		if($admin != null)
 		{
-			$em->persist($admin);
-			$em->flush();
-			$message = "Les informations ont été modifiées avec succès";
+			$formAdmin = $this->createFormBuilder($admin)
+				->add('emailBackup', 'email')
+				->add('password', 'password')
+				->getForm();
+			$formAdmin->handleRequest($request);
+			
+			$message = "Les informations n'ont pas été enregistrées";
+			if ($request->getSession()->get('idProfil') != null AND strcmp($request->request->get('password'), $request->request->get('confirmpassword')) === 0)
+			{
+				$em->persist($admin);
+				$em->flush();
+			
+				$message = "Les informations ont été enregistrées avec succès";
+			}
+			
+			$layout = 'profil-admin-edit';
+			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
+																						'layout' => $layout,
+																						'formAdmin' => $formAdmin->createView(),
+																						'message' => $message
+			));
 		}
 		
-		$layout = 'profil-admin-edit';
-		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
-																					'layout' => $layout,
-																					'formAdmin' => $formAdmin->createView(),
-																					'message' => $message
-		));
+		return $this->redirect($this->generateUrl('web_profil_error'));
     }
 }

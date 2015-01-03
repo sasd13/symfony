@@ -14,7 +14,7 @@ class PictureFixtures implements FixtureInterface
 	{
 		$profil = $manager->getRepository('MyWebsiteWebBundle:Profil')->find(1);
 		
-		$category = new Category("Photo de profil", "picture");
+		$category = new Category("Photo de profil", "profil_picture");
 		$category->setEditManager($profil->getEditManager());
 		
 		$picture = new Document();
