@@ -17,12 +17,12 @@ class PictureFixtures extends AbstractFixture implements OrderedFixtureInterface
 		$profil = $this->getReference('profil');
 		
 		$category = new Category("Photo de profil", "profil_picture");
-		$category->setEditManager($profil->getEditManager());
+		$category->setTimeManager($profil->getTimeManager());
 		
 		$picture = new Document("Photo", "image/gif", "images/inconnu.gif");
 		$picture->setCategory($category);
 		
-		$category->getEditManager()->setUpdateTime(new DateTime());
+		$category->getTimeManager()->setUpdateTime(new DateTime());
 		$manager->persist($picture);
 		$manager->flush();
 	}

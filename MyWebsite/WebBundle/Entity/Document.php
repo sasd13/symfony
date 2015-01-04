@@ -4,14 +4,15 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Entity\TimeManager;
+use \DateTime;
 
 /**
- * EditManager
+ * Document
  *
  * @ORM\Table(name="web_document")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\DocumentRepository")
  */
-
 class Document
 {
     /**
@@ -24,12 +25,16 @@ class Document
     public $id;
 
     /**
+     * @var string
+	 *
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank
      */
     public $name;
 	
 	/**
+     * @var string
+	 *
      * @ORM\Column(name="mimeType", type="string", length=255)
      * @Assert\NotBlank
      */
@@ -44,7 +49,10 @@ class Document
     private $display;
 
     /**
-     * @ORM\Column(name="pictureDisplay", type="string", length=255, nullable=true)
+     * @var string
+	 *
+     * @ORM\Column(name="path", type="string", length=255)
+     * @Assert\NotBlank
      */
     public $path;
 	
@@ -58,6 +66,11 @@ class Document
      */
     public $file;
 	
+	/**
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
+	 * @ORM\JoinColumn(nullable=false)
+	 */
+	private $timeManager;
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents", cascade={"persist"})
@@ -72,9 +85,25 @@ class Document
 		$this->mimeType = $mimeType;
 		$this->display = true;
 		$this->path = $path;
+		$this->timeManager = new TimeManager();			
 	}
 	
-
+	//Fonction de réinitialisation des documents
+	public function setDefault()
+    {
+		//Photos
+		if(strcmp($this->mimeType, "image/gif") === 0 OR strcmp($this->mimeType, "image/jpeg") === 0 OR strcmp($this->mimeType, "image/png") === 0)
+		{
+			$this->name = "Photo";
+			$this->mimeType = "image/gif";
+			$this->display = true;
+			$this->path = "images/inconnu.gif";
+			$this->timeManager->setUpdateTime(new DateTime());
+		}
+		
+		return $this;
+    }
+	
     public function getAbsolutePath()
     {
         return null === $this->path ? null : $this->getUploadRootDir().'/'.$this->path;
@@ -198,6 +227,29 @@ class Document
     public function getPath()
     {
         return $this->path;
+    }
+
+    /**
+     * Set timeManager
+     *
+     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
+     * @return Document
+     */
+    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
+    {
+        $this->timeManager = $timeManager;
+
+        return $this;
+    }
+
+    /**
+     * Get timeManager
+     *
+     * @return \MyWebsite\WebBundle\Entity\TimeManager 
+     */
+    public function getTimeManager()
+    {
+        return $this->timeManager;
     }
 
     /**

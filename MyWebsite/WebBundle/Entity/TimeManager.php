@@ -7,12 +7,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 use \DateTime;
 
 /**
- * EditManager
+ * TimeManager
  *
- * @ORM\Table(name="web_editmanager")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\EditManagerRepository")
+ * @ORM\Table(name="web_timemanager")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\TimeManagerRepository")
  */
-class EditManager
+class TimeManager
 {
     /**
      * @var integer
@@ -60,7 +60,7 @@ class EditManager
      * Set createTime
      *
      * @param \DateTime $createTime
-     * @return EditManager
+     * @return TimeManager
      */
     public function setCreateTime($createTime)
     {
@@ -83,7 +83,7 @@ class EditManager
      * Set updateTime
      *
      * @param \DateTime $updateTime
-     * @return EditManager
+     * @return TimeManager
      */
     public function setUpdateTime($updateTime)
     {

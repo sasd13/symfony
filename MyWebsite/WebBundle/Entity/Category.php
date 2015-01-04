@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
  * Category
@@ -39,10 +40,16 @@ class Category
     private $tag;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\EditManager", cascade={"persist", "remove"})
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false)
 	 */
-	private $editManager;
+	private $timeManager;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\BundleManager")
+	 * @ORM\JoinColumn(nullable=false)
+	 */
+	private $bundleManager;
 	
 	/**
 	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Content", mappedBy="category", cascade={"remove"})
@@ -59,6 +66,7 @@ class Category
 	{
 		$this->title = $title;
 		$this->tag = $tag;
+		$this->timeManager = new TimeManager();
 	}	
 
     /**
@@ -118,26 +126,49 @@ class Category
     }
 	
 	/**
-     * Set editManager
+     * Set timeManager
      *
-     * @param \MyWebsite\WebBundle\Entity\EditManager $editManager
+     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
      * @return Profil
      */
-    public function setEditManager(\MyWebsite\WebBundle\Entity\EditManager $editManager)
+    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
     {
-        $this->editManager = $editManager;
+        $this->timeManager = $timeManager;
 
         return $this;
     }
 
     /**
-     * Get editManager
+     * Get timeManager
      *
-     * @return \MyWebsite\WebBundle\Entity\EditManager 
+     * @return \MyWebsite\WebBundle\Entity\TimeManager 
      */
-    public function getEditManager()
+    public function getTimeManager()
     {
-        return $this->editManager;
+        return $this->timeManager;
+    }
+
+    /**
+     * Set bundleManager
+     *
+     * @param \MyWebsite\WebBundle\Entity\BundleManager $bundleManager
+     * @return Category
+     */
+    public function setBundleManager(\MyWebsite\WebBundle\Entity\BundleManager $bundleManager)
+    {
+        $this->bundleManager = $bundleManager;
+
+        return $this;
+    }
+
+    /**
+     * Get bundleManager
+     *
+     * @return \MyWebsite\WebBundle\Entity\BundleManager 
+     */
+    public function getBundleManager()
+    {
+        return $this->bundleManager;
     }
 
     /**

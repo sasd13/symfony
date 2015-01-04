@@ -17,7 +17,7 @@ class AdminFixtures extends AbstractFixture implements OrderedFixtureInterface
 		$admin->setPassword('root');
 		$admin->setEmailBackup(null);
 		
-		$admin->getEditManager()->setUpdateTime(new DateTime());
+		$admin->getTimeManager()->setUpdateTime(new DateTime());
 		$manager->persist($admin);
 		$manager->flush();
 	}

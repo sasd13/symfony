@@ -45,7 +45,7 @@ class ProfilController extends Controller
 			$formsViewsCategories = null;
 			$arraysFormsViewsContents = null;
 			
-			$categories = $em->getRepository('MyWebsiteWebBundle:Category')->findByEditManager($profil->getEditManager()->getId());
+			$categories = $em->getRepository('MyWebsiteWebBundle:Category')->findByTimeManager($profil->getTimeManager()->getId());
 			if($categories != null)
 			{
 				$formsViewsContents = null;
@@ -113,7 +113,7 @@ class ProfilController extends Controller
 				$message = "Les informations n'ont pas été enregistrées";
 				if($request->getSession()->get('idProfil') != null)
 				{
-					$profil->getEditManager()->setUpdateTime(new DateTime());
+					$profil->getTimeManager()->setUpdateTime(new DateTime());
 					$em->persist($profil);
 					$em->persist($category);
 					$em->flush();

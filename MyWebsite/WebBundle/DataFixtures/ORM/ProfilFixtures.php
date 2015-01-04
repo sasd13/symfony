@@ -15,7 +15,7 @@ class ProfilFixtures extends AbstractFixture implements OrderedFixtureInterface
 	{
 		$profil = new Profil("your first name", "your last name");
 		
-		$profil->getEditManager()->setUpdateTime(new DateTime());
+		$profil->getTimeManager()->setUpdateTime(new DateTime());
 		$manager->persist($profil);
 		$manager->flush();
 		

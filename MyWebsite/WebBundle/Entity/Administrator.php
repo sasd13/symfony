@@ -4,7 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Entity\EditManager;
+use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
  * Administrator
@@ -61,15 +61,15 @@ class Administrator
     private $emailBackup;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\EditManager", cascade={"persist", "remove"})
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false)
 	 */
-	private $editManager;
+	private $timeManager;
 	
 	
 	public function __construct()
 	{
-		$this->editManager = new EditManager();
+		$this->timeManager = new TimeManager();
 	}
 
     /**
@@ -152,25 +152,25 @@ class Administrator
     }
 
     /**
-     * Set editManager
+     * Set timeManager
      *
-     * @param \MyWebsite\WebBundle\Entity\EditManager $editManager
+     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
      * @return Administrator
      */
-    public function setEditManager(\MyWebsite\WebBundle\Entity\EditManager $editManager)
+    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
     {
-        $this->editManager = $editManager;
+        $this->timeManager = $timeManager;
 
         return $this;
     }
 
     /**
-     * Get editManager
+     * Get timeManager
      *
-     * @return \MyWebsite\WebBundle\Entity\EditManager 
+     * @return \MyWebsite\WebBundle\Entity\TimeManager 
      */
-    public function getEditManager()
+    public function getTimeManager()
     {
-        return $this->editManager;
+        return $this->timeManager;
     }    
 }
