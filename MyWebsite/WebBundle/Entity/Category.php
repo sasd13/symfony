@@ -26,7 +26,7 @@ class Category
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=45, unique=true)
+     * @ORM\Column(name="title", type="string", length=255, unique=true)
 	 * @Assert\NotBlank
      */
     private $title;
@@ -34,33 +34,34 @@ class Category
     /**
      * @var string
      *
-     * @ORM\Column(name="tag", type="string", length=45, unique=true)
+     * @ORM\Column(name="tag", type="string", length=255, unique=true)
 	 * @Assert\NotBlank
      */
     private $tag;
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
 	 */
 	private $timeManager;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\BundleManager")
-	 * @ORM\JoinColumn(name="bundleManager_id", referencedColumnName="id", nullable=false)
-	 */
-	private $bundleManager;
-	
-	/**
 	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Content", mappedBy="category", cascade={"remove"})
-	 * @ORM\JoinColumn(name="bundleManager_id", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $contents;
 	
 	/**
 	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Document", mappedBy="category", cascade={"remove"})
+	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $documents;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Profile", inversedBy="categories")
+	 * @ORM\JoinColumn(name="profile_id", referencedColumnName="id", nullable=false)
+	 */
+	private $profile;
 	
 	
 	public function __construct($title, $tag)
@@ -125,12 +126,12 @@ class Category
     {
         return $this->tag;
     }
-	
-	/**
+
+    /**
      * Set timeManager
      *
      * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return Profil
+     * @return Category
      */
     public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
     {
@@ -147,29 +148,6 @@ class Category
     public function getTimeManager()
     {
         return $this->timeManager;
-    }
-
-    /**
-     * Set bundleManager
-     *
-     * @param \MyWebsite\WebBundle\Entity\BundleManager $bundleManager
-     * @return Category
-     */
-    public function setBundleManager(\MyWebsite\WebBundle\Entity\BundleManager $bundleManager)
-    {
-        $this->bundleManager = $bundleManager;
-
-        return $this;
-    }
-
-    /**
-     * Get bundleManager
-     *
-     * @return \MyWebsite\WebBundle\Entity\BundleManager 
-     */
-    public function getBundleManager()
-    {
-        return $this->bundleManager;
     }
 
     /**
@@ -236,5 +214,28 @@ class Category
     public function getDocuments()
     {
         return $this->documents;
+    }
+
+    /**
+     * Set profile
+     *
+     * @param \MyWebsite\WebBundle\Entity\Profile $profile
+     * @return Category
+     */
+    public function setProfile(\MyWebsite\WebBundle\Entity\Profile $profile)
+    {
+        $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * Get profile
+     *
+     * @return \MyWebsite\WebBundle\Entity\Profile 
+     */
+    public function getProfile()
+    {
+        return $this->profile;
     }
 }

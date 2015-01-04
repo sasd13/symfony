@@ -59,18 +59,18 @@ class Document
 	/**
      * @Assert\File(
      *     maxSize = "5120k",
-     *     mimeTypes = {"image/gif", "image/jpeg", "image/png"},
-     *     mimeTypesMessage = "Choisissez un fichier JPEG, PNG ou GIF valide",
 	 *     maxSizeMessage = "Fichier trop volumineux"
      * )
      */
     public $file;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false)
-	 */
-	private $timeManager;
+     * @var \DateTime
+     *
+     * @ORM\Column(name="uploadDate", type="datetime")
+	 * @Assert\Type("\DateTime")
+     */
+    private $uploadDate;
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents", cascade={"persist"})
@@ -95,7 +95,7 @@ class Document
 			$this->mimeType = "image/gif";
 			$this->display = true;
 			$this->path = "images/inconnu.gif";
-			$this->timeManager->setUpdateTime(new DateTime());
+			$this->uploadDate(new DateTime());
 		}
 		
 		return $this;
@@ -227,26 +227,26 @@ class Document
     }
 
     /**
-     * Set timeManager
+     * Set uploadDate
      *
-     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
+     * @param \DateTime $uploadDate
      * @return Document
      */
-    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
+    public function setUploadDate($uploadDate)
     {
-        $this->timeManager = $timeManager;
+        $this->uploadDate = $uploadDate;
 
         return $this;
     }
 
     /**
-     * Get timeManager
+     * Get uploadDate
      *
-     * @return \MyWebsite\WebBundle\Entity\TimeManager 
+     * @return \DateTime 
      */
-    public function getTimeManager()
+    public function getUploadDate()
     {
-        return $this->timeManager;
+        return $this->uploadDate;
     }
 
     /**

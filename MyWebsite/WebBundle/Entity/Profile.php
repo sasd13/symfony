@@ -4,15 +4,16 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
- * Profil
+ * Profile
  *
- * @ORM\Table(name="web_profil")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfilRepository")
+ * @ORM\Table(name="web_profile")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
  */
-class Profil
+class Profile
 {
     /**
      * @var integer
@@ -26,11 +27,11 @@ class Profil
 	/**
      * @var string
      *
-     * @ORM\Column(name="firstName", type="string", length=45)
+     * @ORM\Column(name="firstName", type="string", length=255)
 	 * @Assert\NotBlank
 	 * @Assert\Length(
 	 *		min = "2",
-	 *		max = "45",
+	 *		max = "50",
 	 *		minMessage = "Le prénom doit faire plus de {{ limit }} caractères",
 	 *		maxMessage = "Le prénom doit faire moins de {{ limit }} caractères"
 	 * )
@@ -40,35 +41,28 @@ class Profil
 	/**
      * @var string
      *
-     * @ORM\Column(name="lastName", type="string", length=45)
+     * @ORM\Column(name="lastName", type="string", length=255)
 	 * @Assert\NotBlank
 	 * @Assert\Length(
 	 *		min = "2",
-	 *		max = "45",
+	 *		max = "50",
 	 *		minMessage = "Le nom doit faire plus de {{ limit }} caractères",
 	 *		maxMessage = "Le nom doit faire moins de {{ limit }} caractères"
 	 * )
      */
     private $lastName;
-
-    /**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false)
-	 */
-	private $timeManager;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\BundleManager")
-	 * @ORM\JoinColumn(name="bundleManager_id", referencedColumnName="id", nullable=false)
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Category", mappedBy="profile", cascade={"remove"})
+	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
-	private $bundleManager;
+	private $categories;
 	
 	
 	public function __construct($firstName, $lastName)
 	{
 		$this->firstName = $firstName;
 		$this->lastName = $lastName;
-		$this->timeManager = new TimeManager();
 	}
 
     /**
@@ -80,12 +74,12 @@ class Profil
     {
         return $this->id;
     }
-	
-	/**
+
+    /**
      * Set firstName
      *
      * @param string $firstName
-     * @return Profil
+     * @return Profile
      */
     public function setFirstName($firstName)
     {
@@ -108,7 +102,7 @@ class Profil
      * Set lastName
      *
      * @param string $lastName
-     * @return Profil
+     * @return Profile
      */
     public function setLastName($lastName)
     {
@@ -128,48 +122,35 @@ class Profil
     }
 
     /**
-     * Set timeManager
+     * Add categories
      *
-     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return Profil
+     * @param \MyWebsite\WebBundle\Entity\Category $categories
+     * @return Profile
      */
-    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
+    public function addCategory(\MyWebsite\WebBundle\Entity\Category $categories)
     {
-        $this->timeManager = $timeManager;
+        $this->categories[] = $categories;
 
         return $this;
     }
 
     /**
-     * Get timeManager
+     * Remove categories
      *
-     * @return \MyWebsite\WebBundle\Entity\TimeManager 
+     * @param \MyWebsite\WebBundle\Entity\Category $categories
      */
-    public function getTimeManager()
+    public function removeCategory(\MyWebsite\WebBundle\Entity\Category $categories)
     {
-        return $this->timeManager;
+        $this->categories->removeElement($categories);
     }
 
     /**
-     * Set bundleManager
+     * Get categories
      *
-     * @param \MyWebsite\WebBundle\Entity\BundleManager $bundleManager
-     * @return Profil
+     * @return \Doctrine\Common\Collections\Collection 
      */
-    public function setBundleManager(\MyWebsite\WebBundle\Entity\BundleManager $bundleManager)
+    public function getCategories()
     {
-        $this->bundleManager = $bundleManager;
-
-        return $this;
-    }
-
-    /**
-     * Get bundleManager
-     *
-     * @return \MyWebsite\WebBundle\Entity\BundleManager 
-     */
-    public function getBundleManager()
-    {
-        return $this->bundleManager;
+        return $this->categories;
     }
 }

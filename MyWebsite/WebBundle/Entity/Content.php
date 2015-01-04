@@ -25,7 +25,7 @@ class Content
 	/**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=45, unique=true)
+     * @ORM\Column(name="title", type="string", length=255, unique=true)
 	 * @Assert\NotBlank
      */
     private $title;
@@ -33,25 +33,12 @@ class Content
 	/**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=45)
+     * @ORM\Column(name="type", type="string", length=255)
 	 * @Assert\NotBlank
      */
     private $type;
 	
 	/**
-     * @var integer
-     *
-     * @ORM\Column(name="level", type="smallint")
-	 * @Assert\Range(
-     *      min = 1,
-	 *      max = 3,
-     *      minMessage = "La priorité doit être plus de {{ limit }}",
-	 *      maxMessage = "La priorité doit être moins de {{ limit }}"
-     * )
-     */
-    private $level;
-
-    /**
      * @var integer
      *
      * @ORM\Column(name="priority", type="integer")
@@ -63,20 +50,17 @@ class Content
     private $priority;
 	
 	/**
-     * @var \DateTime
+     * @var integer
      *
-     * @ORM\Column(name="beginDate", type="datetime", nullable=true)
-	 * @Assert\Type("\DateTime")
+     * @ORM\Column(name="policyLevel", type="smallint")
+	 * @Assert\Range(
+     *      min = 1,
+	 *      max = 3,
+     *      minMessage = "La priorité doit être plus de {{ limit }}",
+	 *      maxMessage = "La priorité doit être moins de {{ limit }}"
+     * )
      */
-    private $beginDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="endDate", type="datetime", nullable=true)
-	 * @Assert\Type("\DateTime")
-     */
-    private $endDate;
+    private $policyLevel;
 	
 	/**
      * @var string
@@ -103,7 +87,7 @@ class Content
 	{
 		$this->title = $title;
 		$this->type = $type;
-		$this->level = 1;
+		$this->policyLevel = 1;
 		$this->priority = 0;
 	}
 	
@@ -164,29 +148,6 @@ class Content
     }
 
     /**
-     * Set level
-     *
-     * @param integer $level
-     * @return Content
-     */
-    public function setLevel($level)
-    {
-        $this->level = $level;
-
-        return $this;
-    }
-
-    /**
-     * Get level
-     *
-     * @return integer 
-     */
-    public function getLevel()
-    {
-        return $this->level;
-    }
-
-    /**
      * Set priority
      *
      * @param integer $priority
@@ -210,49 +171,26 @@ class Content
     }
 
     /**
-     * Set beginDate
+     * Set policyLevel
      *
-     * @param \DateTime $beginDate
+     * @param integer $policyLevel
      * @return Content
      */
-    public function setBeginDate($beginDate)
+    public function setPolicyLevel($policyLevel)
     {
-        $this->beginDate = $beginDate;
+        $this->policyLevel = $policyLevel;
 
         return $this;
     }
 
     /**
-     * Get beginDate
+     * Get policyLevel
      *
-     * @return \DateTime 
+     * @return integer 
      */
-    public function getBeginDate()
+    public function getPolicyLevel()
     {
-        return $this->beginDate;
-    }
-
-    /**
-     * Set endDate
-     *
-     * @param \DateTime $endDate
-     * @return Content
-     */
-    public function setEndDate($endDate)
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return \DateTime 
-     */
-    public function getEndDate()
-    {
-        return $this->endDate;
+        return $this->policyLevel;
     }
 
     /**

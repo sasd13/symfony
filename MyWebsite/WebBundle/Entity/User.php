@@ -4,15 +4,14 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
- * Administrator
+ * User
  *
- * @ORM\Table(name="web_administrator")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\AdministratorRepository")
+ * @ORM\Table(name="web_user")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\UserRepository")
  */
-class Administrator
+class User
 {
     /**
      * @var integer
@@ -26,11 +25,11 @@ class Administrator
     /**
      * @var string
      *
-     * @ORM\Column(name="login", type="string", length=45)
+     * @ORM\Column(name="login", type="string", length=255)
 	 * @Assert\NotBlank
 	 * @Assert\Length(
 	 *		min = "4",
-	 *		max = "45"
+	 *		max = "50"
 	 * )
      */
     private $login;
@@ -38,11 +37,11 @@ class Administrator
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=45)
+     * @ORM\Column(name="password", type="string", length=255)
 	 * @Assert\NotBlank
 	 * @Assert\Length(
 	 *		min = "4",
-	 *		max = "45",
+	 *		max = "50",
 	 *		minMessage = "Le mot de passe doit faire plus de {{ limit }} caractères",
 	 *		maxMessage = "Le mot de passe doit faire moins de {{ limit }} caractères"
 	 * )
@@ -52,23 +51,31 @@ class Administrator
     /**
      * @var string
      *
-     * @ORM\Column(name="email_backup", type="string", length=255, nullable=true)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
 	 * @Assert\Email(
      *     message = "'{{ value }}' n'est pas un email valide",
      *     checkMX = true
      * )
      */
-    private $emailBackup;
+    private $email;
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
 	 */
 	private $timeManager;
 	
+	/**
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\Profile", cascade={"persist", "remove"})
+	 * @ORM\JoinColumn(name="profile_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+	 */
+	private $profile;
 	
-	public function __construct()
+	
+	public function __construct($login, $password)
 	{
+		$this->login = $login;
+		$this->password = $password;
 		$this->timeManager = new TimeManager();
 	}
 
@@ -86,7 +93,7 @@ class Administrator
      * Set login
      *
      * @param string $login
-     * @return Administrator
+     * @return User
      */
     public function setLogin($login)
     {
@@ -104,12 +111,12 @@ class Administrator
     {
         return $this->login;
     }
-	
-	/**
+
+    /**
      * Set password
      *
      * @param string $password
-     * @return Administrator
+     * @return User
      */
     public function setPassword($password)
     {
@@ -129,33 +136,33 @@ class Administrator
     }
 
     /**
-     * Set emailBackup
+     * Set email
      *
-     * @param string $emailBackup
-     * @return Administrator
+     * @param string $email
+     * @return User
      */
-    public function setEmailBackup($emailBackup)
+    public function setEmail($email)
     {
-        $this->emailBackup = $emailBackup;
+        $this->email = $email;
 
         return $this;
-    }    
+    }
 
     /**
-     * Get emailBackup
+     * Get email
      *
      * @return string 
      */
-    public function getEmailBackup()
+    public function getEmail()
     {
-        return $this->emailBackup;
+        return $this->email;
     }
 
     /**
      * Set timeManager
      *
      * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return Administrator
+     * @return User
      */
     public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
     {
@@ -172,5 +179,28 @@ class Administrator
     public function getTimeManager()
     {
         return $this->timeManager;
-    }    
+    }
+
+    /**
+     * Set profile
+     *
+     * @param \MyWebsite\WebBundle\Entity\Profile $profile
+     * @return User
+     */
+    public function setProfile(\MyWebsite\WebBundle\Entity\Profile $profile)
+    {
+        $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * Get profile
+     *
+     * @return \MyWebsite\WebBundle\Entity\Profile 
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
 }

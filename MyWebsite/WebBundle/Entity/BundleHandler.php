@@ -4,16 +4,15 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Entity\TimeManager;
 use \DateTime;
 
 /**
- * BundleManager
+ * BundleHandler
  *
- * @ORM\Table(name="web_bundlemanager")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\BundleManagerRepository")
+ * @ORM\Table(name="web_bundlehandler")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\BundleHandlerRepository")
  */
-class BundleManager
+class BundleHandler
 {
     /**
      * @var integer
@@ -22,17 +21,17 @@ class BundleManager
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    public $id;
 
     /**
      * @var string
-     *
+	 *
      * @ORM\Column(name="bundleName", type="string", length=255)
      * @Assert\NotBlank
      */
     public $bundleName;
-
-    /**
+	
+	/**
      * @var boolean
      *
      * @ORM\Column(name="active", type="boolean")
@@ -49,17 +48,17 @@ class BundleManager
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
 	 */
 	private $timeManager;
 	
 	
-	public function __construct($bundleName, $active = true) 
-	{
+	public function __construct($bundleName)
+    {
 		$this->bundleName = $bundleName;
-		$this->active = $active;
+		$this->active = true;
 		$this->timeManager = new TimeManager();
-	}
+    }
 
     /**
      * Get id
@@ -75,7 +74,7 @@ class BundleManager
      * Set bundleName
      *
      * @param string $bundleName
-     * @return BundleManager
+     * @return BundleHandler
      */
     public function setBundleName($bundleName)
     {
@@ -98,7 +97,7 @@ class BundleManager
      * Set active
      *
      * @param boolean $active
-     * @return BundleManager
+     * @return BundleHandler
      */
     public function setActive($active)
     {
@@ -121,7 +120,7 @@ class BundleManager
      * Set readMe
      *
      * @param string $readMe
-     * @return BundleManager
+     * @return BundleHandler
      */
     public function setReadMe($readMe)
     {
@@ -144,7 +143,7 @@ class BundleManager
      * Set timeManager
      *
      * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return BundleManager
+     * @return BundleHandler
      */
     public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
     {
