@@ -12,12 +12,17 @@ class ProfileFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
-		$user = $manager->getRepository('MyWebsiteWebBundle:User')->find(1);
+		$timeManager = $this->getReference('timeManager3');
+		$user = $this->getReference('user');
 		
 		$profile = new Profile("your first name", "your last name");
+		$profile->setTimeManager($timeManager);
 		$profile->setUser($user);
+		
 		$manager->persist($profile);
 		$manager->flush();
+		
+		$this->addReference('profile', $profile);
 	}
 	
 	public function getOrder()

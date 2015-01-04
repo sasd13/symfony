@@ -15,29 +15,25 @@ class EndLoadFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
-		$profile = $manager->getRepository('MyWebsiteWebBundle:Profile')->find(1);
+		$profile = $this->getReference('profile');
 		
-		$category1 = $manager->getRepository('MyWebsiteWebBundle:Category')->find(1);
-		$content1 = $manager->getRepository('MyWebsiteWebBundle:Content')->find(1);
-		$content2 = $manager->getRepository('MyWebsiteWebBundle:Content')->find(2);
-		$category1->addContent($content1);
-		$category1->addContent($content2);
-		$category1->getTimeManager()->setUpdateTime(new DateTime());
+		$categories[] = $this->getReference('category0');
+		$categories[] = $this->getReference('category1');
 		
-		$category2 = $manager->getRepository('MyWebsiteWebBundle:Category')->find(2);
-		$picture = $manager->getRepository('MyWebsiteWebBundle:Document')->find(1);
+		for($i = 0; $i < count($categories); $i++)
+		{
+			$category = $categories[$i];
+			$category->addContent($this->getReference('content0'));
+			$category->addContent($this->getReference('content1'));
+			$category->getTimeManager()->setUpdateTime(new DateTime());
+			
+			$profile->addCategory($category);
+			
+			$manager->persist($category);
+		}
 		
-		$category2->addDocument($picture);
-		$category2->getTimeManager()->setUpdateTime(new DateTime());
-		$category2->addDocument($picture);
-		$category2->getTimeManager()->setUpdateTime(new DateTime());
-		
-		$profile->addCategory($category1);
-		$profile->addCategory($category2);
 		$profile->getTimeManager()->setUpdateTime(new DateTime());
 		
-		$manager->persist($category1);
-		$manager->persist($category2);
 		$manager->persist($profile);
 		$manager->flush();
 	}

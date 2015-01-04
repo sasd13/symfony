@@ -58,7 +58,6 @@ class BundleHandler
     {
 		$this->bundleName = $bundleName;
 		$this->active = true;
-		$this->timeManager = new TimeManager();
     }
 
     /**

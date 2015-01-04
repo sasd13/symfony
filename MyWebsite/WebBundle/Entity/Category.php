@@ -69,7 +69,6 @@ class Category
 	{
 		$this->title = $title;
 		$this->tag = $tag;
-		$this->timeManager = new TimeManager();
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
 	}	

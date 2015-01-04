@@ -86,7 +86,6 @@ class User
 		$this->password = $password;
 		$this->email = $email;
 		$this->privacyLevel = $privacyLevel;
-		$this->timeManager = new TimeManager();
 	}
 
     /**

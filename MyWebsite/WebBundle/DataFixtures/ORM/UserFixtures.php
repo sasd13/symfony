@@ -12,12 +12,15 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
-		$timeManager = $manager->getRepository('MyWebsiteWebBundle:TimeManager')->find(1);
+		$timeManager = $this->getReference('timeManager2');
 		
 		$user = new User('root', 'root', 'admin@email.com', 3);
 		$user->setTimeManager($timeManager);
+		
 		$manager->persist($user);
 		$manager->flush();
+		
+		$this->addReference('user', $user);
 	}
 	
 	public function getOrder()

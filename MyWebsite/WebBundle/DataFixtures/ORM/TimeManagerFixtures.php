@@ -11,8 +11,13 @@ class TimeManagerFixtures extends AbstractFixture implements OrderedFixtureInter
 {
 	public function load(ObjectManager $manager)
 	{
-		$timeManager = new TimeManager();
-		$manager->persist($timeManager);
+		for($i = 1; $i <= 5; $i++)
+		{
+			$timeManager = new TimeManager();
+			$manager->persist($timeManager);
+			$this->addReference('timeManager'.$i, $timeManager);
+		}
+		
 		$manager->flush();
 	}
 	

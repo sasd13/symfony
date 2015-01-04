@@ -13,21 +13,29 @@ class ContentsFixtures extends AbstractFixture implements OrderedFixtureInterfac
 {
 	public function load(ObjectManager $manager)
 	{
-		$category1 = $manager->getRepository('MyWebsiteWebBundle:Category')->find(1);
-		$category2 = $manager->getRepository('MyWebsiteWebBundle:Category')->find(2);
+		$profile = $this->getReference('profile');
+		$category = $this->getReference('category0');
 		
-		$content1 = new Content("name", $profile->getFirstName());
-		$content1->setCategory($category1);
-		$content2 = new Content("surname", $profile->getLastName());
-		$content2->setCategory($category1);
+		$contents[] = new Content("name", $profile->getFirstName());
+		$contents[] = new Content("surname", $profile->getLastName());
+		
+		for($i = 0; $i < count($contents); $i++)
+		{
+			$content = $contents[$i];
+			$content->setCategory($category);
+			$manager->persist($content);
+			$this->addReference('content'.$i, $content);
+		}
+		
+		$category = $this->getReference('category1');
 		
 		$picture = new Document();
-		$picture->setDefault("image")->setCategory($category2);
+		$picture->setDefault("image")->setCategory($category);
 		
-		$manager->persist($content1);
-		$manager->persist($content2);
 		$manager->persist($picture);
 		$manager->flush();
+		
+		$this->addReference('picture', $picture);
 	}
 	
 	public function getOrder()
