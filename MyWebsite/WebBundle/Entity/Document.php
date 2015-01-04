@@ -4,7 +4,6 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Entity\TimeManager;
 use \DateTime;
 
 /**
@@ -68,13 +67,13 @@ class Document
      * @var \DateTime
      *
      * @ORM\Column(name="uploadDate", type="datetime")
-	 * @Assert\Type("\DateTime")
+	 * @Assert\Type(type="\DateTime")
      */
     private $uploadDate;
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents", cascade={"persist"})
-	 * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
+	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $category;
 	
@@ -82,7 +81,6 @@ class Document
 	public function __construct()
     {
 		$this->display = true;
-		$this->timeManager = new TimeManager();
     }
 	
 	//Fonction de réinitialisation des documents
@@ -95,7 +93,7 @@ class Document
 			$this->mimeType = "image/gif";
 			$this->display = true;
 			$this->path = "images/inconnu.gif";
-			$this->uploadDate(new DateTime());
+			$this->uploadDate = new DateTime();
 		}
 		
 		return $this;

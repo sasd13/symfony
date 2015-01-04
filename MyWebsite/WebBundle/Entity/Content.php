@@ -25,10 +25,10 @@ class Content
 	/**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255, unique=true)
+     * @ORM\Column(name="label", type="string", length=255)
 	 * @Assert\NotBlank
      */
-    private $title;
+    private $label;
 	
 	/**
      * @var string
@@ -77,18 +77,26 @@ class Content
     private $textValue;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="contents", cascade={"persist"})
-	  * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="contents")
+	  * @ORM\JoinColumn(nullable=false)
 	 */
 	private $category;
 	
 	
-	public function __construct($title, $type = "text")
+	public function __construct($label, $value, $type = "text")
 	{
-		$this->title = $title;
+		$this->label = $label;
 		$this->type = $type;
 		$this->policyLevel = 1;
 		$this->priority = 0;
+		if(strcmp($type, 'textarea') === 0)
+		{
+			$this->textValue = $value;
+		}
+		else
+		{
+			$this->stringValue = $value;
+		}
 	}
 	
     /**
@@ -102,26 +110,26 @@ class Content
     }
 
     /**
-     * Set title
+     * Set label
      *
-     * @param string $title
+     * @param string $label
      * @return Content
      */
-    public function setTitle($title)
+    public function setLabel($label)
     {
-        $this->title = $title;
+        $this->label = $label;
 
         return $this;
     }
 
     /**
-     * Get title
+     * Get label
      *
      * @return string 
      */
-    public function getTitle()
+    public function getLabel()
     {
-        return $this->title;
+        return $this->label;
     }
 
     /**

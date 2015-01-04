@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
@@ -26,7 +27,7 @@ class Category
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255, unique=true)
+     * @ORM\Column(name="title", type="string", length=255)
 	 * @Assert\NotBlank
      */
     private $title;
@@ -34,14 +35,14 @@ class Category
     /**
      * @var string
      *
-     * @ORM\Column(name="tag", type="string", length=255, unique=true)
+     * @ORM\Column(name="tag", type="string", length=255)
 	 * @Assert\NotBlank
      */
     private $tag;
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
 	private $timeManager;
 	
@@ -58,8 +59,8 @@ class Category
 	private $documents;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Profile", inversedBy="categories")
-	 * @ORM\JoinColumn(name="profile_id", referencedColumnName="id", nullable=false)
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Profile", inversedBy="categories", cascade={"persist"})
+	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $profile;
 	
@@ -69,6 +70,8 @@ class Category
 		$this->title = $title;
 		$this->tag = $tag;
 		$this->timeManager = new TimeManager();
+		$this->contents = new ArrayCollection();
+		$this->documents = new ArrayCollection();
 	}	
 
     /**

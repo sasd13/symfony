@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
  * User
@@ -51,7 +52,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     * @ORM\Column(name="email", type="string", length=255)
 	 * @Assert\Email(
      *     message = "'{{ value }}' n'est pas un email valide",
      *     checkMX = true
@@ -60,22 +61,31 @@ class User
     private $email;
 	
 	/**
+     * @var integer
+     *
+     * @ORM\Column(name="privacyLevel", type="smallint")
+	 * @Assert\Range(
+     *      min = 1,
+	 *      max = 3,
+     *      minMessage = "La priorité doit être plus de {{ limit }}",
+	 *      maxMessage = "La priorité doit être moins de {{ limit }}"
+     * )
+     */
+    private $privacyLevel;
+	
+	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
 	private $timeManager;
 	
-	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\Profile", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(name="profile_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-	 */
-	private $profile;
 	
-	
-	public function __construct($login, $password)
+	public function __construct($login, $password, $email, $privacyLevel = 1)
 	{
 		$this->login = $login;
 		$this->password = $password;
+		$this->email = $email;
+		$this->privacyLevel = $privacyLevel;
 		$this->timeManager = new TimeManager();
 	}
 
@@ -159,6 +169,29 @@ class User
     }
 
     /**
+     * Set privacyLevel
+     *
+     * @param integer $privacyLevel
+     * @return User
+     */
+    public function setPrivacyLevel($privacyLevel)
+    {
+        $this->privacyLevel = $privacyLevel;
+
+        return $this;
+    }
+
+    /**
+     * Get privacyLevel
+     *
+     * @return integer 
+     */
+    public function getPrivacyLevel()
+    {
+        return $this->privacyLevel;
+    }
+
+    /**
      * Set timeManager
      *
      * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
@@ -179,28 +212,5 @@ class User
     public function getTimeManager()
     {
         return $this->timeManager;
-    }
-
-    /**
-     * Set profile
-     *
-     * @param \MyWebsite\WebBundle\Entity\Profile $profile
-     * @return User
-     */
-    public function setProfile(\MyWebsite\WebBundle\Entity\Profile $profile)
-    {
-        $this->profile = $profile;
-
-        return $this;
-    }
-
-    /**
-     * Get profile
-     *
-     * @return \MyWebsite\WebBundle\Entity\Profile 
-     */
-    public function getProfile()
-    {
-        return $this->profile;
     }
 }

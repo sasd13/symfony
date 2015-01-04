@@ -27,15 +27,15 @@ class TimeManager
      * @var \DateTime
      *
      * @ORM\Column(name="createTime", type="datetime")
-	 * @Assert\Type("\DateTime")
+	 * @Assert\Type(type="\DateTime")
      */
     private $createTime;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updateTime", type="datetime", nullable=true)
-	 * @Assert\Type("\DateTime")
+     * @ORM\Column(name="updateTime", type="datetime")
+	 * @Assert\Type(type="\DateTime")
      */
     private $updateTime;
 	
@@ -43,8 +43,8 @@ class TimeManager
 	public function __construct() 
 	{
 		$this->createTime = new DateTime();
+		$this->updateTime = $this->createTime;
 	}
-
 
     /**
      * Get id

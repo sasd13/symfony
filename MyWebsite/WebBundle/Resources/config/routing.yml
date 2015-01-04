@@ -2,42 +2,42 @@ web_home:
     pattern:  /
     defaults: { _controller: MyWebsiteWebBundle:Web:index}
 
-web_profil_afficher:
-    pattern:  /profil
-    defaults: { _controller: MyWebsiteWebBundle:Profil:afficher}
+web_profile:
+    pattern:  /profile
+    defaults: { _controller: MyWebsiteWebBundle:Profile:load}
 
-web_profil_modifier:
-    pattern:  /profil/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Profil:modifier}
+web_profile_edit:
+    pattern:  /profile/edit
+    defaults: { _controller: MyWebsiteWebBundle:Profile:edit}
 
-web_profil_logout:
-    pattern:  /profil/logout
-    defaults: { _controller: MyWebsiteWebBundle:Profil:logout}
+web_profile_logout:
+    pattern:  /profile/logout
+    defaults: { _controller: MyWebsiteWebBundle:Profile:logout}
 
-web_profil_picture_afficher:
-    pattern:  /profil/picture
-    defaults: { _controller: MyWebsiteWebBundle:Profil:afficherPicture}
+web_profile_picture_load:
+    pattern:  /profile/picture
+    defaults: { _controller: MyWebsiteWebBundle:Profile:loadPicture}
 
-web_profil_picture_modifier:
-    pattern:  /profil/picture/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Profil:modifierPicture, displayPicture: true}
+web_profile_picture_edit:
+    pattern:  /profile/picture/edit
+    defaults: { _controller: MyWebsiteWebBundle:Profile:editPicture, displayPicture: true}
     requirements:
         displayPicture: true|false
 
-web_profil_picture_supprimer:
-    pattern:  /profil/picture/supprimer
-    defaults: { _controller: MyWebsiteWebBundle:Profil:supprimerPicture}
+web_profile_picture_delete:
+    pattern:  /profile/picture/delete
+    defaults: { _controller: MyWebsiteWebBundle:Profile:deletePicture}
 
-web_profil_admin_afficher:
-    pattern:  /profil/admin
-    defaults: { _controller: MyWebsiteWebBundle:Administrator:afficherAdministrator}
+web_profile_user_load:
+    pattern:  /profile/user
+    defaults: { _controller: MyWebsiteWebBundle:User:loadUser}
 
-web_profil_admin_modifier:
-    pattern:  /profil/admin/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Administrator:modifierAdministrator}
+web_profile_user_edit:
+    pattern:  /profile/user/edit
+    defaults: { _controller: MyWebsiteWebBundle:User:editUser}
 
-web_profil_error:
-    pattern:  /profil/error
+web_profile_error:
+    pattern:  /profile/error
     defaults: { _controller: MyWebsiteWebBundle:Exception:error}
 
 web_error404:

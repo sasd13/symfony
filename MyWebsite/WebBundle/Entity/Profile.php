@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
@@ -53,8 +54,20 @@ class Profile
     private $lastName;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Category", mappedBy="profile", cascade={"remove"})
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+	 */
+	private $timeManager;
+	
+	/**
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\User", cascade={"persist", "remove"})
+	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+	 */
+	private $user;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Category", mappedBy="profile", cascade={"remove"})
+	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $categories;
 	
@@ -63,6 +76,7 @@ class Profile
 	{
 		$this->firstName = $firstName;
 		$this->lastName = $lastName;
+		$this->categories = new ArrayCollection();
 	}
 
     /**
@@ -119,6 +133,52 @@ class Profile
     public function getLastName()
     {
         return $this->lastName;
+    }
+
+    /**
+     * Set timeManager
+     *
+     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
+     * @return Profile
+     */
+    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
+    {
+        $this->timeManager = $timeManager;
+
+        return $this;
+    }
+
+    /**
+     * Get timeManager
+     *
+     * @return \MyWebsite\WebBundle\Entity\TimeManager 
+     */
+    public function getTimeManager()
+    {
+        return $this->timeManager;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \MyWebsite\WebBundle\Entity\User $user
+     * @return Profile
+     */
+    public function setUser(\MyWebsite\WebBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \MyWebsite\WebBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 
     /**
