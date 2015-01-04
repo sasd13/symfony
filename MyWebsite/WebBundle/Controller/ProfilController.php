@@ -42,18 +42,31 @@ class ProfilController extends Controller
 				->add('lastName', 'text', array('required' => false))
 				->getForm();
 			
-			$formsViews = null;
+			$formsViewsCategories = null;
+			$arraysFormsViewsContents = null;
 			
 			$categories = $em->getRepository('MyWebsiteWebBundle:Category')->findByEditManager($profil->getEditManager()->getId());
 			if($categories != null)
-			{				
-				foreach($categories as $key => $category)
+			{
+				$formsViewsContents = null;
+				
+				foreach($categories as $category)
 				{
-					$formsViews[] = $this->createFormBuilder($category)
+					$formsViewsCategories[] = $this->createFormBuilder($category)
 						->add('title', 'text', array('required' => false))
 						->add('tag', 'text', array('required' => false))
 						->getForm()
 						->createView();
+					
+					$contents = $category->getContents();
+					foreach($contents as $key => $content)
+					{
+						$formsViewsContents[] = $this->createFormBuilder($content)
+							->add('title', 'text', array('required' => false))
+							->add('tag', 'text', array('required' => false))
+							->getForm()
+							->createView();
+					}
 				}
 			}
 			
@@ -62,7 +75,7 @@ class ProfilController extends Controller
 																						'profil' => $profil,
 																						'formProfil' => $formProfil->createView(),
 																						'categories' => $categories,
-																						'formsViews' => $formsViews
+																						'formsViewsCategories' => $formsViewsCategories
 			));
 		}
 		

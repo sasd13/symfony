@@ -5,8 +5,6 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use MyWebsite\WebBundle\Entity\EditManager;
-use MyWebsite\WebBundle\Entity\Category;
-use MyWebsite\WebBundle\Entity\Content;
 
 /**
  * Profil

@@ -36,6 +36,19 @@ class Content
 	 * @Assert\NotBlank
      */
     private $type;
+	
+	/**
+     * @var integer
+     *
+     * @ORM\Column(name="level", type="smallint")
+	 * @Assert\Range(
+     *      min = 1,
+	 *      max = 3,
+     *      minMessage = "La priorité doit être plus de {{ limit }}",
+	 *      maxMessage = "La priorité doit être moins de {{ limit }}"
+     * )
+     */
+    private $level;
 
     /**
      * @var integer
@@ -47,34 +60,50 @@ class Content
      * )
      */
     private $priority;
+	
+	/**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="beginDate", type="datetime")
+	 * @Assert\Type("\DateTime")
+     */
+    private $beginDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="endDate", type="datetime", nullable=true)
+	 * @Assert\Type("\DateTime")
+     */
+    private $endDate;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="stringValue", type="string", length=255)
+     */
+    private $stringValue;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="textValue", type="text")
+     */
+    private $textValue;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="contents")
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="contents", cascade={"persist"})
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $category;
 	
-	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\MyValue", mappedBy="content", cascade={"persist", "remove"})
-	 */
-	private $myValues;
 	
-	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\MyText", cascade={"persist", "remove"})
-	 */
-	private $myText;
-	
-	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\MyDate", cascade={"persist", "remove"})
-	 */
-	private $myDate;
-	
-	
-	public function __construct($title, $type = "string", $priority = 0)
+	public function __construct($title, $type = "text")
 	{
 		$this->title = $title;
 		$this->type = $type;
-		$this->priority = $priority;
+		$this->level = 1;
+		$this->priority = 0;
 	}
 	
     /**
@@ -86,8 +115,8 @@ class Content
     {
         return $this->id;
     }
-	
-	/**
+
+    /**
      * Set title
      *
      * @param string $title
@@ -109,8 +138,8 @@ class Content
     {
         return $this->title;
     }
-	
-	/**
+
+    /**
      * Set type
      *
      * @param string $type
@@ -131,6 +160,29 @@ class Content
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Set level
+     *
+     * @param integer $level
+     * @return Content
+     */
+    public function setLevel($level)
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    /**
+     * Get level
+     *
+     * @return integer 
+     */
+    public function getLevel()
+    {
+        return $this->level;
     }
 
     /**
@@ -157,6 +209,98 @@ class Content
     }
 
     /**
+     * Set beginDate
+     *
+     * @param \DateTime $beginDate
+     * @return Content
+     */
+    public function setBeginDate($beginDate)
+    {
+        $this->beginDate = $beginDate;
+
+        return $this;
+    }
+
+    /**
+     * Get beginDate
+     *
+     * @return \DateTime 
+     */
+    public function getBeginDate()
+    {
+        return $this->beginDate;
+    }
+
+    /**
+     * Set endDate
+     *
+     * @param \DateTime $endDate
+     * @return Content
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    /**
+     * Get endDate
+     *
+     * @return \DateTime 
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * Set stringValue
+     *
+     * @param string $stringValue
+     * @return Content
+     */
+    public function setStringValue($stringValue)
+    {
+        $this->stringValue = $stringValue;
+
+        return $this;
+    }
+
+    /**
+     * Get stringValue
+     *
+     * @return string 
+     */
+    public function getStringValue()
+    {
+        return $this->stringValue;
+    }
+
+    /**
+     * Set textValue
+     *
+     * @param string $textValue
+     * @return Content
+     */
+    public function setTextValue($textValue)
+    {
+        $this->textValue = $textValue;
+
+        return $this;
+    }
+
+    /**
+     * Get textValue
+     *
+     * @return string 
+     */
+    public function getTextValue()
+    {
+        return $this->textValue;
+    }
+
+    /**
      * Set category
      *
      * @param \MyWebsite\WebBundle\Entity\Category $category
@@ -177,84 +321,5 @@ class Content
     public function getCategory()
     {
         return $this->category;
-    }
-
-    /**
-     * Add myValues
-     *
-     * @param \MyWebsite\WebBundle\Entity\MyValue $myValues
-     * @return Content
-     */
-    public function addMyValue(\MyWebsite\WebBundle\Entity\MyValue $myValues)
-    {
-        $this->myValues[] = $myValues;
-
-        return $this;
-    }
-
-    /**
-     * Remove myValues
-     *
-     * @param \MyWebsite\WebBundle\Entity\MyValue $myValues
-     */
-    public function removeMyValue(\MyWebsite\WebBundle\Entity\MyValue $myValues)
-    {
-        $this->myValues->removeElement($myValues);
-    }
-
-    /**
-     * Get myValues
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getMyValues()
-    {
-        return $this->myValues;
-    }
-
-    /**
-     * Set myText
-     *
-     * @param \MyWebsite\WebBundle\Entity\MyText $myText
-     * @return Content
-     */
-    public function setMyText(\MyWebsite\WebBundle\Entity\MyText $myText = null)
-    {
-        $this->myText = $myText;
-
-        return $this;
-    }
-
-    /**
-     * Get myText
-     *
-     * @return \MyWebsite\WebBundle\Entity\MyText 
-     */
-    public function getMyText()
-    {
-        return $this->myText;
-    }
-
-    /**
-     * Set myDate
-     *
-     * @param \MyWebsite\WebBundle\Entity\MyDate $myDate
-     * @return Content
-     */
-    public function setMyDate(\MyWebsite\WebBundle\Entity\MyDate $myDate = null)
-    {
-        $this->myDate = $myDate;
-
-        return $this;
-    }
-
-    /**
-     * Get myDate
-     *
-     * @return \MyWebsite\WebBundle\Entity\MyDate 
-     */
-    public function getMyDate()
-    {
-        return $this->myDate;
     }
 }

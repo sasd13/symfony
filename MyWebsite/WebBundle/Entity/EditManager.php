@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use \DateTime;
 
 /**
  * EditManager
@@ -41,8 +42,7 @@ class EditManager
 	
 	public function __construct() 
 	{
-		$this->createTime = new \DateTime;
-		$this->updateTime = null;
+		$this->createTime = new DateTime();
 	}
 
 

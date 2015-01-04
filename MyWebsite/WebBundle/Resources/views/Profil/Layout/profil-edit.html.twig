@@ -31,7 +31,7 @@
 					{{ form_widget(formProfil.lastName) }}
 				</li>
 				{% if categories is defined %}
-					{% for formCategory in formsViews %}
+					{% for formCategory in formsViewsCategories %}
 						{% set category = attribute(categories, loop.index0) %}
 						{% include "MyWebsiteWebBundle:Profil:Layout/Form/profil-category-form.html.twig" %}
 					{% endfor %}

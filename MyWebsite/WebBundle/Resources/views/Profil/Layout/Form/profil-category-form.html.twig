@@ -2,11 +2,22 @@
 <li>
 	<h2>{{ category.title }}</h2>
 </li>
-<li>
-	{{ form_label(formCategory.title, "Title :") }}
-	{{ form_widget(formCategory.title) }}
-</li>
-<li>
-	{{ form_label(formCategory.tag, "Tag :") }}
-	{{ form_widget(formCategory.tag) }}
-</li>
+{% for formContent in formsViewsContents %}
+	{% set content = attribute(category.contents, loop.index0) %}
+	{% if content.type == "date" %}
+		<li>
+			{{ form_label(formContent.myDate, content.title) }}
+			{{ form_widget(formContent.myDate) }}
+		</li>
+	{% elseif content.type == "textarea" %}
+		<li>
+			{{ form_label(formContent.myText, content.title) }}
+			{{ form_widget(formContent.myText) }}
+		</li>
+	{% else %}
+		<li>
+			{{ form_label(formContent.MyValue, content.title) }}
+			{{ form_widget(formContent.myValue) }}
+		</li>
+	{% endif %}
+{% endfor %}

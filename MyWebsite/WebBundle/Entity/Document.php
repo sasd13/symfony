@@ -60,10 +60,19 @@ class Document
 	
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents")
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents", cascade={"persist"})
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $category;
+	
+	
+	public function __construct($name, $mimeType, $path)
+	{
+		$this->name = $name;
+		$this->mimeType = $mimeType;
+		$this->display = true;
+		$this->path = $path;
+	}
 	
 
     public function getAbsolutePath()

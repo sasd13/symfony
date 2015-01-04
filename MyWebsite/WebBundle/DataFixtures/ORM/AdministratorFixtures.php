@@ -2,13 +2,13 @@
 
 namespace MyWebsite\WebBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use MyWebsite\WebBundle\Entity\Administrator;
-use MyWebsite\WebBundle\Entity\EditManager;
 use \DateTime;
 
-class AdminFixtures implements FixtureInterface
+class AdminFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
@@ -17,7 +17,13 @@ class AdminFixtures implements FixtureInterface
 		$admin->setPassword('root');
 		$admin->setEmailBackup(null);
 		
+		$admin->getEditManager()->setUpdateTime(new DateTime());
 		$manager->persist($admin);
 		$manager->flush();
 	}
+	
+	public function getOrder()
+    {
+        return 1; // l'ordre dans lequel les fichiers sont chargés
+    }
 }
