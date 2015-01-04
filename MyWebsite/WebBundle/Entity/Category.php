@@ -41,18 +41,19 @@ class Category
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false)
 	 */
 	private $timeManager;
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\BundleManager")
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(name="bundleManager_id", referencedColumnName="id", nullable=false)
 	 */
 	private $bundleManager;
 	
 	/**
 	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Content", mappedBy="category", cascade={"remove"})
+	 * @ORM\JoinColumn(name="bundleManager_id", referencedColumnName="id", nullable=false)
 	 */
 	private $contents;
 	

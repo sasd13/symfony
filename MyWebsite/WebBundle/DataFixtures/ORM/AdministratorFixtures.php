@@ -6,7 +6,6 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use MyWebsite\WebBundle\Entity\Administrator;
-use \DateTime;
 
 class AdminFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
@@ -15,9 +14,7 @@ class AdminFixtures extends AbstractFixture implements OrderedFixtureInterface
 		$admin = new Administrator();
 		$admin->setLogin('root');
 		$admin->setPassword('root');
-		$admin->setEmailBackup(null);
 		
-		$admin->getTimeManager()->setUpdateTime(new DateTime());
 		$manager->persist($admin);
 		$manager->flush();
 	}

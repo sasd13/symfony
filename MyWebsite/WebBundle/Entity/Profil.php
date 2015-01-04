@@ -53,13 +53,13 @@ class Profil
 
     /**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false)
 	 */
 	private $timeManager;
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\BundleManager")
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(name="bundleManager_id", referencedColumnName="id", nullable=false)
 	 */
 	private $bundleManager;
 	

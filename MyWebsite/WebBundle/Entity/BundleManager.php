@@ -4,6 +4,8 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Entity\TimeManager;
+use \DateTime;
 
 /**
  * BundleManager
@@ -23,6 +25,8 @@ class BundleManager
     private $id;
 
     /**
+     * @var string
+     *
      * @ORM\Column(name="bundleName", type="string", length=255)
      * @Assert\NotBlank
      */
@@ -39,16 +43,23 @@ class BundleManager
 	/**
      * @var string
      *
-     * @ORM\Column(name="readMe", type="text")
+     * @ORM\Column(name="readMe", type="text", nullable=true)
      */
     private $readMe;
 	
+	/**
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
+	 * @ORM\JoinColumn(nullable=false)
+	 */
+	private $timeManager;
 	
-	public function __construct() 
+	
+	public function __construct($bundleName, $active = true) 
 	{
-		$this->createTime = new DateTime();
+		$this->bundleName = $bundleName;
+		$this->active = $active;
+		$this->timeManager = new TimeManager();
 	}
-
 
     /**
      * Get id
@@ -127,5 +138,28 @@ class BundleManager
     public function getReadMe()
     {
         return $this->readMe;
+    }
+
+    /**
+     * Set timeManager
+     *
+     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
+     * @return BundleManager
+     */
+    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
+    {
+        $this->timeManager = $timeManager;
+
+        return $this;
+    }
+
+    /**
+     * Get timeManager
+     *
+     * @return \MyWebsite\WebBundle\Entity\TimeManager 
+     */
+    public function getTimeManager()
+    {
+        return $this->timeManager;
     }
 }

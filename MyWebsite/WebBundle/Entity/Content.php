@@ -26,6 +26,7 @@ class Content
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=45, unique=true)
+	 * @Assert\NotBlank
      */
     private $title;
 	
@@ -64,7 +65,7 @@ class Content
 	/**
      * @var \DateTime
      *
-     * @ORM\Column(name="beginDate", type="datetime")
+     * @ORM\Column(name="beginDate", type="datetime", nullable=true)
 	 * @Assert\Type("\DateTime")
      */
     private $beginDate;
@@ -80,20 +81,20 @@ class Content
 	/**
      * @var string
      *
-     * @ORM\Column(name="stringValue", type="string", length=255)
+     * @ORM\Column(name="stringValue", type="string", length=255, nullable=true)
      */
     private $stringValue;
 	
 	/**
      * @var string
      *
-     * @ORM\Column(name="textValue", type="text")
+     * @ORM\Column(name="textValue", type="text", nullable=true)
      */
     private $textValue;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="contents", cascade={"persist"})
-	 * @ORM\JoinColumn(nullable=false)
+	  * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
 	 */
 	private $category;
 	

@@ -13,9 +13,8 @@ class ExceptionController extends Controller
 		if ($this->getRequest()->getSession()->get('idProfil') != null) 
 		{
 			$this->getRequest()->getSession()->remove('idProfil');
-			return $this->render('MyWebsiteWebBundle:Exception:error.html.twig');
 		}
-		return $this->redirect($this->generateUrl('web_profil_afficher'));
+		return $this->render('MyWebsiteWebBundle:Exception:error.html.twig');
     }
 	
 	public function error404Action($errorURL)

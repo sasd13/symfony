@@ -68,31 +68,28 @@ class Document
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(name="timeManager_id", referencedColumnName="id", nullable=false)
 	 */
 	private $timeManager;
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents", cascade={"persist"})
-	 * @ORM\JoinColumn(nullable=false)
+	 * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
 	 */
 	private $category;
 	
 	
-	public function __construct($name, $mimeType, $path)
-	{
-		$this->name = $name;
-		$this->mimeType = $mimeType;
+	public function __construct()
+    {
 		$this->display = true;
-		$this->path = $path;
-		$this->timeManager = new TimeManager();			
-	}
+		$this->timeManager = new TimeManager();
+    }
 	
 	//Fonction de réinitialisation des documents
-	public function setDefault()
+	public function setDefault($type)
     {
 		//Photos
-		if(strcmp($this->mimeType, "image/gif") === 0 OR strcmp($this->mimeType, "image/jpeg") === 0 OR strcmp($this->mimeType, "image/png") === 0)
+		if(strcmp($type, "image") === 0)
 		{
 			$this->name = "Photo";
 			$this->mimeType = "image/gif";

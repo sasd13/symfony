@@ -19,18 +19,23 @@ class AdministratorController extends Controller
 			return $this->redirect($this->generateUrl('web_profil_afficher'));
 		}
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find(1);
-		$formAdmin = $this->createFormBuilder($admin)
+		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->findOneByLogin("root");
+		if($admin != null)
+		{
+			$formAdmin = $this->createFormBuilder($admin)
 			->add('emailBackup', 'email')
 			->add('password', 'password')
 			->getForm();
 		
-		$layout = 'profil-admin-edit';
-		return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
-																					'layout' => $layout,
-																					'admin' => $admin,
-																					'formAdmin' => $formAdmin->createView()
-		));
+			$layout = 'profil-admin-edit';
+			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
+																						'layout' => $layout,
+																						'admin' => $admin,
+																						'formAdmin' => $formAdmin->createView()
+			));
+		}
+		
+		return $this->redirect($this->generateUrl('web_profil_error'));
 	}
 	
 	public function modifierAdministratorAction()
