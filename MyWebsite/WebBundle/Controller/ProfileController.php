@@ -49,6 +49,8 @@ class ProfileController extends Controller
 		if($profile != null)
 		{
 			$formProfile = $this->createFormBuilder($profile)
+				->setAction($this->generateUrl('web_profile'))
+				->setMethod('POST')
 				->add('firstName', 'text', array('required' => false))
 				->add('lastName', 'text', array('required' => false))
 				->add('email', 'email', array('required' => false))
@@ -66,6 +68,8 @@ class ProfileController extends Controller
 				foreach($categories as $category)
 				{
 					$arrayOfFormsViewsCategories[] = $this->createFormBuilder($category)
+						->setAction($this->generateUrl('web_profile'))
+						->setMethod('POST')
 						->add('title', 'text', array('required' => false))
 						->add('tag', 'text', array('required' => false))
 						->getForm()
@@ -75,12 +79,35 @@ class ProfileController extends Controller
 					foreach($contents as $key => $content)
 					{
 						$arrayOfFormsViewsContents[] = $this->createFormBuilder($content)
+							->setAction($this->generateUrl('web_profile'))
+							->setMethod('POST')
 							->add('title', 'text', array('required' => false))
 							->add('tag', 'text', array('required' => false))
 							->getForm()
 							->createView();
 					}
 				}
+				
+				$message = "Les informations n'ont pas été enregistrées";
+				if($request->getMethod() == 'POST')
+				{
+					$profile->getTimeManager()->setUpdateTime(new DateTime());
+					$em->persist($profile);
+					$em->persist($category);
+					$em->flush();
+					
+					$message = "Les informations ont été enregistrées avec succès";
+				}
+		
+				$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
+				return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
+																							'layout' => 'profile-edit', 
+																							'profile' => $profile, 
+																							'category' => $category,
+																							'formProfile' => $formProfile->createView(),
+																							'formCategory' => $formCategory->createView(),
+																							'message' => $message
+				));
 			}
 			
 			return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(

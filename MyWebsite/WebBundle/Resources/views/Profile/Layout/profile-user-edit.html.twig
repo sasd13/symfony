@@ -8,6 +8,7 @@
 	</div>
 	<div class="new-project-form">
 		{{ form_start(formUser, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+			{{ form_errors(formUser) }}
 			<ul class="form-content">
 				<li>
 					<h2>Identifiants de connexion</h2>

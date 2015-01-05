@@ -13,22 +13,15 @@ class CategoriesFixtures extends AbstractFixture implements OrderedFixtureInterf
 	public function load(ObjectManager $manager)
 	{
 		$profile = $this->getReference('profile');
-		$timeManagers[] = $this->getReference('timeManager5');
-		$timeManagers[] = $this->getReference('timeManager6');
+		$timeManager = $this->getReference('timeManager5');
 		
-		$categories[] = new Category("Informations personnelles", "infos");
-		$categories[] = new Category("Photo de profil", "picture");
+		$category = new Category("Photo de profil", "picture");
+		$category->setTimeManager($timeManager)->setProfile($profile);
 		
-		for($i = 0; $i < count($categories); $i++)
-		{
-			$category = $categories[$i];
-			
-			$category->setTimeManager($timeManagers[$i])->setProfile($profile);
-			$manager->persist($category);
-			$this->addReference('category'.($i+1), $category);
-		}
-		
+		$manager->persist($category);
 		$manager->flush();
+		
+		$this->addReference('category', $category);		
 	}
 	
 	public function getOrder()

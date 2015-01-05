@@ -28,11 +28,7 @@ web_profile_picture_delete:
 
 web_profile_user:
     pattern:  /profile/user
-    defaults: { _controller: MyWebsiteWebBundle:User:edUser}
-
-web_profile_user_edit:
-    pattern:  /profile/user/edit
-    defaults: { _controller: MyWebsiteWebBundle:User:editUser}
+    defaults: { _controller: MyWebsiteWebBundle:User:loadUser}
 
 web_admin:
     pattern:  /admin
