@@ -14,7 +14,7 @@ class ContentsFixtures extends AbstractFixture implements OrderedFixtureInterfac
 	public function load(ObjectManager $manager)
 	{
 		$profile = $this->getReference('profile');
-		$category = $this->getReference('category0');
+		$category = $this->getReference('category1');
 		
 		$contents[] = new Content("name", $profile->getFirstName());
 		$contents[] = new Content("surname", $profile->getLastName());
@@ -24,10 +24,11 @@ class ContentsFixtures extends AbstractFixture implements OrderedFixtureInterfac
 			$content = $contents[$i];
 			$content->setCategory($category);
 			$manager->persist($content);
-			$this->addReference('content'.$i, $content);
+			
+			$this->addReference('content'.($i+1), $content);
 		}
 		
-		$category = $this->getReference('category1');
+		$category = $this->getReference('category2');
 		
 		$picture = new Document();
 		$picture->setDefault("image")->setCategory($category);

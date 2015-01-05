@@ -54,13 +54,24 @@ class Profile
     private $lastName;
 	
 	/**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255)
+	 * @Assert\Email(
+     *     message = "'{{ value }}' n'est pas un email valide",
+     *     checkMX = true
+     * )
+     */
+    private $email;
+	
+	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
 	private $timeManager;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\User", cascade={"persist", "remove"})
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\User", cascade={"remove"})
 	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
 	private $user;
@@ -72,10 +83,11 @@ class Profile
 	private $categories;
 	
 	
-	public function __construct($firstName, $lastName)
+	public function __construct($firstName, $lastName, $email)
 	{
 		$this->firstName = $firstName;
 		$this->lastName = $lastName;
+		$this->email = $email;
 		$this->categories = new ArrayCollection();
 	}
 
@@ -133,6 +145,29 @@ class Profile
     public function getLastName()
     {
         return $this->lastName;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return Profile
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     /**

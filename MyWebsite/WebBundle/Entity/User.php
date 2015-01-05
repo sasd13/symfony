@@ -48,17 +48,6 @@ class User
 	 * )
      */
     private $password;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255)
-	 * @Assert\Email(
-     *     message = "'{{ value }}' n'est pas un email valide",
-     *     checkMX = true
-     * )
-     */
-    private $email;
 	
 	/**
      * @var integer
@@ -80,11 +69,10 @@ class User
 	private $timeManager;
 	
 	
-	public function __construct($login, $password, $email, $privacyLevel = 1)
+	public function __construct($login, $password, $privacyLevel = 1)
 	{
 		$this->login = $login;
 		$this->password = $password;
-		$this->email = $email;
 		$this->privacyLevel = $privacyLevel;
 	}
 
@@ -142,29 +130,6 @@ class User
     public function getPassword()
     {
         return $this->password;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     * @return User
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string 
-     */
-    public function getEmail()
-    {
-        return $this->email;
     }
 
     /**

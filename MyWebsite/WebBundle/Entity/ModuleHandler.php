@@ -8,12 +8,12 @@ use MyWebsite\WebBundle\Entity\TimeManager;
 use \DateTime;
 
 /**
- * BundleHandler
+ * ModuleHandler
  *
- * @ORM\Table(name="web_bundlehandler")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\BundleHandlerRepository")
+ * @ORM\Table(name="web_modulehandler")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ModuleHandlerRepository")
  */
-class BundleHandler
+class ModuleHandler
 {
     /**
      * @var integer
@@ -27,10 +27,29 @@ class BundleHandler
     /**
      * @var string
 	 *
-     * @ORM\Column(name="bundleName", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank
      */
-    public $bundleName;
+    public $name;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="target", type="string", length=255)
+	 * @Assert\NotBlank
+     */
+    private $target;
+	
+	/**
+     * @var integer
+     *
+     * @ORM\Column(name="priority", type="integer")
+	 * @Assert\Range(
+     *      min = 0,
+     *      minMessage = "La priorité doit être au moins de 0"
+     * )
+     */
+    private $priority;
 	
 	/**
      * @var boolean
@@ -54,9 +73,11 @@ class BundleHandler
 	private $timeManager;
 	
 	
-	public function __construct($bundleName)
+	public function __construct($name, $target, $priority = 0)
     {
-		$this->bundleName = $bundleName;
+		$this->name = $name;
+		$this->target = $target;
+		$this->priority = $priority;
 		$this->active = true;
     }
 
@@ -71,33 +92,79 @@ class BundleHandler
     }
 
     /**
-     * Set bundleName
+     * Set name
      *
-     * @param string $bundleName
-     * @return BundleHandler
+     * @param string $name
+     * @return ModuleHandler
      */
-    public function setBundleName($bundleName)
+    public function setName($name)
     {
-        $this->bundleName = $bundleName;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get bundleName
+     * Get name
      *
      * @return string 
      */
-    public function getBundleName()
+    public function getName()
     {
-        return $this->bundleName;
+        return $this->name;
+    }
+
+    /**
+     * Set target
+     *
+     * @param string $target
+     * @return ModuleHandler
+     */
+    public function setTarget($target)
+    {
+        $this->target = $target;
+
+        return $this;
+    }
+
+    /**
+     * Get target
+     *
+     * @return string 
+     */
+    public function getTarget()
+    {
+        return $this->target;
+    }
+
+    /**
+     * Set priority
+     *
+     * @param integer $priority
+     * @return ModuleHandler
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * Get priority
+     *
+     * @return integer 
+     */
+    public function getPriority()
+    {
+        return $this->priority;
     }
 
     /**
      * Set active
      *
      * @param boolean $active
-     * @return BundleHandler
+     * @return ModuleHandler
      */
     public function setActive($active)
     {
@@ -120,7 +187,7 @@ class BundleHandler
      * Set readMe
      *
      * @param string $readMe
-     * @return BundleHandler
+     * @return ModuleHandler
      */
     public function setReadMe($readMe)
     {
@@ -143,7 +210,7 @@ class BundleHandler
      * Set timeManager
      *
      * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return BundleHandler
+     * @return ModuleHandler
      */
     public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
     {

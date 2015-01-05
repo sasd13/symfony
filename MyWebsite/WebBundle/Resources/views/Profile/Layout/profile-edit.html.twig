@@ -7,7 +7,7 @@
 		</div>
 	</div>
 	<div class="new-form">
-		<form class="contact_form" action="{{ path('web_profil_modifier') }}" method="post" name="contact_form">
+		<form class="contact_form" action="{{ path('web_profile_edit') }}" method="post" name="contact_form">
 			<div class="form-submit2">
 				<input type="submit" class="submit" value="Enregistrer"/>
 				{% if message is defined %}
@@ -23,17 +23,17 @@
 					<h2>Informations personnelles</h2>
 				</li>
 				<li>
-					{{ form_label(formProfil.firstName, "Prénom :") }}
-					{{ form_widget(formProfil.firstName) }}
+					{{ form_label(formProfile.firstName, "Prénom :") }}
+					{{ form_widget(formProfile.firstName) }}
 				</li>
 				<li>
-					{{ form_label(formProfil.lastName, "Nom :") }}
-					{{ form_widget(formProfil.lastName) }}
+					{{ form_label(formProfile.lastName, "Nom :") }}
+					{{ form_widget(formProfile.lastName) }}
 				</li>
 				{% if categories is defined %}
 					{% for formCategory in formsViewsCategories %}
 						{% set category = attribute(categories, loop.index0) %}
-						{% include "MyWebsiteWebBundle:Profil:Layout/Form/profil-category-form.html.twig" %}
+						{% include "MyWebsiteWebBundle:Profil:Layout:Form:profile-category-form.html.twig" %}
 					{% endfor %}
 				{% endif %}
 			</ul>

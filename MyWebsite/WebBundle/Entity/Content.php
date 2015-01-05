@@ -98,7 +98,7 @@ class Content
 			$this->stringValue = $value;
 		}
 	}
-	
+
     /**
      * Get id
      *

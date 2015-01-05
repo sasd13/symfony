@@ -4,77 +4,98 @@ namespace MyWebsite\WebBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
-use MyWebsite\WebBundle\Entity\Profil;
+use MyWebsite\WebBundle\Entity\User;
+use MyWebsite\WebBundle\Entity\Profile;
 
 class UserController extends Controller
 {
-	public function afficherAdministratorAction()
+	public function editUserAction()
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idProfil') == null)
+		if($request->getSession()->get('idProfile') == null)
 		{
-			return $this->redirect($this->generateUrl('web_profil_afficher'));
+			return $this->redirect($this->generateUrl('web_profile'));
 		}
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->findOneByLogin("root");
-		if($admin != null)
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
+		$user = $profile->getUser();
+		if($user != null)
 		{
-			$formAdmin = $this->createFormBuilder($admin)
-			->add('emailBackup', 'email')
-			->add('password', 'password')
-			->getForm();
-		
-			$layout = 'profil-admin-edit';
-			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
+			$formUser = $this->createFormBuilder($user)
+				->setAction($this->generateUrl('web_profile_user_edit'))
+				->setMethod('POST')
+				->add('login', 'text')
+				->add('password', 'password')
+				->getForm();
+			
+			$message = "* Denotes Required Field";
+			
+			if($request->getMethod() == 'POST')
+			{
+				$formUser->handleRequest($request);
+			
+				$message = "Les informations n'ont pas été enregistrées";
+				if(strcmp($user->getPassword(), $request->request->get('confirmpassword')) === 0)
+				{
+					$em->persist($user);
+					$em->flush();
+				
+					$message = "Les informations ont été enregistrées avec succès";
+				}
+				$user = $em->getRepository('MyWebsiteWebBundle:User')->find($user->getId());
+			}
+			
+			$layout = 'profile-user-edit';
+			return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
 																						'layout' => $layout,
-																						'admin' => $admin,
-																						'formAdmin' => $formAdmin->createView()
+																						'user' => $user,
+																						'formUser' => $formUser->createView(),
+																						'message' => $message
 			));
 		}
 		
-		return $this->redirect($this->generateUrl('web_profil_error'));
+		return $this->redirect($this->generateUrl('web_error'));
 	}
 	
-	public function modifierAdministratorAction()
+	public function edUserAction()
     {
 		$request = $this->getRequest();
-		$em = $this->getDoctrine()->getManager();		
+		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idProfil') == null)
+		if($request->getSession()->get('login') == null)
 		{
-			return $this->redirect($this->generateUrl('web_profil_afficher'));
+			return $this->redirect($this->generateUrl('web_profile'));
 		}
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Administrator')->find($request->request->get('idAdmin'));
-		if($admin != null)
+		$user = $em->getRepository('MyWebsiteWebBundle:User')->findOneByLogin($request->getSession()->get('login'));
+		if($user != null)
 		{
-			$formAdmin = $this->createFormBuilder($admin)
-				->add('emailBackup', 'email')
+			$formUser = $this->createFormBuilder($user)
+				->add('login', 'text')
 				->add('password', 'password')
 				->getForm();
-			$formAdmin->handleRequest($request);
+			$formUser->handleRequest($request);
 			
 			$message = "Les informations n'ont pas été enregistrées";
-			if ($request->getSession()->get('idProfil') != null AND strcmp($admin->getPassword(), $request->request->get('confirmpassword')) === 0)
+			if ($request->getSession()->get('login') != null AND strcmp($user->getPassword(), $request->request->get('confirmpassword')) === 0)
 			{
-				$em->persist($admin);
+				$em->persist($user);
 				$em->flush();
 			
 				$message = "Les informations ont été enregistrées avec succès";
 			}
 			
-			$layout = 'profil-admin-edit';
-			return $this->render('MyWebsiteWebBundle:Profil:profil.html.twig', array(
+			$layout = 'profile-user-edit';
+			return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
 																						'layout' => $layout,
-																						'admin' => $admin,
-																						'formAdmin' => $formAdmin->createView(),
+																						'user' => $user,
+																						'formUser' => $formUser->createView(),
 																						'message' => $message
 			));
 		}
 		
-		return $this->redirect($this->generateUrl('web_profil_error'));
+		return $this->redirect($this->generateUrl('web_error'));
     }
 }

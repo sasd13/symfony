@@ -43,7 +43,7 @@ class TimeManager
 	public function __construct() 
 	{
 		$this->createTime = new DateTime();
-		$this->updateTime = $this->createTime;
+		$this->updateTime = new DateTime();
 	}
 
     /**

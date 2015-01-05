@@ -16,22 +16,18 @@ class EndLoadFixtures extends AbstractFixture implements OrderedFixtureInterface
 	public function load(ObjectManager $manager)
 	{
 		$profile = $this->getReference('profile');
+		$category1 = $this->getReference('category1');
 		
-		$categories[] = $this->getReference('category0');
-		$categories[] = $this->getReference('category1');
+		$category1->addContent($this->getReference('content1'));
+		$category1->addContent($this->getReference('content2'));
+		$category1->getTimeManager()->setUpdateTime(new DateTime());
 		
-		for($i = 0; $i < count($categories); $i++)
-		{
-			$category = $categories[$i];
-			$category->addContent($this->getReference('content0'));
-			$category->addContent($this->getReference('content1'));
-			$category->getTimeManager()->setUpdateTime(new DateTime());
-			
-			$profile->addCategory($category);
-			
-			$manager->persist($category);
-		}
+		$category2 = $this->getReference('category2');
+		$category2->addDocument($this->getReference('picture'));
+		$category2->getTimeManager()->setUpdateTime(new DateTime());
 		
+		$profile->addCategory($category1);
+		$profile->addCategory($category2);
 		$profile->getTimeManager()->setUpdateTime(new DateTime());
 		
 		$manager->persist($profile);

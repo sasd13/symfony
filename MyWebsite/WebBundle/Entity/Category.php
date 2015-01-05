@@ -41,6 +41,14 @@ class Category
     private $tag;
 	
 	/**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255)
+	 * @Assert\NotBlank
+     */
+    private $type;
+	
+	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
@@ -65,13 +73,14 @@ class Category
 	private $profile;
 	
 	
-	public function __construct($title, $tag)
+	public function __construct($title, $tag, $type = "content")
 	{
 		$this->title = $title;
 		$this->tag = $tag;
+		$this->type = $type;
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
-	}	
+	}
 
     /**
      * Get id
@@ -127,6 +136,29 @@ class Category
     public function getTag()
     {
         return $this->tag;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return Category
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string 
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**

@@ -46,13 +46,22 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<div class="top-nav" id="navigation">
 						<ul>
 							<li><a href="{{ path('web_home') }}">Home</a></li>
-							<li><a href="{{ path('cv_list') }}">CV</a></li>
-							<li><a href="{{ path('project_list') }}">Projects</a></li>
+							{% set modules = app.session.get('modules') %}
+							{% for module in modules %}
+								{% if module.active == true %}
+									{% if module.name == 'Profile' %}
+										<li><a href="{{ path(module.target) }}">MyProfile</a></li>
+										{% set idProfile = app.session.get('idProfile') %}
+										{% if idProfile != null %}
+											<li><a href="{{ path(module.target ~ '_logout') }}">D&eacute;connexion</a></li>
+										{% endif %}
+									{% else %}
+										<li><a href="{{ path(module.target) }}">{{ module.name }}</a></li>
+									{% endif %}
+								{% endif %}
+							{% endfor %}
 							{% set login = app.session.get('idProfil') %}
-							{% if  login != null %}
-								<li><a href="{{ path('web_profil_afficher') }}">Profil</a></li>
-								<li><a href="{{ path('web_profil_logout') }}">D&eacute;connexion</a></li>
-							{% endif %}
+							
 							<div class="clear"> </div>
 						</ul>
 					</div>
@@ -95,7 +104,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						</form>
 						<br/>
 						{% if  login == null %}
-							<p><a id="log" href="{{ path('web_profil_afficher') }}">Go to Administration</a></p>
+							<p><a id="log" href="{{ path('web_admin') }}">Go to Administration</a></p>
 						{% endif %}
 					</div>					
 					<div class="clear"> </div>

@@ -56,20 +56,20 @@ class Document
     public $path;
 	
 	/**
-     * @Assert\File(
-     *     maxSize = "5120k",
-	 *     maxSizeMessage = "Fichier trop volumineux"
-     * )
-     */
-    public $file;
-	
-	/**
      * @var \DateTime
      *
      * @ORM\Column(name="uploadDate", type="datetime")
 	 * @Assert\Type(type="\DateTime")
      */
     private $uploadDate;
+	
+	/**
+     * @Assert\File(
+     *     maxSize = "5120k",
+	 *     maxSizeMessage = "Fichier trop volumineux"
+     * )
+     */
+    public $file;
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents", cascade={"persist"})
@@ -120,9 +120,8 @@ class Document
         // on se débarrasse de « __DIR__ » afin de ne pas avoir de problème lorsqu'on affiche le document dans la vue.
         return 'uploads';
     }
-	
-	
-	/**
+
+    /**
      * Get id
      *
      * @return integer 
