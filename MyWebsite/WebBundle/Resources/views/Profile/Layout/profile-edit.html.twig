@@ -34,12 +34,11 @@
 					{{ form_label(formProfile.email, "Email :") }}
 					{{ form_widget(formProfile.email) }}
 				</li>
-				{% if categories is not null %}
+				{% if (categories is not null) and (arrayOfFormsViewsContents is not null) %}
+					{% set i = 0 %}
 					{% for category in categories %}
-						{% set category = attribute(categories, loop.index0) %}
-						{% if category.type == 'content' %}
-							{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-form.html.twig" %}
-						{% endif %}
+						{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-form.html.twig" %}
+						{% set i = i+1 %}
 					{% endfor %}
 				{% endif %}
 			</ul>

@@ -121,7 +121,10 @@ class ProfileController extends Controller
 					}
 				}
 			}
+			
+			//--- PROBLEME ICI ---//
 			$arrayOfFormsViewsContent[] = $formsViewsContents;
+			//--------------------//
 			
 			if($request->getMethod() == 'POST')
 			{

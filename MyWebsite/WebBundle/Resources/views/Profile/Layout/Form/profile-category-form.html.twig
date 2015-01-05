@@ -2,26 +2,15 @@
 <li>
 	<h2>{{ category.title }}</h2>
 </li>
-{% set contents = category.contents %}
-{% if arrayOfFormsViewsContents is not null %}
-	{{ category.title }}
-	{% set formsViewsContents = attribute(arrayOfFormsViewsContents, loop.index0) %}
-	{% for formContent in formsViewsContents %}
-		{% set content = attribute(contents, loop.index0) %}
-		<li>
-			{{ form_label(formContent.label, content.label) }}
-			{{ form_widget(formContent.label) }}
-		</li>
-		{% if content.typeForm == 'textarea' %}
-			<li>
-				{{ form_label(formContent.textValue, content.textValue) }}
-				{{ form_widget(formContent.textValue) }}
-			</li>
-		{% else %}
-			<li>
-				{{ form_label(formContent.stringValue, content.stringValue) }}
-				{{ form_widget(formContent.stringValue) }}
-			</li>
-		{% endif %}
-	{% endfor %}
+{% if category.type == 'content' %}
+	{% set contents = category.contents %}
+	{% set formsViewsContents = attribute(arrayOfFormsViewsContents, i) %}
+	{% if (contents is not null) and (formsViewsContents is not null) %}
+		{% set j = 0 %}
+		{% for content in contents %}
+			{% set formContent = attribute(formsViewsContents, j) %}
+			{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-content-form.html.twig" %}
+			{% set j = j+1 %}
+		{% endfor %}
+	{% endif %}
 {% endif %}
