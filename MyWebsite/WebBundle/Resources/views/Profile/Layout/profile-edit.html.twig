@@ -7,7 +7,7 @@
 		</div>
 	</div>
 	<div class="new-form">
-		<form class="contact_form" action="{{ path('web_profile_edit') }}" method="post" name="contact_form">
+		{{ form_start(formProfile, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
 			<div class="form-submit2">
 				<input type="submit" class="submit" value="Enregistrer"/>
 				{% if message is defined %}
@@ -30,14 +30,20 @@
 					{{ form_label(formProfile.lastName, "Nom :") }}
 					{{ form_widget(formProfile.lastName) }}
 				</li>
-				{% if categories is defined %}
-					{% for formCategory in formsViewsCategories %}
+				<li>
+					{{ form_label(formProfile.email, "Email :") }}
+					{{ form_widget(formProfile.email) }}
+				</li>
+				{% if categories is not null %}
+					{% for category in categories %}
 						{% set category = attribute(categories, loop.index0) %}
-						{% include "MyWebsiteWebBundle:Profil:Layout:Form:profile-category-form.html.twig" %}
+						{% if category.type == 'content' %}
+							{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-form.html.twig" %}
+						{% endif %}
 					{% endfor %}
 				{% endif %}
 			</ul>
-		</form>
+		{{ form_end(formProfile) }}
 	</div>
 	<div class="clear"> </div>
 </div>

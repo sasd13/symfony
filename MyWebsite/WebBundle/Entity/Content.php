@@ -33,10 +33,10 @@ class Content
 	/**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=255)
+     * @ORM\Column(name="formType", type="string", length=255)
 	 * @Assert\NotBlank
      */
-    private $type;
+    private $formType;
 	
 	/**
      * @var integer
@@ -83,13 +83,13 @@ class Content
 	private $category;
 	
 	
-	public function __construct($label, $value, $type = "text")
+	public function __construct($label, $value, $formType = "text")
 	{
 		$this->label = $label;
-		$this->type = $type;
+		$this->formType = $formType;
 		$this->policyLevel = 1;
 		$this->priority = 0;
-		if(strcmp($type, 'textarea') === 0)
+		if(strcmp($formType, 'textarea') === 0)
 		{
 			$this->textValue = $value;
 		}
@@ -133,26 +133,26 @@ class Content
     }
 
     /**
-     * Set type
+     * Set formType
      *
-     * @param string $type
+     * @param string $formType
      * @return Content
      */
-    public function setType($type)
+    public function setFormType($formType)
     {
-        $this->type = $type;
+        $this->formType = $formType;
 
         return $this;
     }
 
     /**
-     * Get type
+     * Get formType
      *
      * @return string 
      */
-    public function getType()
+    public function getFormType()
     {
-        return $this->type;
+        return $this->formType;
     }
 
     /**

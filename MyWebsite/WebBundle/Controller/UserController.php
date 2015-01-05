@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use MyWebsite\WebBundle\Entity\User;
 use MyWebsite\WebBundle\Entity\Profile;
+use \DateTime;
 
 class UserController extends Controller
 {
@@ -38,12 +39,13 @@ class UserController extends Controller
 			$message = "Les informations n'ont pas été enregistrées";
 			if($formUser->isValid() AND strcmp($user->getPassword(), $request->request->get('confirmpassword')) === 0)
 			{
+				$user->getTimeManager()->setUpdateTime(new DateTime());
 				$em->persist($user);
 				$em->flush();
 		
 				$message = "Les informations ont été enregistrées avec succès";
+				$user = $em->getRepository('MyWebsiteWebBundle:User')->find($user->getId());
 			}
-			$user = $em->getRepository('MyWebsiteWebBundle:User')->find($user->getId());
 		}
 		
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(

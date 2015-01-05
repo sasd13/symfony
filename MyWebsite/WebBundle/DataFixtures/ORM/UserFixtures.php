@@ -19,7 +19,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface
 		
 		$timeManager = $this->getReference('timeManager3');
 		
-		$user = new User('sasd13', 'sasori25', 1);
+		$user = new User('samir', 'sasori', 1);
 		$user->setTimeManager($timeManager);
 		
 		$manager->persist($admin);

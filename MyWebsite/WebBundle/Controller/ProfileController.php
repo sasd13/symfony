@@ -4,10 +4,10 @@ namespace MyWebsite\WebBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use MyWebsite\WebBundle\Entity\Profile;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Document;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use \DateTime;
 
 class ProfileController extends Controller
@@ -44,82 +44,107 @@ class ProfileController extends Controller
 		else 
 		{
 			$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
+			if($profile == null)
+			{
+				return $this->redirect($this->generateUrl('web_error'));
+			}
 		}
 		
-		if($profile != null)
+		$formProfile = $this->createFormBuilder($profile)
+			->setAction($this->generateUrl('web_profile'))
+			->setMethod('POST')
+			->add('firstName', 'text', array('required' => false))
+			->add('lastName', 'text', array('required' => false))
+			->add('email', 'email', array('required' => false))
+			->getForm();
+		
+		$arrayOfFormsViewsContents = null;
+			
+		//creer myFindCategoriesByContent
+		$categories = $profile->getCategories();
+		foreach($categories as $category)
 		{
-			$formProfile = $this->createFormBuilder($profile)
+			if(strcmp($category->getTag(), 'profile_picture') == 0)
+			{
+				$picture = $em->getRepository('MyWebsiteWebBundle:Document')->findOneByCategory($category);
+				$request->getSession()->set('profile_picture_path', $picture->getPath());
+			}
+			$formCategory = $this->createFormBuilder($category)
 				->setAction($this->generateUrl('web_profile'))
 				->setMethod('POST')
-				->add('firstName', 'text', array('required' => false))
-				->add('lastName', 'text', array('required' => false))
-				->add('email', 'email', array('required' => false))
+				->add('title', 'text', array('required' => false))
+				->add('tag', 'text', array('required' => false))
 				->getForm();
 			
-			$arrayOfFormsViewsCategories = null;
-			$arrayOfArraysOfFormsViewsContents = null;
 			
-			//creer myFindCategories
-			$categories = $em->getRepository('MyWebsiteWebBundle:Category')->findByTimeManager($profile->getTimeManager()->getId());
-			if($categories != null)
+			$arrayChoices = array(
+									'integer' => 'integer',
+									'text' => 'text',
+									'textarea' => 'textarea',
+									'email' => 'email',
+									'url' => 'url',
+									'date' => 'date'
+			);
+			
+			$formsViewsContents = null;
+			$contents = $category->getContents();
+			foreach($contents as $content)
 			{
-				$arrayOfFormsViewsContents = null;
+				$formBuilder = $this->createFormBuilder($content)
+					->setAction($this->generateUrl('web_profile'))
+					->setMethod('POST')
+					->add('label', 'text');
 				
-				foreach($categories as $category)
+				$formContent = null;
+				if($content->getTextValue() == null)
 				{
-					$arrayOfFormsViewsCategories[] = $this->createFormBuilder($category)
-						->setAction($this->generateUrl('web_profile'))
-						->setMethod('POST')
-						->add('title', 'text', array('required' => false))
-						->add('tag', 'text', array('required' => false))
-						->getForm()
-						->createView();
-					
-					$contents = $category->getContents();
-					foreach($contents as $key => $content)
-					{
-						$arrayOfFormsViewsContents[] = $this->createFormBuilder($content)
-							->setAction($this->generateUrl('web_profile'))
-							->setMethod('POST')
-							->add('title', 'text', array('required' => false))
-							->add('tag', 'text', array('required' => false))
-							->getForm()
-							->createView();
-					}
+					$formContent = $formBuilder->add('stringValue', $content->getFormType(), array(
+																									'attr' => array(
+																													'value' => $content->getStringValue(),
+					)))->getForm();
+				}
+				else
+				{
+					$formContent = $formBuilder->add('textValue', $content->getFormType())->getForm();
 				}
 				
-				$message = "Les informations n'ont pas été enregistrées";
+				$formsViewsContents[] = $formContent->createView();
+				
 				if($request->getMethod() == 'POST')
 				{
-					$profile->getTimeManager()->setUpdateTime(new DateTime());
-					$em->persist($profile);
+					$formContent->handleRequest($request);
+					
+					if($formContent->isValid())
+					{
+						$em->persist($content);
+						$em->flush();
+					}
+				}
+			}
+			$arrayOfFormsViewsContent[] = $formsViewsContents;
+			
+			if($request->getMethod() == 'POST')
+			{
+				$formCategory->handleRequest($request);
+				
+				if($formCategory->isValid())
+				{
+					$category->getTimeManager()->setUpdateTime(new DateTime());
 					$em->persist($category);
 					$em->flush();
-					
-					$message = "Les informations ont été enregistrées avec succès";
 				}
-		
-				$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-				return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-																							'layout' => 'profile-edit', 
-																							'profile' => $profile, 
-																							'category' => $category,
-																							'formProfile' => $formProfile->createView(),
-																							'formCategory' => $formCategory->createView(),
-																							'message' => $message
-				));
 			}
-			
-			return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-																						'layout' => 'profile-edit',
-																						'profile' => $profile,
-																						'formProfile' => $formProfile->createView(),
-																						'categories' => $categories,
-																						'formsViewsCategories' => $arrayOfFormsViewsCategories
-			));
 		}
 		
-		return $this->redirect($this->generateUrl('web_error'));
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
+		
+		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
+																					'layout' => 'profile-edit',
+																					'profile' => $profile,
+																					'formProfile' => $formProfile->createView(),
+																					'categories' => $categories,
+																					'arrayOfFormsViewsContents' => $arrayOfFormsViewsContents
+		));
 	}
 	
 	public function editProfileAction()
