@@ -7,14 +7,10 @@
 		</div>
 	</div>
 	<div class="new-form">
-		{{ form_start(formProfile, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+		<form name="contact_form" class="contact_form" action={{ path('web_profile_edit') }} method="post">
+			{{ message }}
 			<div class="form-submit2">
 				<input type="submit" class="submit" value="Enregistrer"/>
-				{% if message is defined %}
-					<div class="required_notification">{{ message }}</div>
-				{% else %}
-					<span class="required_notification">* Denotes Required Field</span>
-				{% endif %}
 			</div>
 			<br/>
 			<ul class="form-content">
@@ -23,26 +19,24 @@
 					<h2>Informations personnelles</h2>
 				</li>
 				<li>
-					{{ form_label(formProfile.firstName, "Prénom :") }}
-					{{ form_widget(formProfile.firstName) }}
+					<label for="firstName">Pr&eaacute;nom</label>
+					<input type="text" name="firstName" value="{{ profile.firstName }}" placeholder="your first name" maxlength="50" required />
 				</li>
 				<li>
-					{{ form_label(formProfile.lastName, "Nom :") }}
-					{{ form_widget(formProfile.lastName) }}
+					<label for="laststName">Nom</label>
+					<input type="text" name="lastName" value="{{ profile.lastName }}" placeholder="your last name" maxlength="50" required />
 				</li>
 				<li>
-					{{ form_label(formProfile.email, "Email :") }}
-					{{ form_widget(formProfile.email) }}
+					<label for="email">Email</label>
+					<input type="email" name="email" value="{{ profile.email }}" placeholder="exemple@email.com" required />
 				</li>
-				{% if (categories is not null) and (arrayOfFormsViewsContents is not null) %}
-					{% set i = 0 %}
+				{% if categories.count > 0 %}
 					{% for category in categories %}
 						{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-form.html.twig" %}
-						{% set i = i+1 %}
 					{% endfor %}
 				{% endif %}
 			</ul>
-		{{ form_end(formProfile) }}
+		</form>
 	</div>
 	<div class="clear"> </div>
 </div>

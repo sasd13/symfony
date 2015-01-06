@@ -33,10 +33,39 @@ class Content
 	/**
      * @var string
      *
+     * @ORM\Column(name="labelValue", type="string", length=255)
+	 * @Assert\NotBlank
+     */
+    private $labelValue;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="stringValue", type="string", length=255, nullable=true)
+     */
+    private $stringValue;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="textValue", type="text", nullable=true)
+     */
+    private $textValue;
+	
+	/**
+     * @var string
+     *
      * @ORM\Column(name="formType", type="string", length=255)
 	 * @Assert\NotBlank
      */
     private $formType;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="placeholder", type="text", nullable=true)
+     */
+    private $placeholder;
 	
 	/**
      * @var integer
@@ -61,20 +90,6 @@ class Content
      * )
      */
     private $policyLevel;
-	
-	/**
-     * @var string
-     *
-     * @ORM\Column(name="stringValue", type="string", length=255, nullable=true)
-     */
-    private $stringValue;
-	
-	/**
-     * @var string
-     *
-     * @ORM\Column(name="textValue", type="text", nullable=true)
-     */
-    private $textValue;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="contents")
@@ -83,12 +98,10 @@ class Content
 	private $category;
 	
 	
-	public function __construct($label, $value, $formType = "text")
+	public function __construct($label, $labelValue, $value, $formType = "text")
 	{
 		$this->label = $label;
-		$this->formType = $formType;
-		$this->policyLevel = 1;
-		$this->priority = 0;
+		$this->labelValue = $labelValue;
 		if(strcmp($formType, 'textarea') === 0)
 		{
 			$this->textValue = $value;
@@ -97,6 +110,9 @@ class Content
 		{
 			$this->stringValue = $value;
 		}
+		$this->formType = $formType;
+		$this->policyLevel = 1;
+		$this->priority = 0;
 	}
 
     /**
@@ -133,72 +149,26 @@ class Content
     }
 
     /**
-     * Set formType
+     * Set labelValue
      *
-     * @param string $formType
+     * @param string $labelValue
      * @return Content
      */
-    public function setFormType($formType)
+    public function setLabelValue($labelValue)
     {
-        $this->formType = $formType;
+        $this->labelValue = $labelValue;
 
         return $this;
     }
 
     /**
-     * Get formType
+     * Get labelValue
      *
      * @return string 
      */
-    public function getFormType()
+    public function getLabelValue()
     {
-        return $this->formType;
-    }
-
-    /**
-     * Set priority
-     *
-     * @param integer $priority
-     * @return Content
-     */
-    public function setPriority($priority)
-    {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    /**
-     * Get priority
-     *
-     * @return integer 
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
-
-    /**
-     * Set policyLevel
-     *
-     * @param integer $policyLevel
-     * @return Content
-     */
-    public function setPolicyLevel($policyLevel)
-    {
-        $this->policyLevel = $policyLevel;
-
-        return $this;
-    }
-
-    /**
-     * Get policyLevel
-     *
-     * @return integer 
-     */
-    public function getPolicyLevel()
-    {
-        return $this->policyLevel;
+        return $this->labelValue;
     }
 
     /**
@@ -245,6 +215,98 @@ class Content
     public function getTextValue()
     {
         return $this->textValue;
+    }
+
+    /**
+     * Set formType
+     *
+     * @param string $formType
+     * @return Content
+     */
+    public function setFormType($formType)
+    {
+        $this->formType = $formType;
+
+        return $this;
+    }
+
+    /**
+     * Get formType
+     *
+     * @return string 
+     */
+    public function getFormType()
+    {
+        return $this->formType;
+    }
+
+    /**
+     * Set placeholder
+     *
+     * @param string $placeholder
+     * @return Content
+     */
+    public function setPlaceholder($placeholder)
+    {
+        $this->placeholder = $placeholder;
+
+        return $this;
+    }
+
+    /**
+     * Get placeholder
+     *
+     * @return string 
+     */
+    public function getPlaceholder()
+    {
+        return $this->placeholder;
+    }
+
+    /**
+     * Set priority
+     *
+     * @param integer $priority
+     * @return Content
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * Get priority
+     *
+     * @return integer 
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Set policyLevel
+     *
+     * @param integer $policyLevel
+     * @return Content
+     */
+    public function setPolicyLevel($policyLevel)
+    {
+        $this->policyLevel = $policyLevel;
+
+        return $this;
+    }
+
+    /**
+     * Get policyLevel
+     *
+     * @return integer 
+     */
+    public function getPolicyLevel()
+    {
+        return $this->policyLevel;
     }
 
     /**

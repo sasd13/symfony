@@ -5,6 +5,7 @@ namespace MyWebsite\WebBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Entity\Profile;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Document;
@@ -58,24 +59,24 @@ class ProfileController extends Controller
 			->add('email', 'email', array('required' => false))
 			->getForm();
 		
-		$arrayOfFormsViewsContents = null;
-			
-		//creer myFindCategoriesByContent
-		$categories = $profile->getCategories();
-		foreach($categories as $category)
+		
+		//------------------//
+		//--- Categories ---//
+		//------------------//
+		
+		$categories = new ArrayCollection();
+		$arrayOfFormsContents = new ArrayCollection();
+		
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategories($profile->getId());
+		$arrayOfCategories = $profile->getCategories();
+		foreach($arrayOfCategories as $keyCategory => $category)
 		{
 			if(strcmp($category->getTag(), 'profile_picture') == 0)
 			{
 				$picture = $em->getRepository('MyWebsiteWebBundle:Document')->findOneByCategory($category);
 				$request->getSession()->set('profile_picture_path', $picture->getPath());
+				continue;
 			}
-			$formCategory = $this->createFormBuilder($category)
-				->setAction($this->generateUrl('web_profile'))
-				->setMethod('POST')
-				->add('title', 'text', array('required' => false))
-				->add('tag', 'text', array('required' => false))
-				->getForm();
-			
 			
 			$arrayChoices = array(
 									'integer' => 'integer',
@@ -86,9 +87,11 @@ class ProfileController extends Controller
 									'date' => 'date'
 			);
 			
-			$formsViewsContents = null;
-			$contents = $category->getContents();
-			foreach($contents as $content)
+			$formsContents = new ArrayCollection();
+			
+			$bufferCategory = $em->getRepository('MyWebsiteWebBundle:Category')->myFindWithContents($category->getId());
+			$arrayOfContents = $bufferCategory->getContents();
+			foreach($arrayOfContents as $keyContent => $content)
 			{
 				$formBuilder = $this->createFormBuilder($content)
 					->setAction($this->generateUrl('web_profile'))
@@ -108,7 +111,7 @@ class ProfileController extends Controller
 					$formContent = $formBuilder->add('textValue', $content->getFormType())->getForm();
 				}
 				
-				$formsViewsContents[] = $formContent->createView();
+				$formsContents[] = $formContent->createView();
 				
 				if($request->getMethod() == 'POST')
 				{
@@ -122,21 +125,11 @@ class ProfileController extends Controller
 				}
 			}
 			
-			//--- PROBLEME ICI ---//
-			$arrayOfFormsViewsContent[] = $formsViewsContents;
-			//--------------------//
+			$categories[] = $bufferCategory;
 			
-			if($request->getMethod() == 'POST')
-			{
-				$formCategory->handleRequest($request);
-				
-				if($formCategory->isValid())
-				{
-					$category->getTimeManager()->setUpdateTime(new DateTime());
-					$em->persist($category);
-					$em->flush();
-				}
-			}
+			//--- PROBLEME ICI ---//
+			$arrayOfFormsContents[] = $formsContents;
+			//--------------------//
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
@@ -146,7 +139,7 @@ class ProfileController extends Controller
 																					'profile' => $profile,
 																					'formProfile' => $formProfile->createView(),
 																					'categories' => $categories,
-																					'arrayOfFormsViewsContents' => $arrayOfFormsViewsContents
+																					'arrayOfFormsContents' => $arrayOfFormsContents
 		));
 	}
 	

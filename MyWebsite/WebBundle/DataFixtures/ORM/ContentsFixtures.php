@@ -15,7 +15,7 @@ class ContentsFixtures extends AbstractFixture implements OrderedFixtureInterfac
 		$picture = new Document();
 		$picture->setDefault("image")->setCategory($this->getReference('category1'));
 		
-		$content1 = new Content("Villes", "Paris");
+		$content1 = new Content("Ville", "Paris");
 		$content1->setCategory($this->getReference('category2'));
 		
 		$content2 = new Content("Pays", "France");

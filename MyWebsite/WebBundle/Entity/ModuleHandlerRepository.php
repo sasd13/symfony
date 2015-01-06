@@ -14,8 +14,10 @@ class ModuleHandlerRepository extends EntityRepository
 {
 	public function myFindOrdered()
 	{
-		$qb = $this->createQueryBuilder('a');
-		$qb->addOrderBy('a.priority', 'DESC');
+		$qb = $this->createQueryBuilder('moduleHandler')
+			->where('moduleHandler.active = :active')
+			->setParameter('active', true)
+			->addOrderBy('moduleHandler.priority', 'ASC');
 	
 		return $qb->getQuery()->getResult();
 	}

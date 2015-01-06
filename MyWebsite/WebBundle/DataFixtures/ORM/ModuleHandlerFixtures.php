@@ -14,10 +14,10 @@ class ModuleHandlerFixtures extends AbstractFixture implements OrderedFixtureInt
 	{
 		$timeManager = $this->getReference('timeManager1');
 		
-		$moduleHandler = new ModuleHandler('Profile', 'web_profile', 0);
-		$moduleHandler->setTimeManager($timeManager);
+		$moduleProfile = new ModuleHandler('Profile', 'web_profile', 1);
+		$moduleProfile->setTimeManager($timeManager);
 		
-		$manager->persist($moduleHandler);
+		$manager->persist($moduleProfile);
 		$manager->flush();
 	}
 	

@@ -1,16 +1,26 @@
 <br/>
-<li>
-	<h2>{{ category.title }}</h2>
-</li>
-{% if category.type == 'content' %}
-	{% set contents = category.contents %}
-	{% set formsViewsContents = attribute(arrayOfFormsViewsContents, i) %}
-	{% if (contents is not null) and (formsViewsContents is not null) %}
-		{% set j = 0 %}
-		{% for content in contents %}
-			{% set formContent = attribute(formsViewsContents, j) %}
-			{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-content-form.html.twig" %}
+<ul class="form-content">
+	<li>
+		<h2>{{ category.title }}</h2>
+	</li>
+	{% if category.type == 'content' %}
+		{% set contents = category.contents %}
+		{% if contents != null %}
+			{% for content in contents %}
+				<li>
+					<label for="{{ content.label }}">{{ content.label }}</label>
+					<input type="text" name="lastName" value="{{ profile.lastName }}" placeholder="your last name" maxlength="50" required />
+				</li>
+				{{ form_label(formContent.label, content.label) }}
+				{% if content.formType == 'textarea' %}
+					{{ form_widget(formContent.textValue) }}
+				{% else %}
+					{{ form_widget(formContent.stringValue) }}
+				{% endif %}
+			</li>
 			{% set j = j+1 %}
 		{% endfor %}
+		{% endif %}
 	{% endif %}
-{% endif %}
+</ul>
+		

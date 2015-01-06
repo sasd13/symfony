@@ -12,4 +12,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProfileRepository extends EntityRepository
 {
+	public function myFindWithCategories($idProfile)
+	{
+		$qb = $this->createQueryBuilder('profile');
+		$qb->where('profile.id = :id')
+			->setParameter('id', $idProfile)
+			->leftJoin('profile.categories', 'category')
+			->addSelect('category');
+		
+		$results = $qb->getQuery()->getResult();
+		return $results[0];
+	}
 }

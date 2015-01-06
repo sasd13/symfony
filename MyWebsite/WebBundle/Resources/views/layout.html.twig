@@ -47,21 +47,17 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<ul>
 							<li><a href="{{ path('web_home') }}">Home</a></li>
 							{% set modules = app.session.get('modules') %}
+							{% set idProfile = app.session.get('idProfile') %}
 							{% for module in modules %}
-								{% if module.active == true %}
-									{% if module.name == 'Profile' %}
-										<li><a href="{{ path(module.target) }}">MyProfile</a></li>
-										{% set idProfile = app.session.get('idProfile') %}
-										{% if idProfile != null %}
-											<li><a href="{{ path(module.target ~ '_logout') }}">D&eacute;connexion</a></li>
-										{% endif %}
-									{% else %}
-										<li><a href="{{ path(module.target) }}">{{ module.name }}</a></li>
+								{% if module.name == 'Profile' %}
+									<li><a href="{{ path(module.target) }}">MyProfile</a></li>
+									{% if idProfile != null %}
+										<li><a href="{{ path(module.target ~ '_logout') }}">D&eacute;connexion</a></li>
 									{% endif %}
+								{% else %}
+									<li><a href="{{ path(module.target) }}">{{ module.name }}</a></li>
 								{% endif %}
 							{% endfor %}
-							{% set login = app.session.get('idProfil') %}
-							
 							<div class="clear"> </div>
 						</ul>
 					</div>
@@ -103,7 +99,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<input type="submit" value="Go" />
 						</form>
 						<br/>
-						{% if  login == null %}
+						{% if idProfile == null %}
 							<p><a id="log" href="{{ path('web_admin') }}">Go to Administration</a></p>
 						{% endif %}
 					</div>					

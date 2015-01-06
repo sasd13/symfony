@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use MyWebsite\WebBundle\Entity\Profile;
 
 /**
  * CategoryRepository
@@ -12,4 +13,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class CategoryRepository extends EntityRepository
 {
+	public function myFindWithContents($idCategory)
+	{
+		$qb = $this->createQueryBuilder('category');
+		$qb->where('category.id = :id')
+			->setParameter('id', $idCategory)
+			->leftJoin('category.contents', 'content')
+			->addSelect('content');
+		
+		$results = $qb->getQuery()->getResult();
+		return $results[0];
+	}
 }
