@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Entity\Category;
+use MyWebsite\WebBundle\Entity\Document;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
@@ -67,9 +68,10 @@ class Profile
 	/**
      * @var string
 	 *
+     * @ORM\Column(name="picturePath", type="string", length=255)
      * @Assert\NotBlank
      */
-    public $picturePath;
+    private $picturePath;
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
@@ -92,7 +94,8 @@ class Profile
 	
 	public function __construct()
 	{
-		$this->picturePath = "images/inconnu.gif";
+		$document = new Document();
+		$this->picturePath = $document->setDefault('profile_picture')->getPath();
 		$this->categories = new ArrayCollection();
 	}
 
@@ -174,8 +177,8 @@ class Profile
     {
         return $this->email;
     }
-	
-	/**
+
+    /**
      * Set picturePath
      *
      * @param string $picturePath

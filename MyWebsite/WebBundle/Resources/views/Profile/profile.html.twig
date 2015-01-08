@@ -25,7 +25,7 @@
 							<h3><span>My</span>Profil</h3>
 						</div>
 						<div class="picture">
-							<img src="{{ asset('bundles/mywebsiteweb/uploads/') ~ profile.picturePath }}" title="Photo de profil"/>
+							<img src="{{ asset('bundles/mywebsiteweb/uploads/' ~ profile.picturePath) }}" title="Photo de profil"/>
 						</div>
 					</div>
 					<!----side-bar---->
@@ -46,7 +46,7 @@
 				</div>
 				<!---->
 				<div class="right-protfolio-grids2">
-					{% include "MyWebsiteWebBundle:Profile:Layout/" ~ layout ~ ".html.twig" %}
+					{% include "MyWebsiteWebBundle:Profile:" ~ layout ~ ".html.twig" %}
 				</div>
 				<div class="clear"> </div>
 				<!---End-portfolio---->

@@ -19,8 +19,6 @@ class WebController extends Controller
 		}
 		$request->getSession()->set('modules', $modules);
 		
-		$sessionVars = $request->getSession();
-		
-		return $this->render('MyWebsiteWebBundle:Web:index.html.twig', array('sessionVars' => $sessionVars));
+		return $this->render('MyWebsiteWebBundle:Web:index.html.twig');
     }
 }

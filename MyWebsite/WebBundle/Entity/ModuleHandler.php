@@ -24,7 +24,7 @@ class ModuleHandler
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    public $id;
+    private $id;
 
     /**
      * @var string
@@ -32,7 +32,7 @@ class ModuleHandler
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank
      */
-    public $name;
+    private $name;
 	
 	/**
      * @var string

@@ -21,7 +21,7 @@ class Document
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    public $id;
+    private $id;
 
     /**
      * @var string
@@ -29,7 +29,7 @@ class Document
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank
      */
-    public $name;
+    private $name;
 	
 	/**
      * @var string
@@ -37,7 +37,7 @@ class Document
      * @ORM\Column(name="mimeType", type="string", length=255)
      * @Assert\NotBlank
      */
-    public $mimeType;
+    private $mimeType;
 	
 	/**
      * @var boolean
@@ -53,7 +53,7 @@ class Document
      * @ORM\Column(name="path", type="string", length=255)
      * @Assert\NotBlank
      */
-    public $path;
+    private $path;
 	
 	/**
      * @var \DateTime

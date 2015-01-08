@@ -24,4 +24,16 @@ class CategoryRepository extends EntityRepository
 		$results = $qb->getQuery()->getResult();
 		return $results[0];
 	}
+	
+	public function myFindWithDocuments($idCategory)
+	{
+		$qb = $this->createQueryBuilder('category');
+		$qb->where('category.id = :id')
+			->setParameter('id', $idCategory)
+			->leftJoin('category.documents', 'document')
+			->addSelect('document');
+		
+		$results = $qb->getQuery()->getResult();
+		return $results[0];
+	}
 }

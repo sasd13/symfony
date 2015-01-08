@@ -28,7 +28,7 @@ class ProfileController extends Controller
 		}
 		$request->getSession()->set('modules', $modules);
 		
-		if($request->getSession()->get('profile') != null)
+		if($request->getSession()->get('idProfile') != null)
 		{
 			return $this->redirect($this->generateUrl('web_profile'));
 		}
@@ -59,7 +59,7 @@ class ProfileController extends Controller
 				{
 					if($form->isValid() AND ($entity->getLogin() !== 'login') AND ($entity->getPassword() === $request->request->get('confirmpassword')))
 					{
-						$request->getSession()->set('user', serialize($entity));
+						$request->getSession()->set('user', $entity);
 						return $this->redirect($this->generateUrl('web_signup'));
 					}
 				
@@ -72,8 +72,8 @@ class ProfileController extends Controller
 		else
 		{
 			$layout = 'Form/signup-profile-form';
+			$user = $request->getSession()->get('user');
 			
-			$user = unserialize($request->getSession()->get('user'));
 			$entity = new Profile();
 			$form = $this->createFormBuilder($entity)
 				->setAction($this->generateUrl('web_signup'))
@@ -100,7 +100,7 @@ class ProfileController extends Controller
 						$em->persist($entity);
 						
 						$category = new Category('document');
-						$category->setTitle('Photo')
+						$category->setTitle('Photo de profil')
 							->setTag('profile_picture');
 						$category->setProfile($entity);
 						$category->setTimeManager(new TimeManager());
@@ -114,7 +114,7 @@ class ProfileController extends Controller
 						$em->flush();
 						
 						$request->getSession()->remove('user');
-						$request->getSession()->set('profile', serialize($entity));
+						$request->getSession()->set('idProfile', $entity->getId());
 					
 						return $this->redirect($this->generateUrl('web_profile'));
 					}
@@ -146,10 +146,9 @@ class ProfileController extends Controller
 		}
 		$request->getSession()->set('modules', $modules);
 		
-		if($request->getSession()->get('profile') == null)
+		if($request->getSession()->get('idProfile') == null)
 		{
 			$user = new User();
-				
 			$form = $this->createFormBuilder($user)
 				->setAction($this->generateUrl('web_profile'))
 				->setMethod('POST')
@@ -167,7 +166,7 @@ class ProfileController extends Controller
 				if (($bufferUser != null) AND ($form->isValid()) AND ($bufferUser->getPassword() === $user->getPassword()) AND ($bufferUser->getPrivacyLevel() === 1))
 				{
 					$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByUser($bufferUser);
-					$request->getSession()->set('profile', serialize($profile));
+					$request->getSession()->set('idProfile', $profile->getId());
 					
 					return $this->redirect($this->generateUrl('web_profile'));
 				}
@@ -177,24 +176,19 @@ class ProfileController extends Controller
 				
 			return $this->render('MyWebsiteWebBundle:Profile:Login/login.html.twig', array(
 																							'form' => $form->createView(),
+																							'profile' => $profile,
 																							'message' => $message
 			));
 		}
 		
-		$profile = unserialize($request->getSession()->get('profile'));
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
+		
 		$categories = new ArrayCollection();
 		$arrayOfCategories = $profile->getCategories();
 		foreach($arrayOfCategories as $category)
 		{
 			if($category->getTag() === 'profile_picture')
 			{
-				$picture = $em->getRepository('MyWebsiteWebBundle:Document')->findOneByCategory($category);
-				if($picture->getPath() !== $profile->getPicturePath())
-				{
-					$profile->setPicturePath($picture->getPath());
-					$request->getSession()->set('profile', serialize($profile));
-				}
-				
 				continue;
 			}
 			
@@ -203,7 +197,7 @@ class ProfileController extends Controller
 		}
 		
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-																					'layout' => 'profile-edit',
+																					'layout' => 'Layout/profile-edit',
 																					'profile' => $profile,
 																					'categories' => $categories
 		));
@@ -214,15 +208,15 @@ class ProfileController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('profile') == null)
+		if($request->getSession()->get('idProfile') == null)
 		{
 			return $this->redirect($this->generateUrl('web_profile'));
 		}
 		
 		if($request->getMethod() === 'POST')
 		{
-			$profile = unserialize($request->getSession()->get('profile'));
-			$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategories($profile->getId());
+			$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategories($request->getSession()->get('idProfile'));
+			
 			$categories = $profile->getCategories();
 			foreach($categories as $bufferCategory)
 			{
@@ -276,7 +270,7 @@ class ProfileController extends Controller
 			$em->persist($profile);
 			$em->flush();
 			
-			$request->getSession()->set('profile', serialize($profile));
+			$request->getSession()->set('idProfile', $profile->getId());
 			
 			return $this->redirect($this->generateUrl('web_profile'));
 		}
@@ -289,17 +283,17 @@ class ProfileController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('profile') == null)
+		if($request->getSession()->get('idProfile') == null)
 		{
 			return $this->redirect($this->generateUrl('web_profile'));
 		}
 		
-		$profile = unserialize($request->getSession()->get('profile'));
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithUser($request->getSession()->get('idProfile'));
 		
-		//-- Modifier
-		$picture = $em->getRepository('MyWebsiteWebBundle:Document')->find($profile->getPicture);
+		$picture = $em->getRepository('MyWebsiteWebBundle:Document')->findByPath($profile->getPicturePath());
 		if($picture != null)
 		{
+			$document = new Document();
 			$form = $this->createFormBuilder($document)
 				->add('name')
 				->add('file')
@@ -307,6 +301,7 @@ class ProfileController extends Controller
 			$form->handleRequest($request);
 		
 			$message = "La photo de profile n'a pas été enregistrée";
+			
 			if($request->getSession()->get('idProfile') != null)
 			{
 				$em->persist($document);
@@ -316,8 +311,8 @@ class ProfileController extends Controller
 			}
 		
 			return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-																						'layout' => 'profile-picture-edit',
-																						'picture' => $picture,
+																						'layout' => 'Layout/profile-picture-edit',
+																						'profile' => $profile,
 																						'form' => $form->createView(),
 																						'message' => $message
 			));
@@ -352,8 +347,6 @@ class ProfileController extends Controller
 			$form->handleRequest($request);
 			if ($form->isValid()) 
 			{
-				$em = $this->getDoctrine()->getManager();
-		
 				$em->persist($document);
 				$em->flush();
 
@@ -361,9 +354,8 @@ class ProfileController extends Controller
 			}
 		}
 		
-		$layout = 'profile-edit';
 		return $this->render('MyWebsiteWebBundle:Web:profile.html.twig', array(
-																				'layout' => $layout, 
+																				'layout' => 'Layout/profile-picture-edit', 
 																				'form' => $form->createView()
 		));
 	}
@@ -373,15 +365,14 @@ class ProfileController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('profile') == null)
+		if($request->getSession()->get('idProfile') == null)
 		{
 			return $this->redirect($this->generateUrl('web_profile'));
 		}
 		
-		$profile = unserialize($request->getSession()->set('user', serialize($entity)));
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithUser($profile->getId());
-		$user = $profile->getUser();
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithUser($request->getSession()->get('idProfile'));
 		
+		$user = $profile->getUser();
 		$form = $this->createFormBuilder($user)
 			->setAction($this->generateUrl('web_profile_user'))
 			->setMethod('POST')
@@ -400,16 +391,16 @@ class ProfileController extends Controller
 			if(($form->isValid()) AND ($oldpassword === $request->request->get('oldpassword')) AND ($user->getPassword() === $request->request->get('confirmpassword')))
 			{
 				$user->getTimeManager()->setUpdateTime(new DateTime());
+				
 				$em->persist($user);
 				$em->flush();
 		
 				$message = "Les informations ont été enregistrées avec succès";
-				$user = $em->getRepository('MyWebsiteWebBundle:User')->find($user->getId());
 			}
 		}
 		
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-																					'layout' => 'User/profile-user-edit',
+																					'layout' => 'User/user-edit',
 																					'profile' => $profile,
 																					'form' => $form->createView(),
 																					'message' => $message
@@ -418,7 +409,7 @@ class ProfileController extends Controller
 	
 	public function logoutAction()
     {
-		if ($this->getRequest()->getSession()->get('profile') != null) $this->getRequest()->getSession()->remove('profile');
+		if ($this->getRequest()->getSession()->get('idProfile') != null) $this->getRequest()->getSession()->remove('profile');
 		
         return $this->redirect($this->generateUrl('web_home'));
     }

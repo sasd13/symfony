@@ -12,6 +12,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProfileRepository extends EntityRepository
 {
+	public function myFindWithUser($idProfile)
+	{
+		$qb = $this->createQueryBuilder('profile');
+		$qb->where('profile.id = :id')
+			->setParameter('id', $idProfile)
+			->leftJoin('profile.user', 'user')
+			->addSelect('user');
+		
+		$results = $qb->getQuery()->getResult();
+		return $results[0];
+	}
+	
 	public function myFindWithCategories($idProfile)
 	{
 		$qb = $this->createQueryBuilder('profile');
@@ -24,13 +36,14 @@ class ProfileRepository extends EntityRepository
 		return $results[0];
 	}
 	
-	public function myFindWithUser($idProfile)
+	public function myFindWithCategory($idProfil, $tagCategory)
 	{
 		$qb = $this->createQueryBuilder('profile');
 		$qb->where('profile.id = :id')
 			->setParameter('id', $idProfile)
-			->leftJoin('profile.user', 'user')
-			->addSelect('user');
+			->leftJoin('profile.categories', 'category')
+			->addSelect('category')
+			->andWhere('category.tag', $tagCategory);
 		
 		$results = $qb->getQuery()->getResult();
 		return $results[0];
