@@ -15,6 +15,8 @@ use \DateTime;
  */
 class ModuleHandler
 {
+	private static $number = 0;
+	
     /**
      * @var integer
      *
@@ -73,11 +75,10 @@ class ModuleHandler
 	private $timeManager;
 	
 	
-	public function __construct($name, $target, $priority = 0)
+	public function __construct()
     {
-		$this->name = $name;
-		$this->target = $target;
-		$this->priority = $priority;
+		self::$number++;
+		$this->priority = self::$number;
 		$this->active = true;
     }
 

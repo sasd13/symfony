@@ -6,8 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use MyWebsite\WebBundle\Entity\Admin;
 use MyWebsite\WebBundle\Entity\Category;
-use MyWebsite\WebBundle\Entity\Document;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use \DateTime;
 
 class AdminController extends Controller
@@ -17,15 +15,12 @@ class AdminController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('modules') == null)
+		$modules = $em->getRepository('MyWebsiteWebBundle:ModuleHandler')->myFindOrdered();
+		if($modules == null)
 		{
-			$modules = $em->getRepository('MyWebsiteWebBundle:ModuleHandler')->myFindOrdered();
-			if($modules == null)
-			{
-				return $this->redirect($this->generateUrl('web_error'));
-			}
-			$request->getSession()->set('modules', $modules);
+			return $this->redirect($this->generateUrl('web_error'));
 		}
+		$request->getSession()->set('modules', $modules);
 		
 		$admin = null;
 		if($request->getSession()->get('idAdmin') == null)

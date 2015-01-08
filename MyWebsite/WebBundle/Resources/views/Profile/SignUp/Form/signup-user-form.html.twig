@@ -1,0 +1,23 @@
+<ul class="form-content">
+	<li>
+		<h2>Identifiants de connexion</h2>
+		<span class="required_notification">{{ message }}</span>
+	</li>
+	<li>
+		{{ form_label(form.login, "Login :") }}
+		{{ form_widget(form.login) }}
+	</li>
+	<li>
+		{{ form_label(form.password, "Mot de passe :") }}
+		{{ form_widget(form.password) }}
+	</li>
+	<li>
+		<label for="confirmpassword">Confirmer :</label>
+		<input type="password" name="confirmpassword" placeholder="confirmer mot de passe" maxlength="20" required/>
+	</li>
+</ul>
+<ul class="form-submit">
+	<li>
+		<input type="submit" class="submit" value="Continuer"/>
+	</li>
+</ul>

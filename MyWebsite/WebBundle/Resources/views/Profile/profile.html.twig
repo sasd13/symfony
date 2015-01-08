@@ -25,8 +25,7 @@
 							<h3><span>My</span>Profil</h3>
 						</div>
 						<div class="picture">
-							{% set picture = app.session.get('profile_picture_path') %}
-							<a href="{{ path('web_home') }}"><img src="{{ asset('bundles/mywebsiteweb/uploads/') ~ picture }}" title="Webworld"/></a>
+							<img src="{{ asset('bundles/mywebsiteweb/uploads/') ~ profile.picturePath }}" title="Photo de profil"/>
 						</div>
 					</div>
 					<!----side-bar---->
@@ -38,7 +37,7 @@
 						<div class="recent-post-list">
 							<ul>
 								<li><a href="{{ path('web_profile') }}">Informations</a></li>
-								<li><a href="{{ path('web_profile_picture') }}">Modifier photo de profil</a></li>
+								<li><a href="{{ path('web_profile_picture') }}">Photo de profil</a></li>
 								<li><a href="{{ path('web_profile_user') }}">Identifiants de connexion</a></li>
 							</ul>
 						</div>

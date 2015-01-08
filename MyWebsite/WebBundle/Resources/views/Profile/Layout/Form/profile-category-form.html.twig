@@ -8,18 +8,15 @@
 		{% if contents != null %}
 			{% for content in contents %}
 				<li>
-					<label for="{{ content.label }}">{{ content.label }}</label>
-					<input type="text" name="lastName" value="{{ profile.lastName }}" placeholder="your last name" maxlength="50" required />
+					<input type="hidden" name="{{ content.label ~ '_' ~ content.id }}" value="{{ content.id }}">
+					<label for="{{ content.label }}">{{ content.labelValue }}</label>
+					{% if content.formType == 'textarea' %}
+						<textarea name="{{ content.label ~ '_' ~ content.id }}" {% if content.required == true %} required {% endif %}/>{{ content.textValue }}</textarea>
+					{% else %}
+						<input type="{{ content.formType }}" name="{{ content.label ~ '_' ~ content.id }}" value="{{ content.stringValue }}" {% if content.placeholder != null %} placeholder="{{ content.placeholder }}" {% endif %} {% if content.required == true %} required {% endif %}/>
+					{% endif %}
 				</li>
-				{{ form_label(formContent.label, content.label) }}
-				{% if content.formType == 'textarea' %}
-					{{ form_widget(formContent.textValue) }}
-				{% else %}
-					{{ form_widget(formContent.stringValue) }}
-				{% endif %}
-			</li>
-			{% set j = j+1 %}
-		{% endfor %}
+			{% endfor %}
 		{% endif %}
 	{% endif %}
 </ul>

@@ -12,25 +12,18 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
-		$timeManager = $this->getReference('timeManager2');
-	
-		$admin = new User('root', 'root', 3);
-		$admin->setTimeManager($timeManager);
+		$root = new User();
+		$root->setLogin('root')
+			->setPassword('root')
+			->setPrivacyLevel(3);
+		$root->setTimeManager(new TimeManager());
 		
-		$timeManager = $this->getReference('timeManager3');
-		
-		$user = new User('samir', 'sasori', 1);
-		$user->setTimeManager($timeManager);
-		
-		$manager->persist($admin);
-		$manager->persist($user);
+		$manager->persist($root);
 		$manager->flush();
-		
-		$this->addReference('user', $user);
 	}
 	
 	public function getOrder()
     {
-        return 3; // l'ordre dans lequel les fichiers sont chargés
+        return 2; // l'ordre dans lequel les fichiers sont chargés
     }
 }

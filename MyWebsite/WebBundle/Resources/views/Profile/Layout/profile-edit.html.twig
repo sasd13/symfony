@@ -1,6 +1,6 @@
 <div class="feature-grid2">
 	<div class="feature-grid-head feature-grid-head3">
-		<h3><span>Modifier</span> Profil</h3>
+		<h3><span>Informations de</span> Profil</h3>
 		<div class="feature-grid-head-top">
 			<label> </label><label> </label>
 			<div class="clear"> </div>
@@ -8,7 +8,6 @@
 	</div>
 	<div class="new-form">
 		<form name="contact_form" class="contact_form" action={{ path('web_profile_edit') }} method="post">
-			{{ message }}
 			<div class="form-submit2">
 				<input type="submit" class="submit" value="Enregistrer"/>
 			</div>
@@ -16,10 +15,10 @@
 			<ul class="form-content">
 				<br/>
 				<li>
-					<h2>Informations personnelles</h2>
+					<h2>Identité</h2>
 				</li>
 				<li>
-					<label for="firstName">Pr&eaacute;nom</label>
+					<label for="firstName">Prénom</label>
 					<input type="text" name="firstName" value="{{ profile.firstName }}" placeholder="your first name" maxlength="50" required />
 				</li>
 				<li>

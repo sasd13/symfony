@@ -23,4 +23,16 @@ class ProfileRepository extends EntityRepository
 		$results = $qb->getQuery()->getResult();
 		return $results[0];
 	}
+	
+	public function myFindWithUser($idProfile)
+	{
+		$qb = $this->createQueryBuilder('profile');
+		$qb->where('profile.id = :id')
+			->setParameter('id', $idProfile)
+			->leftJoin('profile.user', 'user')
+			->addSelect('user');
+		
+		$results = $qb->getQuery()->getResult();
+		return $results[0];
+	}
 }

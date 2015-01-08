@@ -69,11 +69,9 @@ class User
 	private $timeManager;
 	
 	
-	public function __construct($login, $password, $privacyLevel = 1)
+	public function __construct()
 	{
-		$this->login = $login;
-		$this->password = $password;
-		$this->privacyLevel = $privacyLevel;
+		$this->privacyLevel = 1;
 	}
 
     /**

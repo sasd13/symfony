@@ -61,22 +61,12 @@ class Content
     private $formType;
 	
 	/**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="placeholder", type="text", nullable=true)
+     * @ORM\Column(name="required", type="boolean")
+	 * @Assert\Type(type="bool")
      */
-    private $placeholder;
-	
-	/**
-     * @var integer
-     *
-     * @ORM\Column(name="priority", type="integer")
-	 * @Assert\Range(
-     *      min = 0,
-     *      minMessage = "La priorité doit être au moins de 0"
-     * )
-     */
-    private $priority;
+    private $required;
 	
 	/**
      * @var integer
@@ -90,6 +80,24 @@ class Content
      * )
      */
     private $policyLevel;
+	
+	/**
+     * @var integer
+     *
+     * @ORM\Column(name="priority", type="integer")
+	 * @Assert\Range(
+     *      min = 0,
+     *      minMessage = "La priorité doit être au moins de 0"
+     * )
+     */
+    private $priority;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="placeholder", type="text", nullable=true)
+     */
+    private $placeholder;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="contents")
@@ -98,19 +106,11 @@ class Content
 	private $category;
 	
 	
-	public function __construct($label, $labelValue, $value, $formType = "text")
+	public function __construct($label, $formType = 'text')
 	{
-		$this->label = $label;
-		$this->labelValue = $labelValue;
-		if(strcmp($formType, 'textarea') === 0)
-		{
-			$this->textValue = $value;
-		}
-		else
-		{
-			$this->stringValue = $value;
-		}
+		$this->label = strtolower($label);
 		$this->formType = $formType;
+		$this->required = false;
 		$this->policyLevel = 1;
 		$this->priority = 0;
 	}
@@ -133,7 +133,7 @@ class Content
      */
     public function setLabel($label)
     {
-        $this->label = $label;
+        $this->label = strtolower($label);
 
         return $this;
     }
@@ -179,7 +179,10 @@ class Content
      */
     public function setStringValue($stringValue)
     {
-        $this->stringValue = $stringValue;
+		if($this->formType !== 'textarea')
+		{
+			$this->stringValue = $stringValue;
+		}
 
         return $this;
     }
@@ -202,7 +205,10 @@ class Content
      */
     public function setTextValue($textValue)
     {
-        $this->textValue = $textValue;
+        if($this->formType === 'textarea')
+		{
+			$this->textValue = $value;
+		}
 
         return $this;
     }
@@ -241,26 +247,49 @@ class Content
     }
 
     /**
-     * Set placeholder
+     * Set required
      *
-     * @param string $placeholder
+     * @param boolean $required
      * @return Content
      */
-    public function setPlaceholder($placeholder)
+    public function setRequired($required)
     {
-        $this->placeholder = $placeholder;
+        $this->required = $required;
 
         return $this;
     }
 
     /**
-     * Get placeholder
+     * Get required
      *
-     * @return string 
+     * @return boolean 
      */
-    public function getPlaceholder()
+    public function getRequired()
     {
-        return $this->placeholder;
+        return $this->required;
+    }
+
+    /**
+     * Set policyLevel
+     *
+     * @param integer $policyLevel
+     * @return Content
+     */
+    public function setPolicyLevel($policyLevel)
+    {
+        $this->policyLevel = $policyLevel;
+
+        return $this;
+    }
+
+    /**
+     * Get policyLevel
+     *
+     * @return integer 
+     */
+    public function getPolicyLevel()
+    {
+        return $this->policyLevel;
     }
 
     /**
@@ -287,26 +316,26 @@ class Content
     }
 
     /**
-     * Set policyLevel
+     * Set placeholder
      *
-     * @param integer $policyLevel
+     * @param string $placeholder
      * @return Content
      */
-    public function setPolicyLevel($policyLevel)
+    public function setPlaceholder($placeholder)
     {
-        $this->policyLevel = $policyLevel;
+        $this->placeholder = $placeholder;
 
         return $this;
     }
 
     /**
-     * Get policyLevel
+     * Get placeholder
      *
-     * @return integer 
+     * @return string 
      */
-    public function getPolicyLevel()
+    public function getPlaceholder()
     {
-        return $this->policyLevel;
+        return $this->placeholder;
     }
 
     /**

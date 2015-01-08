@@ -73,11 +73,9 @@ class Category
 	private $profile;
 	
 	
-	public function __construct($title, $tag, $type = "content")
+	public function __construct($type = "content")
 	{
-		$this->title = $title;
-		$this->tag = $tag;
-		$this->type = $type;
+		$this->type = 'content';
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
 	}

@@ -87,7 +87,7 @@ class Document
 	public function setDefault($type)
     {
 		//Photos
-		if(strcmp($type, "image") === 0)
+		if(strcmp($type, "profile_picture") === 0)
 		{
 			$this->name = "Photo";
 			$this->mimeType = "image/gif";

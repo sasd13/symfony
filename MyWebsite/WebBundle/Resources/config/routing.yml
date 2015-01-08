@@ -2,6 +2,10 @@ web_home:
     pattern:  /
     defaults: { _controller: MyWebsiteWebBundle:Web:index}
 
+web_signup:
+    pattern:  /signup
+    defaults: { _controller: MyWebsiteWebBundle:Profile:newProfile}
+
 web_profile:
     pattern:  /profile
     defaults: { _controller: MyWebsiteWebBundle:Profile:loadProfile}
@@ -9,10 +13,6 @@ web_profile:
 web_profile_edit:
     pattern:  /profile/edit
     defaults: { _controller: MyWebsiteWebBundle:Profile:editProfile}
-
-web_profile_logout:
-    pattern:  /profile/logout
-    defaults: { _controller: MyWebsiteWebBundle:Profile:logout}
 
 web_profile_picture:
     pattern:  /profile/picture
@@ -22,13 +22,13 @@ web_profile_picture_edit:
     pattern:  /profile/picture/edit
     defaults: { _controller: MyWebsiteWebBundle:Profile:editPicture}
 
-web_profile_picture_delete:
-    pattern:  /profile/picture/delete
-    defaults: { _controller: MyWebsiteWebBundle:Profile:deletePicture}
-
 web_profile_user:
     pattern:  /profile/user
-    defaults: { _controller: MyWebsiteWebBundle:User:loadUser}
+    defaults: { _controller: MyWebsiteWebBundle:Profile:loadUser}
+
+web_profile_logout:
+    pattern:  /profile/logout
+    defaults: { _controller: MyWebsiteWebBundle:Profile:logout}
 
 web_admin:
     pattern:  /admin

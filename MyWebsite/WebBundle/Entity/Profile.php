@@ -65,6 +65,13 @@ class Profile
     private $email;
 	
 	/**
+     * @var string
+	 *
+     * @Assert\NotBlank
+     */
+    public $picturePath;
+	
+	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
@@ -83,11 +90,9 @@ class Profile
 	private $categories;
 	
 	
-	public function __construct($firstName, $lastName, $email)
+	public function __construct()
 	{
-		$this->firstName = $firstName;
-		$this->lastName = $lastName;
-		$this->email = $email;
+		$this->picturePath = "images/inconnu.gif";
 		$this->categories = new ArrayCollection();
 	}
 
@@ -168,6 +173,29 @@ class Profile
     public function getEmail()
     {
         return $this->email;
+    }
+	
+	/**
+     * Set picturePath
+     *
+     * @param string $picturePath
+     * @return Profile
+     */
+    public function setPicturePath($picturePath)
+    {
+        $this->picturePath = $picturePath;
+
+        return $this;
+    }
+
+    /**
+     * Get picturePath
+     *
+     * @return string 
+     */
+    public function getPicturePath()
+    {
+        return $this->picturePath;
     }
 
     /**

@@ -1,0 +1,27 @@
+{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+	{{ form_errors(form) }}
+	<ul class="form-content">
+		<li>
+			<h2>Identité</h2>
+			<span class="required_notification">{{ message }}</span>
+		</li>
+		<li>
+			{{ form_label(form.firstName, "Prénom :") }}
+			{{ form_widget(form.firstName) }}
+		</li>
+		<li>
+			{{ form_label(form.lastName, "Nom :") }}
+			{{ form_widget(form.lastName) }}
+		</li>
+		<li>
+			{{ form_label(form.email, "Email :") }}
+			{{ form_widget(form.email) }}
+		</li>
+	</ul>
+	<ul class="form-submit">
+		<li>
+			<!--<input type="button" class="submit" value="Retour"/>-->
+			<input type="submit" class="submit" value="Enregistrer"/>
+		</li>
+	</ul>
+{{ form_end(form) }}

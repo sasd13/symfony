@@ -6,140 +6,206 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\Common\Collections\ArrayCollection;
+use MyWebsite\WebBundle\Entity\TimeManager;
+use MyWebsite\WebBundle\Entity\User;
 use MyWebsite\WebBundle\Entity\Profile;
 use MyWebsite\WebBundle\Entity\Category;
+use MyWebsite\WebBundle\Entity\Content;
 use MyWebsite\WebBundle\Entity\Document;
 use \DateTime;
 
 class ProfileController extends Controller
 {
+	public function newProfileAction()
+	{
+		$request = $this->getRequest();
+		$em = $this->getDoctrine()->getManager();
+		
+		$modules = $em->getRepository('MyWebsiteWebBundle:ModuleHandler')->myFindOrdered();
+		if($modules == null)
+		{
+			return $this->redirect($this->generateUrl('web_error'));
+		}
+		$request->getSession()->set('modules', $modules);
+		
+		if($request->getSession()->get('profile') != null)
+		{
+			return $this->redirect($this->generateUrl('web_profile'));
+		}
+		
+		$layout = null;
+		$entity = null;
+		$form = null;
+		$message = "* Denotes Required Field";
+		
+		if($request->getSession()->get('user') == null)
+		{
+			$layout = 'Form/signup-user-form';
+			
+			$entity = new User();
+			$form = $this->createFormBuilder($entity)
+				->setAction($this->generateUrl('web_signup'))
+				->setMethod('POST')
+				->add('login', 'text')
+				->add('password', 'password')
+				->getForm();
+		
+			if($request->getMethod() === 'POST')
+			{
+				$form->handleRequest($request);
+			
+				$bufferUser = $em->getRepository('MyWebsiteWebBundle:User')->findByLogin($entity->getLogin());
+				if($bufferUser == null)
+				{
+					if($form->isValid() AND ($entity->getLogin() !== 'login') AND ($entity->getPassword() === $request->request->get('confirmpassword')))
+					{
+						$request->getSession()->set('user', serialize($entity));
+						return $this->redirect($this->generateUrl('web_signup'));
+					}
+				
+					$message = "Informations érronées";
+				}
+				
+				$message = "Identifiant \"".$entity->getLogin()."\" indisponible";
+			}
+		}
+		else
+		{
+			$layout = 'Form/signup-profile-form';
+			
+			$user = unserialize($request->getSession()->get('user'));
+			$entity = new Profile();
+			$form = $this->createFormBuilder($entity)
+				->setAction($this->generateUrl('web_signup'))
+				->setMethod('POST')
+				->add('firstName', 'text')
+				->add('lastName', 'text')
+				->add('email', 'email')
+				->getForm();
+			
+			if($request->getMethod() === 'POST')
+			{
+				$form->handleRequest($request);
+				
+				$bufferProfile = $em->getRepository('MyWebsiteWebBundle:Profile')->findByEmail($entity->getEmail());
+				if($bufferProfile == null)
+				{
+					if(($form->isValid()) AND ($entity->getFirstName() !== 'your first name') AND ($entity->getLastName() !== 'your last name') AND ($entity->getEmail() !== 'example@email.com'))
+					{
+						$user->setTimeManager(new TimeManager());
+						$em->persist($user);
+						
+						$entity->setUser($user);
+						$entity->setTimeManager(new TimeManager());
+						$em->persist($entity);
+						
+						$category = new Category('document');
+						$category->setTitle('Photo')
+							->setTag('profile_picture');
+						$category->setProfile($entity);
+						$category->setTimeManager(new TimeManager());
+						$em->persist($category);
+						
+						$picture = new Document();
+						$picture->setDefault('profile_picture');
+						$picture->setCategory($category);
+						$em->persist($picture);
+						
+						$em->flush();
+						
+						$request->getSession()->remove('user');
+						$request->getSession()->set('profile', serialize($entity));
+					
+						return $this->redirect($this->generateUrl('web_profile'));
+					}
+				
+					$message = "Les informations n'ont pas été enregistrées";
+				}
+				
+				$message = "Email \"".$entity->getEmail()."\" indisponible";
+			}
+		}	
+		
+		return $this->render('MyWebsiteWebBundle:Profile:SignUp/signup.html.twig', array(
+																							'layout' => $layout,
+																							'entity' => $entity,
+																							'form' => $form->createView(),
+																							'message' => $message
+		));
+	}
+	
 	public function loadProfileAction()
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('modules') == null)
+		$modules = $em->getRepository('MyWebsiteWebBundle:ModuleHandler')->myFindOrdered();
+		if($modules == null)
 		{
-			$modules = $em->getRepository('MyWebsiteWebBundle:ModuleHandler')->myFindOrdered();
-			if($modules == null)
+			return $this->redirect($this->generateUrl('web_error'));
+		}
+		$request->getSession()->set('modules', $modules);
+		
+		if($request->getSession()->get('profile') == null)
+		{
+			$user = new User();
+				
+			$form = $this->createFormBuilder($user)
+				->setAction($this->generateUrl('web_profile'))
+				->setMethod('POST')
+				->add('login', 'text')
+				->add('password', 'password')
+				->getForm();
+			
+			$message = "* Denotes Required Field";
+			
+			if($request->getMethod() === 'POST')
 			{
-				return $this->redirect($this->generateUrl('web_error'));
+				$form->handleRequest($request);
+				
+				$bufferUser = $em->getRepository('MyWebsiteWebBundle:User')->findOneByLogin($user->getLogin());
+				if (($bufferUser != null) AND ($form->isValid()) AND ($bufferUser->getPassword() === $user->getPassword()) AND ($bufferUser->getPrivacyLevel() === 1))
+				{
+					$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByUser($bufferUser);
+					$request->getSession()->set('profile', serialize($profile));
+					
+					return $this->redirect($this->generateUrl('web_profile'));
+				}
+				
+				$message = "* Identifiants erronés";
 			}
-			$request->getSession()->set('modules', $modules);
+				
+			return $this->render('MyWebsiteWebBundle:Profile:Login/login.html.twig', array(
+																							'form' => $form->createView(),
+																							'message' => $message
+			));
 		}
 		
-		$profile = null;
-		if($request->getSession()->get('idProfile') == null)
-		{
-			$user = $em->getRepository('MyWebsiteWebBundle:User')->findOneByLogin($request->request->get('login'));
-			if ($request->getMethod() == 'POST' AND $user != null AND strcmp($request->request->get('password'), $user->getPassword()) === 0 AND $user->getPrivacyLevel() == 1)
-			{
-				$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByUser($user);
-				$request->getSession()->set('idProfile', $profile->getId());
-			}
-			else
-			{
-				return $this->render('MyWebsiteWebBundle:Profile:login.html.twig');
-			}
-		}
-		else 
-		{
-			$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-			if($profile == null)
-			{
-				return $this->redirect($this->generateUrl('web_error'));
-			}
-		}
-		
-		$formProfile = $this->createFormBuilder($profile)
-			->setAction($this->generateUrl('web_profile'))
-			->setMethod('POST')
-			->add('firstName', 'text', array('required' => false))
-			->add('lastName', 'text', array('required' => false))
-			->add('email', 'email', array('required' => false))
-			->getForm();
-		
-		
-		//------------------//
-		//--- Categories ---//
-		//------------------//
-		
+		$profile = unserialize($request->getSession()->get('profile'));
 		$categories = new ArrayCollection();
-		$arrayOfFormsContents = new ArrayCollection();
-		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategories($profile->getId());
 		$arrayOfCategories = $profile->getCategories();
-		foreach($arrayOfCategories as $keyCategory => $category)
+		foreach($arrayOfCategories as $category)
 		{
-			if(strcmp($category->getTag(), 'profile_picture') == 0)
+			if($category->getTag() === 'profile_picture')
 			{
 				$picture = $em->getRepository('MyWebsiteWebBundle:Document')->findOneByCategory($category);
-				$request->getSession()->set('profile_picture_path', $picture->getPath());
+				if($picture->getPath() !== $profile->getPicturePath())
+				{
+					$profile->setPicturePath($picture->getPath());
+					$request->getSession()->set('profile', serialize($profile));
+				}
+				
 				continue;
 			}
 			
-			$arrayChoices = array(
-									'integer' => 'integer',
-									'text' => 'text',
-									'textarea' => 'textarea',
-									'email' => 'email',
-									'url' => 'url',
-									'date' => 'date'
-			);
-			
-			$formsContents = new ArrayCollection();
-			
 			$bufferCategory = $em->getRepository('MyWebsiteWebBundle:Category')->myFindWithContents($category->getId());
-			$arrayOfContents = $bufferCategory->getContents();
-			foreach($arrayOfContents as $keyContent => $content)
-			{
-				$formBuilder = $this->createFormBuilder($content)
-					->setAction($this->generateUrl('web_profile'))
-					->setMethod('POST')
-					->add('label', 'text');
-				
-				$formContent = null;
-				if($content->getTextValue() == null)
-				{
-					$formContent = $formBuilder->add('stringValue', $content->getFormType(), array(
-																									'attr' => array(
-																													'value' => $content->getStringValue(),
-					)))->getForm();
-				}
-				else
-				{
-					$formContent = $formBuilder->add('textValue', $content->getFormType())->getForm();
-				}
-				
-				$formsContents[] = $formContent->createView();
-				
-				if($request->getMethod() == 'POST')
-				{
-					$formContent->handleRequest($request);
-					
-					if($formContent->isValid())
-					{
-						$em->persist($content);
-						$em->flush();
-					}
-				}
-			}
-			
 			$categories[] = $bufferCategory;
-			
-			//--- PROBLEME ICI ---//
-			$arrayOfFormsContents[] = $formsContents;
-			//--------------------//
 		}
-		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
 		
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
 																					'layout' => 'profile-edit',
 																					'profile' => $profile,
-																					'formProfile' => $formProfile->createView(),
-																					'categories' => $categories,
-																					'arrayOfFormsContents' => $arrayOfFormsContents
+																					'categories' => $categories
 		));
 	}
 	
@@ -148,108 +214,97 @@ class ProfileController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idProfile') == null)
+		if($request->getSession()->get('profile') == null)
 		{
 			return $this->redirect($this->generateUrl('web_profile'));
 		}
 		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-		if($profile != null)
+		if($request->getMethod() === 'POST')
 		{
-			$formProfile = $this->createFormBuilder($profile)
-				->add('firstName', 'text')
-				->add('lastName', 'text')
-				->add('email', 'email')
-				->getForm();
-			$formProfile->handleRequest($request);
-			
-			$category = $em->getRepository('MyWebsiteWebBundle:Category')->find($request->request->get('idCategory'));
-			if($category != null)
+			$profile = unserialize($request->getSession()->get('profile'));
+			$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategories($profile->getId());
+			$categories = $profile->getCategories();
+			foreach($categories as $bufferCategory)
 			{
-				$formCategory = $this->createFormBuilder($category)
-					->add('title', 'text')
-					->add('tag', 'text')
-					->getForm();
-				$formCategory->handleRequest($request);
-				
-				$message = "Les informations n'ont pas été enregistrées";
-				if($request->getSession()->get('idProfile') != null)
+				$category = $em->getRepository('MyWebsiteWebBundle:Category')->myFindWithContents($bufferCategory->getId());
+				$contents = $category->getContents();
+				foreach($contents as $content)
 				{
-					$profile->getTimeManager()->setUpdateTime(new DateTime());
-					$em->persist($profile);
-					$em->persist($category);
-					$em->flush();
+					$value = $request->request->get($content->getLabel().'_'.$content->getId());
 					
-					$message = "Les informations ont été enregistrées avec succès";
+					if($content->getFormType() === 'textarea')
+					{
+						if($value !== $content->getTextValue())
+						{
+							$content->setTextValue($value);
+							$category->getTimeManager()->setUpdateTime(new DateTime());
+						}
+					}
+					else
+					{
+						if($value !== $content->getStringValue())
+						{
+							$content->setStringValue($value);
+							$category->getTimeManager()->setUpdateTime(new DateTime());
+						}
+					}
+				
+					$em->persist($content);
 				}
-		
-				$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-				return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-																							'layout' => 'profile-edit', 
-																							'profile' => $profile, 
-																							'category' => $category,
-																							'formProfile' => $formProfile->createView(),
-																							'formCategory' => $formCategory->createView(),
-																							'message' => $message
-				));
+				
+				$em->persist($category);
 			}
-		}
-		
-		return $this->redirect($this->generateUrl('web_error'));
-    }
-	
-	public function editPictureAction()
-    {
-		$request = $this->getRequest();	
-		$em = $this->getDoctrine()->getManager();
-		
-		if($request->getSession()->get('idProfile') == null)
-		{
-			return $this->redirect($this->generateUrl('web_profile'));
-		}
-		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-		if($profile != null)
-		{
-			$category = $em->getRepository('MyWebsiteWebBundle:Category')->findOneByTag('profile_picture');
-			if($category != null)
+			
+			if($request->request->get('firstName') !== $profile->getFirstName())
 			{
-				$documents = $category->getDocuments();
-				$picture = $document[0];
-				$formPicture = $this->createFormBuilder($picture)
-					->add('name')
-					->add('file')
-					->getForm();
-		
-				return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-																							'layout' => 'profile-picture-edit',
-																							'picture' => $picture,
-																							'formPicture' => $formPicture->createView()
-				));
+				$profile->setFirstName($request->request->get('firstName'));
+				$profile->getTimeManager()->setUpdateTime(new DateTime());
 			}
+			
+			if($request->request->get('laststName') !== $profile->getlastName())
+			{
+				$profile->setlastName($request->request->get('lastName'));
+				$profile->getTimeManager()->setUpdateTime(new DateTime());
+			}
+			
+			if($request->request->get('email') !== $profile->getEmail())
+			{
+				$profile->setEmail($request->request->get('email'));
+				$profile->getTimeManager()->setUpdateTime(new DateTime());
+			}
+			
+			$em->persist($profile);
+			$em->flush();
+			
+			$request->getSession()->set('profile', serialize($profile));
+			
+			return $this->redirect($this->generateUrl('web_profile'));
 		}
 		
 		return $this->redirect($this->generateUrl('web_error'));
 	}
 	
-	public function modifierPictureAction()
+	public function loadPictureAction()
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idProfile') == null)
+		if($request->getSession()->get('profile') == null)
 		{
 			return $this->redirect($this->generateUrl('web_profile'));
 		}
 		
-		$picture = $em->getRepository('MyWebsiteWebBundle:Document')->find($request->getSession()->get('idPicture'));
+		$profile = unserialize($request->getSession()->get('profile'));
+		
+		//-- Modifier
+		$picture = $em->getRepository('MyWebsiteWebBundle:Document')->find($profile->getPicture);
 		if($picture != null)
 		{
-			$formPicture = $this->createFormBuilder($document)
+			$form = $this->createFormBuilder($document)
 				->add('name')
 				->add('file')
 				->getForm();
-			$formPicture->handleRequest($request);
+			$form->handleRequest($request);
 		
 			$message = "La photo de profile n'a pas été enregistrée";
 			if($request->getSession()->get('idProfile') != null)
@@ -263,10 +318,11 @@ class ProfileController extends Controller
 			return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
 																						'layout' => 'profile-picture-edit',
 																						'picture' => $picture,
-																						'formPicture' => $formPicture->createView(),
+																						'form' => $form->createView(),
 																						'message' => $message
 			));
 		}
+		//--
 		
 		return $this->redirect($this->generateUrl('web_error'));
     }
@@ -308,13 +364,61 @@ class ProfileController extends Controller
 		$layout = 'profile-edit';
 		return $this->render('MyWebsiteWebBundle:Web:profile.html.twig', array(
 																				'layout' => $layout, 
-																				'form' => $formPicture->createView()
+																				'form' => $form->createView()
+		));
+	}
+	
+	public function loadUserAction()
+    {
+		$request = $this->getRequest();
+		$em = $this->getDoctrine()->getManager();
+		
+		if($request->getSession()->get('profile') == null)
+		{
+			return $this->redirect($this->generateUrl('web_profile'));
+		}
+		
+		$profile = unserialize($request->getSession()->set('user', serialize($entity)));
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithUser($profile->getId());
+		$user = $profile->getUser();
+		
+		$form = $this->createFormBuilder($user)
+			->setAction($this->generateUrl('web_profile_user'))
+			->setMethod('POST')
+			->add('login', 'text')
+			->add('password', 'password')
+			->getForm();
+		
+		$message = "* Denotes Required Field";
+		
+		if($request->getMethod() === 'POST')
+		{
+			$oldpassword = $user->getPassword();
+			$form->handleRequest($request);
+			
+			$message = "Les informations n'ont pas été enregistrées";
+			if(($form->isValid()) AND ($oldpassword === $request->request->get('oldpassword')) AND ($user->getPassword() === $request->request->get('confirmpassword')))
+			{
+				$user->getTimeManager()->setUpdateTime(new DateTime());
+				$em->persist($user);
+				$em->flush();
+		
+				$message = "Les informations ont été enregistrées avec succès";
+				$user = $em->getRepository('MyWebsiteWebBundle:User')->find($user->getId());
+			}
+		}
+		
+		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
+																					'layout' => 'User/profile-user-edit',
+																					'profile' => $profile,
+																					'form' => $form->createView(),
+																					'message' => $message
 		));
 	}
 	
 	public function logoutAction()
     {
-		if ($this->getRequest()->getSession()->get('idProfile') != null) $this->getRequest()->getSession()->remove('idProfile');
+		if ($this->getRequest()->getSession()->get('profile') != null) $this->getRequest()->getSession()->remove('profile');
 		
         return $this->redirect($this->generateUrl('web_home'));
     }

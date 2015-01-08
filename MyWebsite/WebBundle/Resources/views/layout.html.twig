@@ -45,13 +45,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<!---start-top-nav---->
 					<div class="top-nav" id="navigation">
 						<ul>
-							<li><a href="{{ path('web_home') }}">Home</a></li>
 							{% set modules = app.session.get('modules') %}
-							{% set idProfile = app.session.get('idProfile') %}
+							{% set profile = app.session.get('profile') %}
 							{% for module in modules %}
 								{% if module.name == 'Profile' %}
 									<li><a href="{{ path(module.target) }}">MyProfile</a></li>
-									{% if idProfile != null %}
+									{% if profile != null %}
 										<li><a href="{{ path(module.target ~ '_logout') }}">D&eacute;connexion</a></li>
 									{% endif %}
 								{% else %}
@@ -99,7 +98,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<input type="submit" value="Go" />
 						</form>
 						<br/>
-						{% if idProfile == null %}
+						{% if profile == null %}
 							<p><a id="log" href="{{ path('web_admin') }}">Go to Administration</a></p>
 						{% endif %}
 					</div>					

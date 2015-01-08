@@ -12,17 +12,23 @@ class ModuleHandlerFixtures extends AbstractFixture implements OrderedFixtureInt
 {
 	public function load(ObjectManager $manager)
 	{
-		$timeManager = $this->getReference('timeManager1');
+		$moduleWeb = new ModuleHandler();
+		$moduleWeb->setName('Home')
+			->setTarget('web_home')
+			->setTimeManager(new TimeManager());
 		
-		$moduleProfile = new ModuleHandler('Profile', 'web_profile', 1);
-		$moduleProfile->setTimeManager($timeManager);
+		$moduleProfile = new ModuleHandler();
+		$moduleProfile->setName('Profile')
+			->setTarget('web_profile')
+			->setTimeManager(new TimeManager());
 		
+		$manager->persist($moduleWeb);
 		$manager->persist($moduleProfile);
 		$manager->flush();
 	}
 	
 	public function getOrder()
     {
-        return 2; // l'ordre dans lequel les fichiers sont chargés
+        return 1; // l'ordre dans lequel les fichiers sont chargés
     }
 }
