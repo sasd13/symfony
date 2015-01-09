@@ -1,0 +1,42 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Gestion de</span> connexion</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="new-project-form">
+		{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+			{{ form_errors(form) }}
+			<ul class="form-content">
+				<li>
+					<h2>Identifiants</h2>
+					<span class="required_notification">{{ message }}</span>
+				</li>
+				<li>
+					{{ form_label(form.login, "Login :") }}
+					{{ form_widget(form.login) }}
+				</li>
+				<li>
+					<label for="oldpassword">Actuel mot de passe :</label>
+					<input type="password" name="oldpassword" maxlength="20" required/>
+				</li>
+				<li>
+					{{ form_label(form.password, "Nouveau mot de passe :") }}
+					{{ form_widget(form.password) }}
+				</li>
+				<li>
+					<label for="confirmpassword">Confirmer :</label>
+					<input type="password" name="confirmpassword" maxlength="20" required/>
+				</li>
+			</ul>
+			<ul class="form-submit">
+				<li>
+					<input type="submit" class="submit" value="Enregistrer"/>
+				</li>
+			</ul>
+		{{ form_end(form) }}
+	</div>
+	<div class="clear"> </div>
+</div>
