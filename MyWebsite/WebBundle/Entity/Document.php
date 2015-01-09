@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use \DateTime;
 
 /**
@@ -83,25 +84,18 @@ class Document
 	
 	public function __construct($type = 'document')
     {
-		$this->setDefault($type);
-    }
-	
-	//Fonction de réinitialisation des documents
-	public function setDefault($type)
-    {
-		//Photos
-		if($type === "picture")
-		{
-			$this->name = "Photo";
-			$this->mimeType = "image/gif";
-			$this->path = "inconnu.gif";
-		}
-		
 		self::$subDir = $type.'s';
+		if($type === 'image')
+		{
+			$this->mimeType = 'image/png';
+		}
+		else
+		{
+			$this->mimeType = 'text/plain';
+		}
+		$this->path = 'path';
 		$this->display = true;
 		$this->uploadDate = new DateTime();
-		
-		return $this;
     }
 	
     public function getAbsolutePath()
@@ -166,7 +160,7 @@ class Document
     public function removeUpload()
     {
         if ($file = $this->getAbsolutePath()) {
-            unlink($file);
+			unlink($file);
         }
     }
 

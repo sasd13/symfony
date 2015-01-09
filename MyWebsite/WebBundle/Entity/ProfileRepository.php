@@ -21,6 +21,11 @@ class ProfileRepository extends EntityRepository
 			->addSelect('user');
 		
 		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		
 		return $results[0];
 	}
 	
@@ -33,6 +38,11 @@ class ProfileRepository extends EntityRepository
 			->addSelect('category');
 		
 		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		
 		return $results[0];
 	}
 }

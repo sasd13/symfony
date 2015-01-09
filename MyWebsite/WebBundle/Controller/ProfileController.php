@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\Common\Collections\ArrayCollection;
-use MyWebsite\WebBundle\Entity\TimeManager;
 use MyWebsite\WebBundle\Entity\User;
 use MyWebsite\WebBundle\Entity\Profile;
 use MyWebsite\WebBundle\Entity\Category;
@@ -17,19 +16,21 @@ class ProfileController extends Controller
 {
 	public function newProfileAction()
 	{
+		$moduleHandler = $this->container->get('web_moduleHandler');
+		$router = $this->container->get('web_router');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		$modules = $em->getRepository('MyWebsiteWebBundle:ModuleHandler')->myFindOrdered();
+		$modules = $moduleHandler->getActivatedModules();
 		if($modules == null)
 		{
-			return $this->redirect($this->generateUrl('web_error'));
+			return $this->redirect($this->generateUrl($router->toError()));
 		}
 		$request->getSession()->set('modules', $modules);
 		
 		if($request->getSession()->get('idProfile') != null)
 		{
-			return $this->redirect($this->generateUrl('web_profile'));
+			return $this->redirect($this->generateUrl($router->toProfile()));
 		}
 		
 		$layout = null;
@@ -43,7 +44,7 @@ class ProfileController extends Controller
 			
 			$entity = new User();
 			$form = $this->createFormBuilder($entity)
-				->setAction($this->generateUrl('web_signup'))
+				->setAction($this->generateUrl($router->toSignup()))
 				->setMethod('POST')
 				->add('login', 'text')
 				->add('password', 'password')
@@ -55,9 +56,9 @@ class ProfileController extends Controller
 			
 				$bufferUser = $em->getRepository('MyWebsiteWebBundle:User')->findByLogin($entity->getLogin());
 				if(($bufferUser == null) AND ($form->isValid()) AND ($entity->getLogin() !== 'login') AND ($entity->getPassword() === $request->request->get('confirmpassword')))
-					
+				{
 					$request->getSession()->set('user', $entity);
-					return $this->redirect($this->generateUrl('web_signup'));
+					return $this->redirect($this->generateUrl($router->toSignup()));
 				}
 				
 				$message = "Informations érronées";
@@ -70,7 +71,7 @@ class ProfileController extends Controller
 			
 			$entity = new Profile();
 			$form = $this->createFormBuilder($entity)
-				->setAction($this->generateUrl('web_signup'))
+				->setAction($this->generateUrl($router->toSignup()))
 				->setMethod('POST')
 				->add('firstName', 'text')
 				->add('lastName', 'text')
@@ -87,24 +88,13 @@ class ProfileController extends Controller
 					$em->persist($user);
 					
 					$entity->setUser($user);
-					$em->persist($entity);
-					
-					$category = new Category('document');
-					$category->setTitle('Photo de profil')
-						->setTag('profile_picture');
-					$category->setProfile($entity);
-					$em->persist($category);
-					
-					$picture = new Document('picture');
-					$picture->setCategory($category);
-					$em->persist($picture);
-					
+					$em->persist($entity);					
 					$em->flush();
 					
 					$request->getSession()->remove('user');
 					$request->getSession()->set('idProfile', $entity->getId());
 				
-					return $this->redirect($this->generateUrl('web_profile'));
+					return $this->redirect($this->generateUrl($router->toProfile()));
 				}
 				
 				$message = "Les informations n'ont pas été enregistrées";
@@ -121,13 +111,15 @@ class ProfileController extends Controller
 	
 	public function loadProfileAction()
     {
+		$moduleHandler = $this->container->get('web_moduleHandler');
+		$router = $this->container->get('web_router');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		$modules = $em->getRepository('MyWebsiteWebBundle:ModuleHandler')->myFindOrdered();
+		$modules = $moduleHandler->getActivatedModules();
 		if($modules == null)
 		{
-			return $this->redirect($this->generateUrl('web_error'));
+			return $this->redirect($this->generateUrl($router->toError()));
 		}
 		$request->getSession()->set('modules', $modules);
 		
@@ -135,7 +127,7 @@ class ProfileController extends Controller
 		{
 			$user = new User();
 			$form = $this->createFormBuilder($user)
-				->setAction($this->generateUrl('web_profile'))
+				->setAction($this->generateUrl($router->toProfile()))
 				->setMethod('POST')
 				->add('login', 'text')
 				->add('password', 'password')
@@ -153,7 +145,7 @@ class ProfileController extends Controller
 					$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByUser($bufferUser);
 					$request->getSession()->set('idProfile', $profile->getId());
 					
-					return $this->redirect($this->generateUrl('web_profile'));
+					return $this->redirect($this->generateUrl($router->toProfile()));
 				}
 				
 				$message = "* Identifiants erronés";
@@ -189,12 +181,13 @@ class ProfileController extends Controller
 	
 	public function editProfileAction()
     {
+		$router = $this->container->get('web_router');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
 		if($request->getSession()->get('idProfile') == null)
 		{
-			return $this->redirect($this->generateUrl('web_profile'));
+			return $this->redirect($this->generateUrl($router->toProfile()));
 		}
 		
 		if($request->getMethod() === 'POST')
@@ -251,29 +244,40 @@ class ProfileController extends Controller
 			
 			$request->getSession()->set('idProfile', $profile->getId());
 			
-			return $this->redirect($this->generateUrl('web_profile'));
+			return $this->redirect($this->generateUrl($router->toProfile()));
 		}
 		
-		return $this->redirect($this->generateUrl('web_error'));
+		return $this->redirect($this->generateUrl($router->toError()));
 	}
 	
 	public function editPictureAction()
     {
+		$router = $this->container->get('web_router');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
 		if($request->getSession()->get('idProfile') == null)
 		{
-			return $this->redirect($this->generateUrl('web_profile'));
+			return $this->redirect($this->generateUrl($router->toProfile()));
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-		$category = $em->getRepository('MyWebsiteWebBundle:Category')->myFindByCategoryTagAndProfile('profile_picture', $request->getSession()->get('idProfile'));
-		$picture = $em->getRepository('MyWebsiteWebBundle:Document')->findOneByCategory($category);
 		
-		$document = new Document('picture');
-		$form = $this->createFormBuilder($document)
-			->setAction($this->generateUrl('web_profile_picture'))
+		$category = $em->getRepository('MyWebsiteWebBundle:Category')->myFindByProfile($request->getSession()->get('idProfile'));
+		if($category == null)
+		{
+			$category = new Category('document');
+			$category->setTitle('Photo de profil')
+				->setTag('profile_picture');
+			$category->setProfile($profile);
+			$em->persist($category);
+		}
+		
+		$oldpicture = $em->getRepository('MyWebsiteWebBundle:Document')->findOneByCategory($category);
+		
+		$picture = new Document('image');
+		$form = $this->createFormBuilder($picture)
+			->setAction($this->generateUrl($router->toProfilePicture()))
 			->setMethod('POST')
 			->add('name', 'text')
 			->add('display', 'checkbox', array(
@@ -287,23 +291,33 @@ class ProfileController extends Controller
 		if($request->getMethod() === 'POST')
 		{
 			$form->handleRequest($request);
-		
-			$message = "La photo de profile n'a pas été enregistrée";
 			
 			if($form->isValid())
 			{
-				$em->remove($picture);
-				$document->setCategory($category);
-				$em->persist($document);
+				$picture->setCategory($category);
+				$em->persist($picture);
 				
-				$category->addDocument($document);
-				$profile->setPictureName($document->getName());
-				$profile->setPicturePath($document->getPath());
-				$em->persist($category);
+				if($picture->getPath() !== 'path')
+				{
+					if($oldpicture != null)
+					{
+						$em->remove($oldpicture);
+					}
+					$category->addDocument($picture);
+					
+					$profile->setPictureName($picture->getName());
+					$profile->setPicturePath($picture->getPath());
+					
+					$message = "La photo de profil a été enregistrée avec succès";
+				
+					$em->persist($category);
+				}
+				else
+				{
+					$em->remove($picture);
+				}
 				
 				$em->flush();
-				
-				$message = "La photo de profile a été enregistrée avec succès";
 			}
 		}
 		
@@ -317,28 +331,27 @@ class ProfileController extends Controller
 	
 	public function deletePictureAction()
 	{
-		return $this->redirect($this->generateUrl('web_profile'));
+		return $this->redirect($this->generateUrl($router->toProfilePictureDelete()));
 	}
 	
 	public function editUserAction()
     {
+		$router = $this->container->get('web_router');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
 		if($request->getSession()->get('idProfile') == null)
 		{
-			return $this->redirect($this->generateUrl('web_profile'));
+			return $this->redirect($this->generateUrl($router->toProfile()));
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithUser($request->getSession()->get('idProfile'));
 		
 		$user = $profile->getUser();
 		$form = $this->createFormBuilder($user)
-			->setAction($this->generateUrl('web_profile_user'))
+			->setAction($this->generateUrl($router->toProfileUser()))
 			->setMethod('POST')
-			->add('login', 'text', array(
-				'read_only' => true,
-			))
+			->add('login', 'text', array('read_only' => true,))
 			->add('password', 'password')
 			->getForm();
 		
@@ -369,11 +382,10 @@ class ProfileController extends Controller
 	
 	public function logoutAction()
     {
-		if ($this->getRequest()->getSession()->get('idProfile') != null)
-		{
-			$this->getRequest()->getSession()->clear();;
-		}
+		$router = $this->container->get('web_router');
 		
-        return $this->redirect($this->generateUrl('web_home'));
+		$this->getRequest()->getSession()->clear();
+		
+        return $this->redirect($this->generateUrl($router->toHome()));
     }
 }

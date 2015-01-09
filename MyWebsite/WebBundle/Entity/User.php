@@ -13,7 +13,7 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\UserRepository")
  */
 class User
-{
+{	
     /**
      * @var integer
      *
@@ -74,7 +74,7 @@ class User
 		$this->privacyLevel = 1;
 		$this->timeManager = new TimeManager();
 	}
-
+	
     /**
      * Get id
      *

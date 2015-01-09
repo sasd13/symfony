@@ -16,7 +16,7 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
  */
 class Profile
-{
+{	
     /**
      * @var integer
      *
@@ -68,16 +68,14 @@ class Profile
 	/**
      * @var string
 	 *
-     * @ORM\Column(name="pictureName", type="string", length=255)
-     * @Assert\NotBlank
+     * @ORM\Column(name="pictureName", type="string", length=255, nullable=true)
      */
     private $pictureName;
 	
 	/**
      * @var string
 	 *
-     * @ORM\Column(name="picturePath", type="string", length=255)
-     * @Assert\NotBlank
+     * @ORM\Column(name="picturePath", type="string", length=255, nullable=true)
      */
     private $picturePath;
 	
@@ -102,15 +100,11 @@ class Profile
 	
 	public function __construct()
 	{
-		$document = new Document();
-		$document->setDefault('picture');
-		$this->pictureName = $document->getName();
-		$this->picturePath = $document->getPath();
 		$this->categories = new ArrayCollection();
 		$this->timeManager = new TimeManager();
 	}
-
-    /**
+	
+	/**
      * Get id
      *
      * @return integer 

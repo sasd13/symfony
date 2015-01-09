@@ -25,7 +25,11 @@
 							<h3><span>My</span>Profil</h3>
 						</div>
 						<div class="picture">
-							<img src="{{ asset('bundles/mywebsiteweb/uploads/images/' ~ profile.picturePath) }}" title="Photo de profil"/>
+							{% if profile.picturePath != null %}
+								<img src="{{ asset('bundles/mywebsiteweb/uploads/images/' ~ profile.picturePath) }}" title="{{ profile.pictureName }}"/>
+							{% else %}
+								<img src="{{ asset('bundles/mywebsiteweb/') }}images/inconnu.gif" title="Photo de profil"/>
+							{% endif %}
 						</div>
 					</div>
 					<!----side-bar---->
@@ -61,14 +65,14 @@
 							</ul>
 						</div>
 						<div class="side-heading side-heading1">
-							<label> </label><span>Edit Profil</span><label> </label>
+							<label> </label><span>Profile</span><label> </label>
 							<div class="clear"> </div>
 						</div>
 						<div class="recent-post-list">
 							<ul>
 								<li><a href="{{ path('web_profile') }}">Informations</a></li>
-								<li><a href="{{ path('web_profile_picture') }}">Photo</a></li>
-								<li><a href="{{ path('web_profile_user') }}">Log In Option</a></li>
+								<li><a href="{{ path('web_profile_picture') }}">Photo de profil</a></li>
+								<li><a href="{{ path('web_profile_user') }}">Log In Options</a></li>
 							</ul>
 						</div>
 					</div>

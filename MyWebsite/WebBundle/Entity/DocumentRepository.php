@@ -21,6 +21,11 @@ class DocumentRepository extends EntityRepository
 			->setParameter('id', $idProfile);
 		
 		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		
 		return $results[0];
 	}
 }

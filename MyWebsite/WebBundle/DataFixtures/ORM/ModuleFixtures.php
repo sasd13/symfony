@@ -6,17 +6,17 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use MyWebsite\WebBundle\Entity\TimeManager;
-use MyWebsite\WebBundle\Entity\ModuleHandler;
+use MyWebsite\WebBundle\Entity\Module;
 
-class ModuleHandlerFixtures extends AbstractFixture implements OrderedFixtureInterface
+class ModuleFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
-		$moduleWeb = new ModuleHandler();
+		$moduleWeb = new Module();
 		$moduleWeb->setName('Home')
 			->setTarget('web_home');
 		
-		$moduleProfile = new ModuleHandler();
+		$moduleProfile = new Module();
 		$moduleProfile->setName('Profile')
 			->setTarget('web_profile');
 		

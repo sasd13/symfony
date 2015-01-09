@@ -22,6 +22,11 @@ class CategoryRepository extends EntityRepository
 			->addSelect('content');
 		
 		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		
 		return $results[0];
 	}
 	
@@ -34,18 +39,28 @@ class CategoryRepository extends EntityRepository
 			->addSelect('document');
 		
 		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		
 		return $results[0];
 	}
 	
-	public function myFindByCategoryTagAndProfile($tagCategory, $idProfile)
+	public function myFindByProfile($idProfile)
 	{
 		$qb = $this->createQueryBuilder('category');
 		$qb->where('category.tag = :tag')
-			->setParameter('tag', $tagCategory)
+			->setParameter('tag', 'profile_picture')
 			->join('category.profile', 'profile', 'WITH', 'profile.id = :id')
 			->setParameter('id', $idProfile);
 		
 		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		
 		return $results[0];
 	}
 }

@@ -7,12 +7,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
- * ModuleHandler
+ * Module
  *
- * @ORM\Table(name="web_modulehandler")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ModuleHandlerRepository")
+ * @ORM\Table(name="web_module")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ModuleRepository")
  */
-class ModuleHandler
+class Module
 {
 	private static $number = 0;
 	
@@ -96,7 +96,7 @@ class ModuleHandler
      * Set name
      *
      * @param string $name
-     * @return ModuleHandler
+     * @return Module
      */
     public function setName($name)
     {
@@ -119,7 +119,7 @@ class ModuleHandler
      * Set target
      *
      * @param string $target
-     * @return ModuleHandler
+     * @return Module
      */
     public function setTarget($target)
     {
@@ -142,7 +142,7 @@ class ModuleHandler
      * Set priority
      *
      * @param integer $priority
-     * @return ModuleHandler
+     * @return Module
      */
     public function setPriority($priority)
     {
@@ -165,7 +165,7 @@ class ModuleHandler
      * Set active
      *
      * @param boolean $active
-     * @return ModuleHandler
+     * @return Module
      */
     public function setActive($active)
     {
@@ -188,7 +188,7 @@ class ModuleHandler
      * Set readMe
      *
      * @param string $readMe
-     * @return ModuleHandler
+     * @return Module
      */
     public function setReadMe($readMe)
     {
@@ -211,7 +211,7 @@ class ModuleHandler
      * Set timeManager
      *
      * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return ModuleHandler
+     * @return Module
      */
     private function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
     {

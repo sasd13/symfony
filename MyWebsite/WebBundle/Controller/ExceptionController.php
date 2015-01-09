@@ -10,6 +10,7 @@ class ExceptionController extends Controller
 	public function errorAction()
     {
 		$this->getRequest()->getSession()->clear();
+		
 		return $this->render('MyWebsiteWebBundle:Exception:error.html.twig');
     }
 	
