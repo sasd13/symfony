@@ -16,7 +16,7 @@
 				</li>
 				<li>
 					{{ form_label(form.login, "Login :") }}
-					{{ form_widget(form.login) }}
+					{{ form_widget(form.login, {'attr': {'disabled': 'disabled', 'readonly': 'readonly'}}) }}
 				</li>
 				<li>
 					<label for="oldpassword">Actuel mot de passe :</label>

@@ -11,6 +11,11 @@ use MyWebsite\WebBundle\Entity\Profile;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Content;
 use MyWebsite\WebBundle\Entity\Document;
+use MyWebsite\WebBundle\Form\UserType;
+use MyWebsite\WebBundle\Form\ProfileType;
+use MyWebsite\WebBundle\Form\CategoryType;
+use MyWebsite\WebBundle\Form\ContentType;
+use MyWebsite\WebBundle\Form\DocumentType;
 
 class ProfileController extends Controller
 {
@@ -43,12 +48,7 @@ class ProfileController extends Controller
 			$layout = 'Form/signup-user-form';
 			
 			$entity = new User();
-			$form = $this->createFormBuilder($entity)
-				->setAction($this->generateUrl($router->toSignup()))
-				->setMethod('POST')
-				->add('login', 'text')
-				->add('password', 'password')
-				->getForm();
+			$form = $this->createForm(new UserType(), $entity, array('action' => $this->generateUrl($router->toSignup())));
 		
 			if($request->getMethod() === 'POST')
 			{
@@ -70,13 +70,7 @@ class ProfileController extends Controller
 			$user = $request->getSession()->get('user');
 			
 			$entity = new Profile();
-			$form = $this->createFormBuilder($entity)
-				->setAction($this->generateUrl($router->toSignup()))
-				->setMethod('POST')
-				->add('firstName', 'text')
-				->add('lastName', 'text')
-				->add('email', 'email')
-				->getForm();
+			$form = $this->createForm(new ProfileType(), $entity, array('action' => $this->generateUrl($router->toSignup())));
 			
 			if($request->getMethod() === 'POST')
 			{
@@ -88,7 +82,14 @@ class ProfileController extends Controller
 					$em->persist($user);
 					
 					$entity->setUser($user);
-					$em->persist($entity);					
+					$em->persist($entity);
+
+					$category = new Category('document');
+					$category->setTitle('Photo de profil')
+						->setTag('profile_picture');
+					$category->setProfile($profile);
+					$em->persist($category);
+			
 					$em->flush();
 					
 					$request->getSession()->remove('user');
@@ -126,12 +127,7 @@ class ProfileController extends Controller
 		if($request->getSession()->get('idProfile') == null)
 		{
 			$user = new User();
-			$form = $this->createFormBuilder($user)
-				->setAction($this->generateUrl($router->toProfile()))
-				->setMethod('POST')
-				->add('login', 'text')
-				->add('password', 'password')
-				->getForm();
+			$form = $this->createForm(new UserType(), $user, array('action' => $this->generateUrl($router->toProfile())));
 			
 			$message = "* Denotes Required Field";
 			
@@ -262,29 +258,11 @@ class ProfileController extends Controller
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-		
-		$category = $em->getRepository('MyWebsiteWebBundle:Category')->myFindByProfile($request->getSession()->get('idProfile'));
-		if($category == null)
-		{
-			$category = new Category('document');
-			$category->setTitle('Photo de profil')
-				->setTag('profile_picture');
-			$category->setProfile($profile);
-			$em->persist($category);
-		}
-		
+		$category = $em->getRepository('MyWebsiteWebBundle:Category')->myFindByProfile($request->getSession()->get('idProfile'));		
 		$oldpicture = $em->getRepository('MyWebsiteWebBundle:Document')->findOneByCategory($category);
 		
 		$picture = new Document('image');
-		$form = $this->createFormBuilder($picture)
-			->setAction($this->generateUrl($router->toProfilePicture()))
-			->setMethod('POST')
-			->add('name', 'text')
-			->add('display', 'checkbox', array(
-				'label' => 'display',
-			))
-			->add('file')
-			->getForm();
+		$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router->toProfilePicture())));
 		
 		$message = "* Denotes Required Field";
 		
@@ -348,22 +326,19 @@ class ProfileController extends Controller
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithUser($request->getSession()->get('idProfile'));
 		
 		$user = $profile->getUser();
-		$form = $this->createFormBuilder($user)
-			->setAction($this->generateUrl($router->toProfileUser()))
-			->setMethod('POST')
-			->add('login', 'text', array('read_only' => true,))
-			->add('password', 'password')
-			->getForm();
+		$form = $this->createForm(new UserType(), $user, array('action' => $this->generateUrl($router->toProfileUser())));
 		
 		$message = "* Denotes Required Field";
 		
 		if($request->getMethod() === 'POST')
 		{
-			$oldpassword = $user->getPassword();
+			$oldLogin = $user->getLogin();
+			$oldPassword = $user->getPassword();
+			
 			$form->handleRequest($request);
 			
 			$message = "Les informations n'ont pas été enregistrées";
-			if(($form->isValid()) AND ($oldpassword === $request->request->get('oldpassword')) AND ($user->getPassword() === $request->request->get('confirmpassword')))
+			if(($form->isValid()) AND ($oldLogin === $user->getLogin()) AND ($oldPassword === $request->request->get('oldPassword')) AND ($user->getPassword() === $request->request->get('confirmpassword')))
 			{
 				$em->persist($user);
 				$em->flush();
