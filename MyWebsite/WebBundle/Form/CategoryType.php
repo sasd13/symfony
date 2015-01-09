@@ -19,6 +19,7 @@ class CategoryType extends AbstractType
             ->add('title', 'text')
             ->add('tag', 'text')
             ->add('type', 'text')
+			->add('contents', 'collection', array('type' => new ContentType()));
         ;
     }
     
@@ -29,6 +30,7 @@ class CategoryType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'MyWebsite\WebBundle\Entity\Category'
+			'cascade_validation' => true,
         ));
     }
 

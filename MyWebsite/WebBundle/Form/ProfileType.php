@@ -19,6 +19,7 @@ class ProfileType extends AbstractType
 			->add('firstName', 'text')
 			->add('lastName', 'text')
 			->add('email', 'email')
+			->add('categories', 'collection', array('type' => new CategoryType()));
         ;
     }
     
@@ -29,6 +30,7 @@ class ProfileType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'MyWebsite\WebBundle\Entity\Profile'
+			'cascade_validation' => true,
         ));
     }
 

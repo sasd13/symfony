@@ -11,14 +11,16 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class DocumentRepository extends EntityRepository
-{
-	public function myFindByCategoryTagAndProfile($tagCategory, $idProfile)
+{	
+	public function myFindPictureByProfile($idProfile)
 	{
 		$qb = $this->createQueryBuilder('document');
-		$qb->join('document.category', 'category', 'WITH', 'category.tag = :tag')
-			->setParameter('tag', $tagCategory)
-			->join('category.profile', 'profile', 'WITH', 'profile.id = :id')
-			->setParameter('id', $idProfile);
+		$qb->leftJoin('document.category', 'category', 'WITH', 'category.tag = :tag')
+			->setParameter('tag', 'profile_picture')
+			->addSelect('category')
+			->leftJoin('category.profile', 'profile', 'WITH', 'profile.id = :id')
+			->setParameter('id', $idProfile)
+			->addSelect('profile');
 		
 		$results = $qb->getQuery()->getResult();
 		if($results == null)

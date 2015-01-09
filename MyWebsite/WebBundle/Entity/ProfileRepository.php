@@ -34,8 +34,29 @@ class ProfileRepository extends EntityRepository
 		$qb = $this->createQueryBuilder('profile');
 		$qb->where('profile.id = :id')
 			->setParameter('id', $idProfile)
-			->leftJoin('profile.categories', 'category')
-			->addSelect('category');
+			->leftJoin('profile.categories', 'category', 'WITH', 'category.tag != :tag')
+			->addSelect('category')
+			->setParameter('tag', 'profile_picture');
+		
+		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		
+		return $results[0];
+	}
+	
+	public function myFindWithCategoriesAndContents($idProfile)
+	{
+		$qb = $this->createQueryBuilder('profile');
+		$qb->where('profile.id = :id')
+			->setParameter('id', $idProfile)
+			->leftJoin('profile.categories', 'category', 'WITH', 'category.tag != :tag')
+			->setParameter('tag', 'profile_picture')
+			->addSelect('category')
+			->leftJoin('category.contents', 'content')
+			->addSelect('content');
 		
 		$results = $qb->getQuery()->getResult();
 		if($results == null)

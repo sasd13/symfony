@@ -29,11 +29,9 @@
 					<label for="email">Email</label>
 					<input type="email" name="email" value="{{ profile.email }}" placeholder="exemple@email.com" required />
 				</li>
-				{% if categories.count > 0 %}
-					{% for category in categories %}
-						{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-form.html.twig" %}
-					{% endfor %}
-				{% endif %}
+				{% for category in profile.categories %}
+					{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-form.html.twig" %}
+				{% endfor %}
 			</ul>
 		</form>
 	</div>

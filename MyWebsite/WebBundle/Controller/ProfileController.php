@@ -55,7 +55,7 @@ class ProfileController extends Controller
 				$form->handleRequest($request);
 			
 				$bufferUser = $em->getRepository('MyWebsiteWebBundle:User')->findByLogin($entity->getLogin());
-				if(($bufferUser == null) AND ($form->isValid()) AND ($entity->getLogin() !== 'login') AND ($entity->getPassword() === $request->request->get('confirmpassword')))
+				if(($bufferUser == null) AND ($form->isValid()) AND ($entity->getPassword() === $request->request->get('confirmpassword')))
 				{
 					$request->getSession()->set('user', $entity);
 					return $this->redirect($this->generateUrl($router->toSignup()));
@@ -77,7 +77,7 @@ class ProfileController extends Controller
 				$form->handleRequest($request);
 				
 				$bufferProfile = $em->getRepository('MyWebsiteWebBundle:Profile')->findByEmail($entity->getEmail());
-				if(($bufferProfile == null) AND ($form->isValid()) AND ($entity->getFirstName() !== 'your first name') AND ($entity->getLastName() !== 'your last name') AND ($entity->getEmail() !== 'example@email.com'))
+				if(($bufferProfile == null) AND ($form->isValid()))
 				{
 					$em->persist($user);
 					
@@ -153,25 +153,11 @@ class ProfileController extends Controller
 			));
 		}
 		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-		
-		$categories = new ArrayCollection();
-		$arrayOfCategories = $profile->getCategories();
-		foreach($arrayOfCategories as $category)
-		{
-			if($category->getTag() === 'profile_picture')
-			{
-				continue;
-			}
-			
-			$bufferCategory = $em->getRepository('MyWebsiteWebBundle:Category')->myFindWithContents($category->getId());
-			$categories[] = $bufferCategory;
-		}
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'));
 		
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
 			'layout' => 'Layout/profile-edit',
-			'profile' => $profile,
-			'categories' => $categories
+			'profile' => $profile
 		));
 	}
 	
@@ -188,12 +174,11 @@ class ProfileController extends Controller
 		
 		if($request->getMethod() === 'POST')
 		{
-			$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategories($request->getSession()->get('idProfile'));
+			$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'));
 			
 			$categories = $profile->getCategories();
-			foreach($categories as $bufferCategory)
+			foreach($categories as $category)
 			{
-				$category = $em->getRepository('MyWebsiteWebBundle:Category')->myFindWithContents($bufferCategory->getId());
 				$contents = $category->getContents();
 				foreach($contents as $content)
 				{
@@ -213,11 +198,7 @@ class ProfileController extends Controller
 							$content->setStringValue($value);
 						}
 					}
-				
-					$em->persist($content);
 				}
-				
-				$em->persist($category);
 			}
 			
 			if($request->request->get('firstName') !== $profile->getFirstName())
@@ -235,7 +216,6 @@ class ProfileController extends Controller
 				$profile->setEmail($request->request->get('email'));
 			}
 			
-			$em->persist($profile);
 			$em->flush();
 			
 			$request->getSession()->set('idProfile', $profile->getId());
@@ -257,9 +237,9 @@ class ProfileController extends Controller
 			return $this->redirect($this->generateUrl($router->toProfile()));
 		}
 		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
-		$category = $em->getRepository('MyWebsiteWebBundle:Category')->myFindByProfile($request->getSession()->get('idProfile'));		
-		$oldpicture = $em->getRepository('MyWebsiteWebBundle:Document')->findOneByCategory($category);
+		$oldPicture = $em->getRepository('MyWebsiteWebBundle:Document')->myFindPictureByProfile($request->getSession()->get('idProfile'));
+		$category = $oldPicture->getCategory();
+		$profile = $category->getProfile();
 		
 		$picture = new Document('image');
 		$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router->toProfilePicture())));
@@ -269,17 +249,14 @@ class ProfileController extends Controller
 		if($request->getMethod() === 'POST')
 		{
 			$form->handleRequest($request);
-			
 			if($form->isValid())
 			{
 				$picture->setCategory($category);
-				$em->persist($picture);
-				
 				if($picture->getPath() !== 'path')
 				{
-					if($oldpicture != null)
+					if($oldPicture != null)
 					{
-						$em->remove($oldpicture);
+						$em->remove($oldPicture);
 					}
 					$category->addDocument($picture);
 					
@@ -287,8 +264,6 @@ class ProfileController extends Controller
 					$profile->setPicturePath($picture->getPath());
 					
 					$message = "La photo de profil a été enregistrée avec succès";
-				
-					$em->persist($category);
 				}
 				else
 				{
@@ -332,15 +307,14 @@ class ProfileController extends Controller
 		
 		if($request->getMethod() === 'POST')
 		{
-			$oldLogin = $user->getLogin();
 			$oldPassword = $user->getPassword();
 			
 			$form->handleRequest($request);
 			
 			$message = "Les informations n'ont pas été enregistrées";
-			if(($form->isValid()) AND ($oldLogin === $user->getLogin()) AND ($oldPassword === $request->request->get('oldPassword')) AND ($user->getPassword() === $request->request->get('confirmpassword')))
+			
+			if(($form->isValid()) AND ($oldPassword === $request->request->get('oldPassword')) AND ($user->getPassword() === $request->request->get('confirmpassword')))
 			{
-				$em->persist($user);
 				$em->flush();
 		
 				$message = "Les informations ont été enregistrées avec succès";
@@ -357,10 +331,8 @@ class ProfileController extends Controller
 	
 	public function logoutAction()
     {
-		$router = $this->container->get('web_router');
-		
 		$this->getRequest()->getSession()->clear();
 		
-        return $this->redirect($this->generateUrl($router->toHome()));
+        return $this->redirect($this->generateUrl($this->container->get('web_router')->toHome()));
     }
 }
