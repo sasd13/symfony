@@ -16,15 +16,15 @@ web_profile_edit:
 
 web_profile_picture:
     pattern:  /profile/picture
-    defaults: { _controller: MyWebsiteWebBundle:Profile:loadPicture}
-
-web_profile_picture_edit:
-    pattern:  /profile/picture/edit
     defaults: { _controller: MyWebsiteWebBundle:Profile:editPicture}
+
+web_profile_picture_delete:
+    pattern:  /profile/picture/delete
+    defaults: { _controller: MyWebsiteWebBundle:Profile:deletePicture}
 
 web_profile_user:
     pattern:  /profile/user
-    defaults: { _controller: MyWebsiteWebBundle:Profile:loadUser}
+    defaults: { _controller: MyWebsiteWebBundle:Profile:editUser}
 
 web_profile_logout:
     pattern:  /profile/logout

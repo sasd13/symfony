@@ -16,7 +16,6 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface
 		$root->setLogin('root')
 			->setPassword('root')
 			->setPrivacyLevel(3);
-		$root->setTimeManager(new TimeManager());
 		
 		$manager->persist($root);
 		$manager->flush();

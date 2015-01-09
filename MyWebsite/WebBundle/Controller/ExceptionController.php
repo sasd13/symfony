@@ -9,10 +9,7 @@ class ExceptionController extends Controller
 {	
 	public function errorAction()
     {
-		if ($this->getRequest()->getSession()->get('profile') != null) 
-		{
-			$this->getRequest()->getSession()->remove('profile');
-		}
+		$this->getRequest()->getSession()->clear();
 		return $this->render('MyWebsiteWebBundle:Exception:error.html.twig');
     }
 	

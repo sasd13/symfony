@@ -68,6 +68,14 @@ class Profile
 	/**
      * @var string
 	 *
+     * @ORM\Column(name="pictureName", type="string", length=255)
+     * @Assert\NotBlank
+     */
+    private $pictureName;
+	
+	/**
+     * @var string
+	 *
      * @ORM\Column(name="picturePath", type="string", length=255)
      * @Assert\NotBlank
      */
@@ -95,8 +103,11 @@ class Profile
 	public function __construct()
 	{
 		$document = new Document();
-		$this->picturePath = $document->setDefault('profile_picture')->getPath();
+		$document->setDefault('picture');
+		$this->pictureName = $document->getName();
+		$this->picturePath = $document->getPath();
 		$this->categories = new ArrayCollection();
+		$this->timeManager = new TimeManager();
 	}
 
     /**
@@ -176,6 +187,29 @@ class Profile
     public function getEmail()
     {
         return $this->email;
+    }
+	
+	/**
+     * Set pictureName
+     *
+     * @param string $pictureName
+     * @return Profile
+     */
+    public function setPictureName($pictureName)
+    {
+        $this->pictureName = $pictureName;
+
+        return $this;
+    }
+
+    /**
+     * Get pictureName
+     *
+     * @return string 
+     */
+    public function getPictureName()
+    {
+        return $this->pictureName;
     }
 
     /**

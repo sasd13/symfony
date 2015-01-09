@@ -12,4 +12,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class DocumentRepository extends EntityRepository
 {
+	public function myFindByCategoryTagAndProfile($tagCategory, $idProfile)
+	{
+		$qb = $this->createQueryBuilder('document');
+		$qb->join('document.category', 'category', 'WITH', 'category.tag = :tag')
+			->setParameter('tag', $tagCategory)
+			->join('category.profile', 'profile', 'WITH', 'profile.id = :id')
+			->setParameter('id', $idProfile);
+		
+		$results = $qb->getQuery()->getResult();
+		return $results[0];
+	}
 }

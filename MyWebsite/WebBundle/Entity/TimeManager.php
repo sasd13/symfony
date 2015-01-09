@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use \DateTime;
 
 /**
@@ -11,10 +12,11 @@ use \DateTime;
  *
  * @ORM\Table(name="web_timemanager")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\TimeManagerRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class TimeManager
 {
-    /**
+	/**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -34,17 +36,24 @@ class TimeManager
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updateTime", type="datetime")
-	 * @Assert\Type(type="\DateTime")
+     * @ORM\Column(name="updateTime", type="datetime", nullable=true)
      */
     private $updateTime;
 	
 	
-	public function __construct() 
+	public function __construct()
 	{
 		$this->createTime = new DateTime();
-		$this->updateTime = new DateTime();
 	}
+	
+	/**
+     * @ORM\PrePersist()
+	 * @ORM\PreUpdate()
+     */
+    public function update()
+    {
+		$this->updateTime = new DateTime();
+    }
 
     /**
      * Get id

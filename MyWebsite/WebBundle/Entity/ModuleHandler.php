@@ -5,7 +5,6 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use MyWebsite\WebBundle\Entity\TimeManager;
-use \DateTime;
 
 /**
  * ModuleHandler
@@ -80,6 +79,7 @@ class ModuleHandler
 		self::$number++;
 		$this->priority = self::$number;
 		$this->active = true;
+		$this->timeManager = new TimeManager();
     }
 
     /**
@@ -213,7 +213,7 @@ class ModuleHandler
      * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
      * @return ModuleHandler
      */
-    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
+    private function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
     {
         $this->timeManager = $timeManager;
 

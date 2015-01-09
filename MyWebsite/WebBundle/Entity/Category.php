@@ -78,6 +78,7 @@ class Category
 		$this->type = 'content';
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
+		$this->timeManager = new TimeManager();
 	}
 
     /**

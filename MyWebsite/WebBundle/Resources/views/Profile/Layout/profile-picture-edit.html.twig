@@ -1,13 +1,38 @@
 <div class="feature-grid2">
 	<div class="feature-grid-head feature-grid-head3">
-		<h3><span>Modifier</span> Photo</h3>
+		<h3><span>Modifier</span> Photo de profil</h3>
 		<div class="feature-grid-head-top">
 			<label> </label><label> </label>
 			<div class="clear"> </div>
 		</div>
 	</div>
-	<div class="contact_form border">
-		{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-picture-form.html.twig" %}
+	<div class="new-form">
+		{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+			{{ form_errors(form) }}
+			<ul class="form-content">
+				<li>
+					<h2>Sélectionner un fichier</h2>
+					<span class="required_notification">{{ message }}</span>
+				</li>
+				<li>
+					{{ form_label(form.name, "Nom") }}
+					{{ form_widget(form.name) }}
+				</li>
+				<li>
+					{{ form_label(form.display, "Afficher") }}
+					{{ form_widget(form.display) }}
+				</li>
+				<li>
+					{{ form_label(form.file, "Choisir (JPEG, PNG)") }}
+					{{ form_widget(form.file) }}
+				</li>
+			</ul>
+			<ul class="form-submit">
+				<li>
+					<input type="submit" class="submit" value="Modifier"/>
+					<a href="{{ path('web_profile_picture_delete') }}"><input type="button" value="Supprimer"/></a>
+				</li>
+			</ul>
+		{{ form_end(form) }}
 	</div>
-	<div class="clear"> </div>
 </div>

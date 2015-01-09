@@ -36,4 +36,16 @@ class CategoryRepository extends EntityRepository
 		$results = $qb->getQuery()->getResult();
 		return $results[0];
 	}
+	
+	public function myFindByCategoryTagAndProfile($tagCategory, $idProfile)
+	{
+		$qb = $this->createQueryBuilder('category');
+		$qb->where('category.tag = :tag')
+			->setParameter('tag', $tagCategory)
+			->join('category.profile', 'profile', 'WITH', 'profile.id = :id')
+			->setParameter('id', $idProfile);
+		
+		$results = $qb->getQuery()->getResult();
+		return $results[0];
+	}
 }

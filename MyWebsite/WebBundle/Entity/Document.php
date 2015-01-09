@@ -11,9 +11,12 @@ use \DateTime;
  *
  * @ORM\Table(name="web_document")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\DocumentRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Document
 {
+	private static $subDir = "documents";
+	
     /**
      * @var integer
      *
@@ -35,7 +38,7 @@ class Document
      * @var string
 	 *
      * @ORM\Column(name="mimeType", type="string", length=255)
-     * @Assert\NotBlank
+	 * @Assert\NotBlank
      */
     private $mimeType;
 	
@@ -51,7 +54,7 @@ class Document
      * @var string
 	 *
      * @ORM\Column(name="path", type="string", length=255)
-     * @Assert\NotBlank
+	 * @Assert\NotBlank
      */
     private $path;
 	
@@ -78,23 +81,25 @@ class Document
 	private $category;
 	
 	
-	public function __construct()
+	public function __construct($type = 'document')
     {
-		$this->display = true;
+		$this->setDefault($type);
     }
 	
 	//Fonction de réinitialisation des documents
 	public function setDefault($type)
     {
 		//Photos
-		if(strcmp($type, "profile_picture") === 0)
+		if($type === "picture")
 		{
 			$this->name = "Photo";
 			$this->mimeType = "image/gif";
-			$this->display = true;
-			$this->path = "images/inconnu.gif";
-			$this->uploadDate = new DateTime();
+			$this->path = "inconnu.gif";
 		}
+		
+		self::$subDir = $type.'s';
+		$this->display = true;
+		$this->uploadDate = new DateTime();
 		
 		return $this;
     }
@@ -112,13 +117,57 @@ class Document
     protected function getUploadRootDir()
     {
         // le chemin absolu du répertoire où les documents uploadés doivent être sauvegardés
-        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+        return __DIR__.'/../../../../web/bundles/mywebsiteweb/'.$this->getUploadDir();
     }
 
     protected function getUploadDir()
     {
         // on se débarrasse de « __DIR__ » afin de ne pas avoir de problème lorsqu'on affiche le document dans la vue.
-        return 'uploads';
+		return 'uploads/'.self::$subDir;
+    }
+	
+	/**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload()
+    {
+        if (null !== $this->file) {
+            // faites ce que vous voulez pour générer un nom unique
+            $this->path = sha1(uniqid(mt_rand(), true)).'_'.$this->file->getClientOriginalName();
+			
+			$this->mimeType = $this->file->getMimeType();
+			$this->uploadDate = new DateTime();
+        }
+    }
+
+	 /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function upload()
+    {
+        if (null === $this->file) {
+            return;
+        }
+
+        // s'il y a une erreur lors du déplacement du fichier, une exception
+        // va automatiquement être lancée par la méthode move(). Cela va empêcher
+        // proprement l'entité d'être persistée dans la base de données si
+        // erreur il y a
+        $this->file->move($this->getUploadRootDir(), $this->path);
+
+        unset($this->file);
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        if ($file = $this->getAbsolutePath()) {
+            unlink($file);
+        }
     }
 
     /**

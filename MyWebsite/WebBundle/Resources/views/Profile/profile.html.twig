@@ -25,20 +25,50 @@
 							<h3><span>My</span>Profil</h3>
 						</div>
 						<div class="picture">
-							<img src="{{ asset('bundles/mywebsiteweb/uploads/' ~ profile.picturePath) }}" title="Photo de profil"/>
+							<img src="{{ asset('bundles/mywebsiteweb/uploads/images/' ~ profile.picturePath) }}" title="Photo de profil"/>
 						</div>
 					</div>
 					<!----side-bar---->
 					<div class="recent-posts">
 						<div class="side-heading side-heading1">
-							<label> </label><span>Gestion</span><label> </label>
+							<label> </label><span>CV</span><label> </label>
+							<div class="clear"> </div>
+						</div>
+						<div class="recent-post-list">
+							<ul>
+								<li><a href="#">New</a></li>
+								<li><a href="#">Edit</a></li>
+							</ul>
+						</div>
+						<div class="side-heading side-heading1">
+							<label> </label><span>Project</span><label> </label>
+							<div class="clear"> </div>
+						</div>
+						<div class="recent-post-list">
+							<ul>
+								<li><a href="#">New</a></li>
+								<li><a href="#">Edit</a></li>
+							</ul>
+						</div>
+						<div class="side-heading side-heading1">
+							<label> </label><span>Portfolio</span><label> </label>
+							<div class="clear"> </div>
+						</div>
+						<div class="recent-post-list">
+							<ul>
+								<li><a href="#">New</a></li>
+								<li><a href="#">Edit</a></li>
+							</ul>
+						</div>
+						<div class="side-heading side-heading1">
+							<label> </label><span>Edit Profil</span><label> </label>
 							<div class="clear"> </div>
 						</div>
 						<div class="recent-post-list">
 							<ul>
 								<li><a href="{{ path('web_profile') }}">Informations</a></li>
-								<li><a href="{{ path('web_profile_picture') }}">Photo de profil</a></li>
-								<li><a href="{{ path('web_profile_user') }}">Identifiants de connexion</a></li>
+								<li><a href="{{ path('web_profile_picture') }}">Photo</a></li>
+								<li><a href="{{ path('web_profile_user') }}">Log In Option</a></li>
 							</ul>
 						</div>
 					</div>

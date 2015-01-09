@@ -72,6 +72,7 @@ class User
 	public function __construct()
 	{
 		$this->privacyLevel = 1;
+		$this->timeManager = new TimeManager();
 	}
 
     /**
@@ -93,7 +94,7 @@ class User
     public function setLogin($login)
     {
         $this->login = $login;
-
+		
         return $this;
     }
 
@@ -151,19 +152,6 @@ class User
     public function getPrivacyLevel()
     {
         return $this->privacyLevel;
-    }
-
-    /**
-     * Set timeManager
-     *
-     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return User
-     */
-    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
-    {
-        $this->timeManager = $timeManager;
-
-        return $this;
     }
 
     /**
