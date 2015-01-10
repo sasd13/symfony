@@ -1,45 +1,10 @@
 <div class="feature-grid2">
 	<div class="feature-grid-head feature-grid-head3">
-		<h3><span>Informations de</span> Profil</h3>
+		<h3><span>Gestion de</span> MyProfil</h3>
 		<div class="feature-grid-head-top">
 			<label> </label><label> </label>
 			<div class="clear"> </div>
 		</div>
-	</div>
-	<div class="new-form">
-		{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
-			{{ form_errors(form) }}
-			<div class="form-submit2">
-				<input type="submit" class="submit" value="Enregistrer"/>
-			</div>
-			<br/>
-			<ul class="form-content">
-				<br/>
-				<li>
-					<h2>Identité</h2>
-				</li>
-				<li>
-					{{ form_label(form.firstName, "Prénom") }}
-					{{ form_widget(form.firstName) }}
-				</li>
-				<li>
-					{{ form_label(form.lastName, "Nom") }}
-					{{ form_widget(form.lastName) }}
-				</li>
-				<li>
-					{{ form_label(form.email, "Email") }}
-					{{ form_widget(form.email) }}
-				</li>
-				{% if profile.categories.count > 0 %}
-					{% set i = -1 %}
-					{% for formCategory in form.categories %}
-						{% set i = i+1 %}
-						{% set category = attribute(profile.categories, i) %}
-						{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-form.html.twig" %}
-					{% endfor %}
-				{% endif %}
-			</ul>
-		{{ form_end(form, {'render_rest': false}) }}
 	</div>
 	<div class="clear"> </div>
 </div>

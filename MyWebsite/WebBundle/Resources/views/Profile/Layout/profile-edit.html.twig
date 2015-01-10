@@ -40,7 +40,10 @@
 					{% endfor %}
 				{% endif %}
 			</ul>
+			{{ form_widget(form._token) }}
 		{{ form_end(form, {'render_rest': false}) }}
+		<br/>
+		<br/>
 	</div>
 	<div class="clear"> </div>
 </div>

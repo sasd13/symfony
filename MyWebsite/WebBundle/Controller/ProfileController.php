@@ -16,6 +16,7 @@ use MyWebsite\WebBundle\Form\ProfileType;
 use MyWebsite\WebBundle\Form\CategoryType;
 use MyWebsite\WebBundle\Form\ContentType;
 use MyWebsite\WebBundle\Form\DocumentType;
+use \DateTime;
 
 class ProfileController extends Controller
 {
@@ -41,6 +42,7 @@ class ProfileController extends Controller
 		$layout = null;
 		$entity = null;
 		$form = null;
+		
 		$message = "* Denotes Required Field";
 		
 		if($request->getSession()->get('user') == null)
@@ -89,6 +91,8 @@ class ProfileController extends Controller
 						->setTag('profile_picture');
 					$category->setProfile($entity);
 					$em->persist($category);
+					
+					$entity->addCategory($category);
 			
 					$em->flush();
 					
@@ -153,7 +157,7 @@ class ProfileController extends Controller
 			));
 		}
 		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'));
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
 		
 		/*
 		$category = new Category('content');
@@ -210,15 +214,9 @@ class ProfileController extends Controller
 		$em->flush();
 		*/
 		
-		$form = $this->createForm(new ProfileType(), $profile, array('action' => $this->generateUrl($router->toProfile())));
-		
-		$message = "* Denotes Required Field";
-		
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-			'layout' => 'Layout/profile-edit',
+			'layout' => 'Layout/profile-default',
 			'profile' => $profile,
-			'form' => $form->createView(),
-			'message' => $message
 		));
 	}
 	
@@ -234,7 +232,7 @@ class ProfileController extends Controller
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'));
-		$form = $this->createForm(new ProfileType(), $profile, array('action' => $this->generateUrl($router->toProfileEdit())));
+		$form = $this->createForm(new ProfileType(), $profile, array('action' => $this->generateUrl($router->toProfileInfo())));
 		
 		$message = "* Denotes Required Field";
 		
@@ -242,20 +240,22 @@ class ProfileController extends Controller
 		{
 			$form->handleRequest($request);
 			
-			$message = "Les informations n'ont pas été enregistrées";
-			
-			if($form->isValid())
-			{
+			//if($form->isValid())
+			//{
+				$profile->getTimeManager()->setUpdateTime(new DateTime());
 				$em->flush();
 				
 				$message = "Les informations ont été enregistrées";
-			}
+			//}
+			
+			//$message = $form->getErrors();
 		}
 			
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
 			'layout' => 'Layout/profile-edit',
 			'profile' => $profile,
-			'form' => $form->createView()
+			'form' => $form->createView(),
+			'message' => $message
 		));
 	}
 	
@@ -338,7 +338,7 @@ class ProfileController extends Controller
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoryAndPicture($request->getSession()->get('idProfile'));
 		$categories = $profile->getCategories();
 		$category = $categories[0];
-		$oldPicture = $category->getDocuments()->get(0);
+		$oldPicture = ($category->getDocuments()->count() > 0) ? $category->getDocuments()->get(0) : null;
 		
 		$picture = new Document('image');
 		$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router->toProfilePicture())));
@@ -348,9 +348,14 @@ class ProfileController extends Controller
 		if($request->getMethod() === 'POST')
 		{
 			$form->handleRequest($request);
+			
+			$message = "La photo de profil n'a pas été enregistrée";
+			
 			if($form->isValid())
 			{
 				$picture->setCategory($category);
+				$em->persist($picture);
+				
 				if($picture->getPath() !== 'path')
 				{
 					if($oldPicture != null)
@@ -358,9 +363,11 @@ class ProfileController extends Controller
 						$em->remove($oldPicture);
 					}
 					$category->addDocument($picture);
+					$category->getTimeManager()->setUpdateTime(new DateTime());
 					
 					$profile->setPictureName($picture->getName());
 					$profile->setPicturePath($picture->getPath());
+					$profile->getTimeManager()->setUpdateTime(new DateTime());
 					
 					$message = "La photo de profil a été enregistrée avec succès";
 				}
@@ -413,6 +420,7 @@ class ProfileController extends Controller
 			
 			if(($form->isValid()) AND ($oldPassword === $request->request->get('oldPassword')) AND ($user->getPassword() === $request->request->get('confirmPassword')))
 			{
+				$user->getTimeManager()->setUpdateTime(new DateTime());
 				$em->flush();
 		
 				$message = "Les informations ont été enregistrées avec succès";

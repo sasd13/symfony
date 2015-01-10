@@ -7,7 +7,7 @@ class Router
 	private static $home = 'web_home';
 	private static $signup = 'web_signup';
 	private static $profile = 'web_profile';
-	private static $profileEdit = 'web_profile_edit';
+	private static $profileInfo = 'web_profile_info';
 	private static $profilePicture = 'web_profile_picture';
 	private static $profilePictureDelete = 'web_profile_picture_delete';
 	private static $profileUser = 'web_profile_user';
@@ -18,7 +18,7 @@ class Router
 	public function toHome() { return self::$home; }
 	public function toSignup() { return self::$signup; }
 	public function toProfile() { return self::$profile; }
-	public function toProfileEdit() { return self::$profileEdit; }
+	public function toProfileInfo() { return self::$profileInfo; }
 	public function toProfilePicture() { return self::$profilePicture; }
 	public function toProfilePictureDelete() { return self::$profilePictureDelete; }
 	public function toProfileUser() { return self::$profileUser; }

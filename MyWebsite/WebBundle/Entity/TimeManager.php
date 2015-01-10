@@ -11,7 +11,6 @@ use \DateTime;
  *
  * @ORM\Table(name="web_timemanager")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\TimeManagerRepository")
- * @ORM\HasLifecycleCallbacks
  */
 class TimeManager
 {
@@ -45,11 +44,7 @@ class TimeManager
 		$this->createTime = new DateTime();
 	}
 	
-	/**
-     * @ORM\PrePersist()
-	 * @ORM\PreUpdate()
-     */
-    public function update()
+	public function update()
     {
 		$this->updateTime = new DateTime();
     }

@@ -283,7 +283,10 @@ class Profile
      */
     public function addCategory(\MyWebsite\WebBundle\Entity\Category $categories)
     {
-        $this->categories[] = $categories;
+		if(!$this->categories->contains($categories))
+		{
+			$this->categories[] = $categories;
+		}
 
         return $this;
     }

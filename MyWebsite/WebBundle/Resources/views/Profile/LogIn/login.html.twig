@@ -50,7 +50,8 @@
 								<p>Pas encore membre? Inscrivez-vous ici: <a href="{{ path('web_signup') }}">Sign Up</a></p>
 							</li>
 						</ul>
-					{{ form_end(form) }}
+						{{ form_widget(form._token) }}
+					{{ form_end(form, {'render_rest': false}) }}
 				</div>
 			</div>
 		</div>

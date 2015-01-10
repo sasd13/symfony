@@ -10,8 +10,8 @@ web_profile:
     pattern:  /profile
     defaults: { _controller: MyWebsiteWebBundle:Profile:loadProfile}
 
-web_profile_edit:
-    pattern:  /profile/edit
+web_profile_info:
+    pattern:  /profile/info
     defaults: { _controller: MyWebsiteWebBundle:Profile:editProfile}
 
 web_profile_picture:

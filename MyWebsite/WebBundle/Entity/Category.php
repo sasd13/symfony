@@ -80,8 +80,8 @@ class Category
 		$this->documents = new ArrayCollection();
 		$this->timeManager = new TimeManager();
 	}
-
-    /**
+	
+	/**
      * Get id
      *
      * @return integer 
@@ -191,7 +191,10 @@ class Category
      */
     public function addContent(\MyWebsite\WebBundle\Entity\Content $contents)
     {
-        $this->contents[] = $contents;
+		if(!$this->contents->contains($contents))
+		{
+			$this->contents[] = $contents;
+		}
 
         return $this;
     }
@@ -224,7 +227,10 @@ class Category
      */
     public function addDocument(\MyWebsite\WebBundle\Entity\Document $documents)
     {
-        $this->documents[] = $documents;
+		if(!$this->documents->contains($documents))
+		{
+			$this->documents[] = $documents;
+		}
 
         return $this;
     }

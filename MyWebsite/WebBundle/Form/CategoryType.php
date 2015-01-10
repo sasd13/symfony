@@ -18,7 +18,7 @@ class CategoryType extends AbstractType
 			->setMethod('POST')
             ->add('title', 'text')
             ->add('tag', 'text')
-            ->add('type', 'text')
+            ->add('type', 'choice')
 			->add('contents', 'collection', array('type' => new ContentType()));
         ;
     }

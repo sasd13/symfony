@@ -33,6 +33,7 @@
 					<a href="{{ path('web_profile_picture_delete') }}"><input type="button" value="Supprimer"/></a>
 				</li>
 			</ul>
-		{{ form_end(form) }}
+			{{ form_widget(form._token) }}
+		{{ form_end(form, {'render_rest': false}) }}
 	</div>
 </div>
