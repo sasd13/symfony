@@ -7,31 +7,28 @@
 		</div>
 	</div>
 	<div class="new-project-form">
-		<form class="contact_form" action="{{ path('web_profil_category_edit') }}" method="post" name="contact_form">
+		{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+			{{ form_errors(form) }}
 			<ul class="form-content">
 				<li>
 					<h2>Détails</h2>
-					<span class="required_notification">* Denotes Required Field</span>
-					<input type="hidden" name="idAdmin" value="{{ category.id }}" required />
+					<span class="required_notification">{{ message }}</span>
 				</li>
 				<li>
-					{{ form_label(formCategory.title, "Title :") }}
-					{{ form_widget(formCategory.title) }}
+					{{ form_label(form.title, "Title :") }}
+					{{ form_widget(form.title) }}
 				</li>
 				<li>
-					{{ form_label(formCategory.tag, "Tag :") }}
-					{{ form_widget(formCategory.tag) }}
+					{{ form_label(form.tag, "Tag :") }}
+					{{ form_widget(form.tag) }}
 				</li>
 			</ul>
 			<ul class="form-submit">
 				<li>
 					<input type="submit" class="submit" value="Enregistrer"/>
-					{% if message is defined %}
-						<div class="required_notification">{{ message }}</div>
-					{% endif %}
 				</li>
 			</ul>
-		</form>
+		{{ form_end(form, {'render_rest': false}) }}
 	</div>
 	<div class="clear"> </div>
 </div>

@@ -20,7 +20,7 @@ class DocumentType extends AbstractType
 			->add('display', 'checkbox', array(
 				'label' => 'display',
 			))
-			->add('file')
+			->add('file', 'file')
         ;
     }
     

@@ -16,19 +16,22 @@
 				</li>
 				<li>
 					{{ form_label(form.login, "Login :") }}
-					{{ form_widget(form.login, {'attr': {'readonly': 'readonly'}}) }}
+					{{ form_widget(form.login, {'attr': {
+						'readonly': 'readonly'
+						}}) 
+					}}
 				</li>
 				<li>
-					<label for="oldpassword">Actuel mot de passe :</label>
-					<input type="password" name="oldpassword" maxlength="20" required/>
+					<label for="oldPassword">Actuel mot de passe :</label>
+					<input type="password" name="oldPassword" maxlength="20" required/>
 				</li>
 				<li>
 					{{ form_label(form.password, "Nouveau mot de passe :") }}
 					{{ form_widget(form.password) }}
 				</li>
 				<li>
-					<label for="confirmpassword">Confirmer :</label>
-					<input type="password" name="confirmpassword" maxlength="20" required/>
+					<label for="confirmPassword">Confirmer :</label>
+					<input type="password" name="confirmPassword" maxlength="20" required/>
 				</li>
 			</ul>
 			<ul class="form-submit">

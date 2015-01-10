@@ -95,7 +95,7 @@ class Content
 	/**
      * @var string
      *
-     * @ORM\Column(name="placeholder", type="text", nullable=true)
+     * @ORM\Column(name="placeholder", type="string", length=255, nullable=true)
      */
     private $placeholder;
 
@@ -207,7 +207,7 @@ class Content
     {
         if($this->formType === 'textarea')
 		{
-			$this->textValue = $value;
+			$this->textValue = $textValue;
 		}
 
         return $this;

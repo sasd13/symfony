@@ -29,7 +29,7 @@ class CategoryType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'MyWebsite\WebBundle\Entity\Category'
+            'data_class' => 'MyWebsite\WebBundle\Entity\Category',
 			'cascade_validation' => true,
         ));
     }

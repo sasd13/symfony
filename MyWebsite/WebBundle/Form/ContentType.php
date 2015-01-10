@@ -16,6 +16,7 @@ class ContentType extends AbstractType
     {
 		$builder
 			->setMethod('POST')
+			->add('label')
             ->add('labelValue')
             ->add('stringValue')
             ->add('textValue')
