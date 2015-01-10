@@ -75,7 +75,7 @@ class Category
 	
 	public function __construct($type = "content")
 	{
-		$this->type = 'content';
+		$this->type = $type;
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
 		$this->timeManager = new TimeManager();

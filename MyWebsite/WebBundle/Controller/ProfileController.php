@@ -11,11 +11,17 @@ use MyWebsite\WebBundle\Entity\Profile;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Content;
 use MyWebsite\WebBundle\Entity\Document;
+use MyWebsite\WebBundle\Entity\ProfileBuffer;
+use MyWebsite\WebBundle\Entity\CategoryBuffer;
+use MyWebsite\WebBundle\Entity\ContentBuffer;
 use MyWebsite\WebBundle\Form\UserType;
 use MyWebsite\WebBundle\Form\ProfileType;
 use MyWebsite\WebBundle\Form\CategoryType;
 use MyWebsite\WebBundle\Form\ContentType;
 use MyWebsite\WebBundle\Form\DocumentType;
+use MyWebsite\WebBundle\Form\ProfileBufferType;
+use MyWebsite\WebBundle\Form\CategoryBufferType;
+use MyWebsite\WebBundle\Form\ContentBufferType;
 use \DateTime;
 
 class ProfileController extends Controller
@@ -24,6 +30,7 @@ class ProfileController extends Controller
 	{
 		$moduleHandler = $this->container->get('web_moduleHandler');
 		$router = $this->container->get('web_router');
+		
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
@@ -78,27 +85,16 @@ class ProfileController extends Controller
 			{
 				$form->handleRequest($request);
 				
-				$bufferProfile = $em->getRepository('MyWebsiteWebBundle:Profile')->findByEmail($entity->getEmail());
-				if(($bufferProfile == null) AND ($form->isValid()))
-				{
-					$em->persist($user);
-					
-					$entity->setUser($user);
-					$em->persist($entity);
-
-					$category = new Category('document');
-					$category->setTitle('Photo de profil')
-						->setTag('profile_picture');
-					$category->setProfile($entity);
-					$em->persist($category);
-					
-					$entity->addCategory($category);
-			
-					$em->flush();
-					
-					$request->getSession()->remove('user');
-					$request->getSession()->set('idProfile', $entity->getId());
+				$profile = $this->container
+					->get('web_generator')
+					->generateProfile($user, $entity)
+				;
 				
+				if($profile != null)
+				{
+					$request->getSession()->remove('user');
+					$request->getSession()->set('idProfile', $profile->getId());
+					
 					return $this->redirect($this->generateUrl($router->toProfile()));
 				}
 				
@@ -159,61 +155,6 @@ class ProfileController extends Controller
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
 		
-		/*
-		$category = new Category('content');
-		$category->setTitle('Coordonnées')
-			->setTag('coordonnees')
-			->setProfile($profile);
-		$em->persist($category);
-		$profile->addCategory($category);
-		
-		$content = new Content('adresse', 'text');
-		$content->setLabelValue('Adresse')
-			->setStringValue('41 rue du Long Sentier 93300 Aubervilliers France')
-			->setCategory($category);
-		$em->persist($content);
-		$category->addContent($content);
-		
-		$content = new Content('email', 'email');
-		$content->setLabelValue('Email')
-			->setStringValue('ab001@hotmail.fr')
-			->setCategory($category);
-		$em->persist($content);
-		$category->addContent($content);
-			
-		
-		$category = new Category('content');
-		$category->setTitle('Formations')
-			->setTag('formation')
-			->setProfile($profile);
-		$em->persist($category);
-		$profile->addCategory($category);
-		
-		$content = new Content('diplome', 'text');
-		$content->setLabelValue('Diplôme')
-			->setStringValue('Licence')
-			->setCategory($category);
-		$em->persist($content);
-		$category->addContent($content);
-		
-		$content = new Content('annee', 'number');
-		$content->setLabelValue('Année')
-			->setStringValue('2013')
-			->setCategory($category);
-		$em->persist($content);
-		$category->addContent($content);
-		
-		$content = new Content('description', 'textarea');
-		$content->setLabelValue('Description')
-			->setTextValue('Description de la formation')
-			->setCategory($category);
-		$em->persist($content);
-		$category->addContent($content);
-		
-		
-		$em->flush();
-		*/
-		
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
 			'layout' => 'Layout/profile-default',
 			'profile' => $profile,
@@ -232,7 +173,37 @@ class ProfileController extends Controller
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'));
-		$form = $this->createForm(new ProfileType(), $profile, array('action' => $this->generateUrl($router->toProfileInfo())));
+		$profileBuffer = new ProfileBuffer($profile->getId());
+		
+		$categories = $profile->getCategories();
+		foreach($categories as $category)
+		{
+			$categoryBuffer = new CategoryBuffer($category->getId());
+			
+			$contents = $category->getContents();
+			foreach($contents as $content)
+			{
+				$contentBuffer = new ContentBuffer($content->getId());
+				if($content->getFormType() === 'textarea')
+				{
+					$contentBuffer->setTextValue($content->getTextValue());
+				}
+				else
+				{
+					$contentBuffer->setStringValue($content->getStringValue());
+				}
+				$contentBuffer
+					->setRequired($content->getRequired())
+					->setFormType($content->getFormType())
+				;
+				
+				$categoryBuffer->addContent($contentBuffer);
+			}
+			
+			$profileBuffer->addCategory($categoryBuffer);
+		}
+		
+		$form = $this->createForm(new ProfileBufferType(), $profileBuffer, array('action' => $this->generateUrl($router->toProfileInfo())));
 		
 		$message = "* Denotes Required Field";
 		
@@ -240,17 +211,55 @@ class ProfileController extends Controller
 		{
 			$form->handleRequest($request);
 			
-			//if($form->isValid())
-			//{
-				$profile->getTimeManager()->setUpdateTime(new DateTime());
+			$message = "Les informations n'ont pas été enregistrées";
+			
+			if($form->isValid())
+			{
+				$categoriesBuffer = $profileBuffer->getCategories();
+				foreach($categoriesBuffer as $keyCategory => $categoryBuffer)
+				{
+					$category = $profile->getCategories()->get($keyCategory);
+					
+					$contentsBuffer = $categoryBuffer->getContents();
+					foreach($contentsBuffer as $keyContent => $contentBuffer)
+					{
+						$content = $category->getContents()->get($keyContent);
+						
+						if($contentBuffer->getId() === $content->getId())
+						{
+							if($content->getFormType() === 'textarea')
+							{
+								$content->setTextValue($contentBuffer->getTextValue());
+							}
+							else
+							{
+								$content->setStringValue($contentBuffer->getStringValue());
+							}
+							
+							if(($category->getTag() === 'profile_info') AND ($content->getLabel() === 'first_name'))
+							{
+								$profile->setFirstName($content->getStringValue());
+							}
+							
+							if(($category->getTag() === 'profile_info') AND ($content->getLabel() === 'last_name'))
+							{
+								$profile->setLastName($content->getStringValue());
+							}
+							
+							if(($category->getTag() === 'profile_info') AND ($content->getLabel() === 'email'))
+							{
+								$profile->setEmail($content->getStringValue());
+							}
+						}
+					}
+				}
+				
 				$em->flush();
 				
 				$message = "Les informations ont été enregistrées";
-			//}
-			
-			//$message = $form->getErrors();
+			}
 		}
-			
+		
 		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
 			'layout' => 'Layout/profile-edit',
 			'profile' => $profile,

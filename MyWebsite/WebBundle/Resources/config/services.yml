@@ -15,3 +15,7 @@ services:
         class: MyWebsite\WebBundle\Services\ModuleHandler
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+    web_generator:
+        class: MyWebsite\WebBundle\Services\Generator
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]

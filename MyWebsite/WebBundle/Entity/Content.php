@@ -179,10 +179,7 @@ class Content
      */
     public function setStringValue($stringValue)
     {
-		if($this->formType !== 'textarea')
-		{
-			$this->stringValue = $stringValue;
-		}
+		$this->stringValue = $stringValue;
 
         return $this;
     }
@@ -205,10 +202,7 @@ class Content
      */
     public function setTextValue($textValue)
     {
-        if($this->formType === 'textarea')
-		{
-			$this->textValue = $textValue;
-		}
+        $this->textValue = $textValue;
 
         return $this;
     }

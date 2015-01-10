@@ -1,0 +1,52 @@
+<br/>
+<br/>
+<ul class="form-content">
+	<li>
+		<h2>{{ category.title }}</h2>
+	</li>
+	{% if category.contents.count > 0 %}
+		{% if category.type == 'content' %}
+			{% set j = -1 %}
+			{% for formContent in formCategory.contents %}
+				{% set j = j+1 %}
+				{% set content = attribute(category.contents, j) %}
+				{% if content.required == true %}
+					<li>
+						{% if content.formType == 'textarea' %}
+							{{ form_label(formContent.textValue, content.labelValue) }}
+							{{ form_widget(formContent.textValue, {'attr': {
+								'name':  content.id ~ '_' ~ content.label,
+								'required': 'required'
+								}}) 
+							}}
+						{% else %}
+							{{ form_label(formContent.stringValue, content.labelValue) }}
+							{{ form_widget(formContent.stringValue, {'attr': {
+								'name':  content.id ~ '_' ~ content.label,
+								'required': 'required'
+								}})
+							}}
+						{% endif %}
+					</li>
+				{% else %}
+					<li>
+						{% if content.formType == 'textarea' %}
+							{{ form_label(formContent.textValue, content.labelValue) }}
+							{{ form_widget(formContent.textValue, {'attr': {
+								'name':  content.id ~ '_' ~ content.label
+								}}) 
+							}}
+						{% else %}
+							{{ form_label(formContent.stringValue, content.labelValue) }}
+							{{ form_widget(formContent.stringValue, {'attr': {
+								'name':  content.id ~ '_' ~ content.label
+								}})
+							}}
+						{% endif %}
+					</li>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	{% endif %}
+</ul>
+		

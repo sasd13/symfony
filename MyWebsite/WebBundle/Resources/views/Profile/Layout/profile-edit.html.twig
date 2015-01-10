@@ -15,22 +15,6 @@
 			</div>
 			<br/>
 			<ul class="form-content">
-				<br/>
-				<li>
-					<h2>Identité</h2>
-				</li>
-				<li>
-					{{ form_label(form.firstName, "Prénom") }}
-					{{ form_widget(form.firstName) }}
-				</li>
-				<li>
-					{{ form_label(form.lastName, "Nom") }}
-					{{ form_widget(form.lastName) }}
-				</li>
-				<li>
-					{{ form_label(form.email, "Email") }}
-					{{ form_widget(form.email) }}
-				</li>
 				{% if profile.categories.count > 0 %}
 					{% set i = -1 %}
 					{% for formCategory in form.categories %}
