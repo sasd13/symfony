@@ -293,7 +293,7 @@ class ProfileController extends Controller
 			'subLayout' => 'Layout/profile-edit',
 			'profile' => $profile,
 			'form' => $form->createView(),
-			'message' => $message
+			'message' => $message,
 		));
 	}
 	
