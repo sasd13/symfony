@@ -54,7 +54,7 @@ class ProfileController extends Controller
 		
 		if($request->getSession()->get('user') == null)
 		{
-			$subLayout = 'Form/signup-user-form';
+			$subLayout = 'Form/signup-user';
 			
 			$entity = new User();
 			$form = $this->createForm(new UserType(), $entity, array(
@@ -79,7 +79,7 @@ class ProfileController extends Controller
 		}
 		else
 		{
-			$subLayout = 'Form/signup-profile-form';
+			$subLayout = 'Form/signup-profile';
 			$user = $request->getSession()->get('user');
 			
 			$entity = new Profile();
