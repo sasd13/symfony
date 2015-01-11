@@ -19,8 +19,7 @@ class ContentBufferType extends AbstractType
     {
 		$builder
 			->setMethod('POST')
-			->add('textValue')
-			->add('stringValue')
+			->add('required')
 		;
 		
 		$builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {

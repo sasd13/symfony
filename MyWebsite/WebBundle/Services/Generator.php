@@ -73,7 +73,7 @@ class Generator
 		;
 		$this->em->persist($content);
 		$category->addContent($content);
-			
+		/*
 		//RECORD : Category Profile Info Degree
 		$category = new Category('content');
 		$category
@@ -113,7 +113,7 @@ class Generator
 		$category->setProfile($profile);
 		$this->em->persist($category);
 		$profile->addCategory($category);
-
+		*/
 		$this->em->flush();
 		
 		return $profile;

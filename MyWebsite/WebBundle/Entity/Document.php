@@ -16,7 +16,8 @@ use \DateTime;
  */
 class Document
 {
-	private static $subDir = "documents";
+	const SUBDIR_DOCUMENT = 'documents';
+	const SUBDIR_IMAGE = 'images';
 	
     /**
      * @var integer
@@ -84,7 +85,6 @@ class Document
 	
 	public function __construct($type = 'document')
     {
-		self::$subDir = $type.'s';
 		if($type === 'image')
 		{
 			$this->mimeType = 'image/png';
@@ -117,7 +117,14 @@ class Document
     protected function getUploadDir()
     {
         // on se débarrasse de « __DIR__ » afin de ne pas avoir de problème lorsqu'on affiche le document dans la vue.
-		return 'uploads/'.self::$subDir;
+		if(strpos($this->mimeType, 'image') >= 0)
+		{
+			return 'uploads/'.self::SUBDIR_IMAGE;
+		}
+		else
+		{
+			return 'uploads/'.self::SUBDIR_DOCUMENT;
+		}
     }
 	
 	/**
@@ -159,8 +166,8 @@ class Document
      */
     public function removeUpload()
     {
-        if ($file = $this->getAbsolutePath()) {
-			unlink($file);
+        if (is_file($this->getAbsolutePath())) {
+			unlink($this->getAbsolutePath());
         }
     }
 

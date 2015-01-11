@@ -30,6 +30,10 @@ web_profile_logout:
     pattern:  /profile/logout
     defaults: { _controller: MyWebsiteWebBundle:Profile:logout}
 
+web_profile_delete:
+    pattern:  /profile/delete
+    defaults: { _controller: MyWebsiteWebBundle:Profile:deleteProfile}
+
 web_admin:
     pattern:  /admin
     defaults: { _controller: MyWebsiteWebBundle:Admin:loadAdmin}

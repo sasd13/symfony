@@ -28,10 +28,16 @@
 				</li>
 			</ul>
 			<ul class="form-submit">
-				<li>
-					<input type="submit" class="submit" value="Modifier"/>
-					<a href="{{ path('web_profile_picture_delete') }}"><input type="button" value="Supprimer"/></a>
-				</li>
+				{% if profile.picturePath != null %}
+					<li>
+						<input type="submit" class="submit" value="Modifier"/>
+						<a href="{{ path('web_profile_picture_delete') }}"><input type="button" value="Supprimer"/></a>
+					</li>
+				{% else %}
+					<li>
+						<input type="submit" class="submit" value="Ajouter"/>
+					</li>
+				{% endif %}
 			</ul>
 			{{ form_widget(form._token) }}
 		{{ form_end(form, {'render_rest': false}) }}
