@@ -9,13 +9,16 @@ class ExceptionController extends Controller
 {	
 	public function errorAction()
     {
+		$layouter = $this->container->get('web_layouter');
 		$this->getRequest()->getSession()->clear();
 		
-		return $this->render('MyWebsiteWebBundle:Exception:error.html.twig');
+		return $this->render($layouter::LAYOUT_ERROR);
     }
 	
 	public function error404Action($errorURL)
     {
-		return $this->render('MyWebsiteWebBundle:Exception:error404.html.twig');
+		$layouter = $this->container->get('web_layouter');
+		
+		return $this->render($layouter::LAYOUT_ERROR404);
     }
 }

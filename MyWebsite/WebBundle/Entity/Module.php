@@ -81,6 +81,11 @@ class Module
 		$this->active = true;
 		$this->timeManager = new TimeManager();
     }
+	
+	public function update()
+	{
+		$this->timeManager->update();
+	}
 
     /**
      * Get id
@@ -205,19 +210,6 @@ class Module
     public function getReadMe()
     {
         return $this->readMe;
-    }
-
-    /**
-     * Set timeManager
-     *
-     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return Module
-     */
-    private function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
-    {
-        $this->timeManager = $timeManager;
-
-        return $this;
     }
 
     /**

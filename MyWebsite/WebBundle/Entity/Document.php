@@ -47,10 +47,10 @@ class Document
 	/**
      * @var boolean
      *
-     * @ORM\Column(name="display", type="boolean")
+     * @ORM\Column(name="hide", type="boolean")
 	 * @Assert\Type(type="bool")
      */
-    private $display;
+    private $hide;
 
     /**
      * @var string
@@ -94,7 +94,7 @@ class Document
 			$this->mimeType = 'text/plain';
 		}
 		$this->path = 'path';
-		$this->display = true;
+		$this->hide = false;
 		$this->uploadDate = new DateTime();
     }
 	
@@ -228,26 +228,26 @@ class Document
     }
 
     /**
-     * Set display
+     * Set hide
      *
-     * @param boolean $display
+     * @param boolean $hide
      * @return Document
      */
-    public function setDisplay($display)
+    public function setHide($hide)
     {
-        $this->display = $display;
+        $this->hide = $hide;
 
         return $this;
     }
 
     /**
-     * Get display
+     * Get hide
      *
      * @return boolean 
      */
-    public function getDisplay()
+    public function getHide()
     {
-        return $this->display;
+        return $this->hide;
     }
 
     /**
@@ -271,19 +271,6 @@ class Document
     public function getPath()
     {
         return $this->path;
-    }
-
-    /**
-     * Set uploadDate
-     *
-     * @param \DateTime $uploadDate
-     * @return Document
-     */
-    public function setUploadDate($uploadDate)
-    {
-        $this->uploadDate = $uploadDate;
-
-        return $this;
     }
 
     /**

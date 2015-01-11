@@ -13,6 +13,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Content
 {
+	const LABEL_CONTENT_PROFILE_FIRSTNAME = 'profile_first_name';
+	const LABEL_CONTENT_PROFILE_LASTNAME = 'profile_last_name';
+	const LABEL_CONTENT_PROFILE_EMAIL = 'profile_email';
+	
+	const LABELVALUE_CONTENT_PROFILE_FIRSTNAME = 'First name';
+	const LABELVALUE_CONTENT_PROFILE_LASTNAME = 'Last name';
+	const LABELVALUE_CONTENT_PROFILE_EMAIL = 'Email';
+	
     /**
      * @var integer
      *

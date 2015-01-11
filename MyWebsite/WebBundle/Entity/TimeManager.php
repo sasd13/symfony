@@ -26,27 +26,27 @@ class TimeManager
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="createTime", type="datetime")
+     * @ORM\Column(name="createdAt", type="datetime")
 	 * @Assert\Type(type="\DateTime")
      */
-    private $createTime;
+    private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updateTime", type="datetime", nullable=true)
+     * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
      */
-    private $updateTime;
+    private $updatedAt;
 	
 	
 	public function __construct()
 	{
-		$this->createTime = new DateTime();
+		$this->createdAt = new DateTime();
 	}
 	
 	public function update()
     {
-		$this->updateTime = new DateTime();
+		$this->updatedAt = new DateTime();
     }
 
     /**
@@ -60,48 +60,22 @@ class TimeManager
     }
 
     /**
-     * Set createTime
-     *
-     * @param \DateTime $createTime
-     * @return TimeManager
-     */
-    public function setCreateTime($createTime)
-    {
-        $this->createTime = $createTime;
-
-        return $this;
-    }
-
-    /**
-     * Get createTime
+     * Get createdAt
      *
      * @return \DateTime 
      */
-    public function getCreateTime()
+    public function getCreatedAt()
     {
-        return $this->createTime;
+        return $this->createdAt;
     }
 
     /**
-     * Set updateTime
-     *
-     * @param \DateTime $updateTime
-     * @return TimeManager
-     */
-    public function setUpdateTime($updateTime)
-    {
-        $this->updateTime = $updateTime;
-
-        return $this;
-    }
-
-    /**
-     * Get updateTime
+     * Get updatedAt
      *
      * @return \DateTime 
      */
-    public function getUpdateTime()
+    public function getUpdatedAt()
     {
-        return $this->updateTime;
+        return $this->updatedAt;
     }
 }

@@ -9,18 +9,17 @@ class WebController extends Controller
 {
 	public function indexAction()
     {
-		$moduleHandler = $this->container->get('web_moduleHandler');
 		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
-		$em = $this->getDoctrine()->getManager();
 		
-		$modules = $moduleHandler->getActivatedModules();
+		$modules = $this->container->get('web_moduleHandler')->getActivatedModules();
 		if($modules == null)
 		{
-			return $this->redirect($this->generateUrl($router->toError()));
+			return $this->redirect($this->generateUrl($router::ROUTE_ERROR));
 		}
 		$request->getSession()->set('modules', $modules);
 		
-		return $this->render('MyWebsiteWebBundle:Web:index.html.twig');
+		return $this->render($layouter::LAYOUT_HOME);
     }
 }

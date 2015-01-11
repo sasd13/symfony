@@ -104,6 +104,11 @@ class Profile
 		$this->timeManager = new TimeManager();
 	}
 	
+	public function update()
+	{
+		$this->timeManager->update();
+	}
+	
 	/**
      * Get id
      *
@@ -227,19 +232,6 @@ class Profile
     public function getPicturePath()
     {
         return $this->picturePath;
-    }
-
-    /**
-     * Set timeManager
-     *
-     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return Profile
-     */
-    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
-    {
-        $this->timeManager = $timeManager;
-
-        return $this;
     }
 
     /**

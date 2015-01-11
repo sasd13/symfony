@@ -11,6 +11,8 @@ services:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     web_router:
         class: MyWebsite\WebBundle\Services\Router
+    web_layouter:
+        class: MyWebsite\WebBundle\Services\Layouter
     web_moduleHandler:
         class: MyWebsite\WebBundle\Services\ModuleHandler
         calls:

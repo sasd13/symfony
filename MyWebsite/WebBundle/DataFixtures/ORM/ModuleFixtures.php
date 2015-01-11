@@ -5,23 +5,26 @@ namespace MyWebsite\WebBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use MyWebsite\WebBundle\Entity\TimeManager;
 use MyWebsite\WebBundle\Entity\Module;
 
 class ModuleFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
-		$moduleWeb = new Module();
-		$moduleWeb->setName('Home')
-			->setTarget('web_home');
+		$module = new Module();
+		$module
+			->setName('Home')
+			->setTarget('web_home')
+		;
+		$manager->persist($module);
 		
-		$moduleProfile = new Module();
-		$moduleProfile->setName('Profile')
-			->setTarget('web_profile');
+		$module = new Module();
+		$module
+			->setName('Profile')
+			->setTarget('web_profile')
+		;
+		$manager->persist($module);
 		
-		$manager->persist($moduleWeb);
-		$manager->persist($moduleProfile);
 		$manager->flush();
 	}
 	

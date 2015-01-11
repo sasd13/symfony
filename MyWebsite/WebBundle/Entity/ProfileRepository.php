@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use MyWebsite\WebBundle\Entity\Category;
 
 /**
  * ProfileRepository
@@ -51,11 +52,13 @@ class ProfileRepository extends EntityRepository
 	
 	public function myFindWithCategoryAndPicture($idProfile)
 	{
+		$category = new Category();
+		
 		$qb = $this->createQueryBuilder('profile');
 		$qb->where('profile.id = :id')
 			->setParameter('id', $idProfile)
 			->leftJoin('profile.categories', 'category', 'WITH', 'category.tag = :tag')
-			->setParameter('tag', 'profile_picture')
+			->setParameter('tag', $category::TAG_CATEGORY_PROFILE_PICTURE)
 			->addSelect('category')
 			->leftJoin('category.documents', 'document')
 			->addSelect('document');

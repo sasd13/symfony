@@ -5,6 +5,7 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use MyWebsite\WebBundle\Entity\TimeManager;
+use MyWebsite\WebBundle\Model\iTimeManager;
 
 /**
  * User
@@ -12,8 +13,12 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Table(name="web_user")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\UserRepository")
  */
-class User
-{	
+class User implements iTimeManager
+{
+	const USER_PRIVACYLEVEL_LOW = 1
+	const USER_PRIVACYLEVEL_MEDIUM = 2
+	const USER_PRIVACYLEVEL_HIGH = 3
+	
     /**
      * @var integer
      *
@@ -71,8 +76,23 @@ class User
 	
 	public function __construct()
 	{
-		$this->privacyLevel = 1;
+		$this->privacyLevel = self::USER_PRIVACYLEVEL_LOW;
 		$this->timeManager = new TimeManager();
+	}
+	
+	public function getCreatedAt()
+	{
+		return $this->timeManager->getCreatedAt();
+	}
+	
+	public function getUpdatedAt()
+	{
+		return $this->timeManager->getUpdatedAt();
+	}
+	
+	public function update()
+	{
+		$this->timeManager->update();
 	}
 	
 	/**
@@ -159,7 +179,7 @@ class User
      *
      * @return \MyWebsite\WebBundle\Entity\TimeManager 
      */
-    public function getTimeManager()
+    private function getTimeManager()
     {
         return $this->timeManager;
     }

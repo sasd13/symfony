@@ -31,7 +31,7 @@ class ContentBufferType extends AbstractType
 			
 			if($formType === 'textarea')
 			{
-				$form->add('textValue', 'textarea', array(
+				$form->add('textValue', $formType, array(
 					'required' => $required
 				));
 			}

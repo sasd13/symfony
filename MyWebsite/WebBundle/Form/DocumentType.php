@@ -17,8 +17,8 @@ class DocumentType extends AbstractType
 		$builder
 			->setMethod('POST')
 			->add('name', 'text')
-			->add('display', 'checkbox', array(
-				'label' => 'display',
+			->add('hide', 'checkbox', array(
+				'label' => 'hide',
 				'required' => false,
 			))
 			->add('file', 'file')

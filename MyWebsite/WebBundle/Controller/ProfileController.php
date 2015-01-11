@@ -29,22 +29,24 @@ class ProfileController extends Controller
 	public function newProfileAction()
 	{
 		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
+		//Verify activated modules
 		$modules = $this->container->get('web_moduleHandler')->getActivatedModules();
 		if($modules == null)
 		{
-			return $this->redirect($this->generateUrl($router->toError()));
+			return $this->redirect($this->generateUrl($router::ROUTE_ERROR));
 		}
 		$request->getSession()->set('modules', $modules);
 		
 		if($request->getSession()->get('idProfile') != null)
 		{
-			return $this->redirect($this->generateUrl($router->toProfile()));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 		}
 		
-		$layout = null;
+		$subLayout = null;
 		$entity = null;
 		$form = null;
 		
@@ -52,11 +54,11 @@ class ProfileController extends Controller
 		
 		if($request->getSession()->get('user') == null)
 		{
-			$layout = 'Form/signup-user-form';
+			$subLayout = 'Form/signup-user-form';
 			
 			$entity = new User();
 			$form = $this->createForm(new UserType(), $entity, array(
-				'action' => $this->generateUrl($router->toSignup())
+				'action' => $this->generateUrl($router::ROUTE_SIGNUP)
 			));
 		
 			if($request->getMethod() === 'POST')
@@ -66,10 +68,10 @@ class ProfileController extends Controller
 				$bufferUser = $em->getRepository('MyWebsiteWebBundle:User')->findByLogin($entity->getLogin());
 				if(($bufferUser == null) 
 					AND ($form->isValid()) 
-					AND ($entity->getPassword() === $request->request->get('confirmpassword')))
+					AND ($entity->getPassword() === $request->request->get('confirmPassword')))
 				{
 					$request->getSession()->set('user', $entity);
-					return $this->redirect($this->generateUrl($router->toSignup()));
+					return $this->redirect($this->generateUrl($router::ROUTE_SIGNUP));
 				}
 				
 				$message = "Informations érronées";
@@ -77,19 +79,19 @@ class ProfileController extends Controller
 		}
 		else
 		{
-			$layout = 'Form/signup-profile-form';
+			$subLayout = 'Form/signup-profile-form';
 			$user = $request->getSession()->get('user');
 			
 			$entity = new Profile();
 			$form = $this->createForm(new ProfileType(), $entity, array(
-				'action' => $this->generateUrl($router->toSignup())
+				'action' => $this->generateUrl($router::ROUTE_SIGNUP)
 			));
 			
 			if($request->getMethod() === 'POST')
 			{
 				$form->handleRequest($request);
 				
-				//Try create Profile
+				//Try create Profile with condition on email
 				$profile = $this->container->get('web_generator')->generateProfile($user, $entity);
 				
 				if($profile != null)
@@ -97,15 +99,15 @@ class ProfileController extends Controller
 					$request->getSession()->remove('user');
 					$request->getSession()->set('idProfile', $profile->getId());
 					
-					return $this->redirect($this->generateUrl($router->toProfile()));
+					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 				}
 				
-				$message = "Les informations n'ont pas été enregistrées";
+				$message = "Email indisponible";
 			}
 		}	
 		
-		return $this->render('MyWebsiteWebBundle:Profile:SignUp/signup.html.twig', array(
-			'layout' => $layout,
+		return $this->render($layouter::LAYOUT_PROFILE_SIGNUP, array(
+			'subLayout' => $subLayout,
 			'entity' => $entity,
 			'form' => $form->createView(),
 			'message' => $message
@@ -115,13 +117,14 @@ class ProfileController extends Controller
 	public function loadProfileAction()
     {
 		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
 		$modules = $this->container->get('web_moduleHandler')->getActivatedModules();
 		if($modules == null)
 		{
-			return $this->redirect($this->generateUrl($router->toError()));
+			return $this->redirect($this->generateUrl($router::ROUTE_ERROR));
 		}
 		$request->getSession()->set('modules', $modules);
 		
@@ -132,7 +135,7 @@ class ProfileController extends Controller
 		{
 			$user = new User();
 			$form = $this->createForm(new UserType(), $user, array(
-				'action' => $this->generateUrl($router->toProfile())
+				'action' => $this->generateUrl($router::ROUTE_PROFILE)
 			));
 			
 			$message = "* Denotes Required Field";
@@ -150,13 +153,13 @@ class ProfileController extends Controller
 					$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByUser($bufferUser);
 					$request->getSession()->set('idProfile', $profile->getId());
 					
-					return $this->redirect($this->generateUrl($router->toProfile()));
+					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 				}
 				
 				$message = "* Identifiants erronés";
 			}
 				
-			return $this->render('MyWebsiteWebBundle:Profile:Login/login.html.twig', array(
+			return $this->render($layouter::LAYOUT_PROFILE_LOGIN, array(
 				'form' => $form->createView(),
 				'message' => $message
 			));
@@ -164,8 +167,8 @@ class ProfileController extends Controller
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
 		
-		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-			'layout' => 'Layout/profile-default',
+		return $this->render($layouter::LAYOUT_PROFILE, array(
+			'subLayout' => 'Layout/profile-default',
 			'profile' => $profile,
 		));
 	}
@@ -173,17 +176,17 @@ class ProfileController extends Controller
 	public function editProfileAction()
     {
 		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
 		if($request->getSession()->get('idProfile') == null)
 		{
-			return $this->redirect($this->generateUrl($router->toProfile()));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')
-			->myFindWithCategoriesAndContents($request->getSession()
-			->get('idProfile'))
+			->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'))
 		;
 		
 		//Creating Buffered Form for Profile Information
@@ -207,8 +210,8 @@ class ProfileController extends Controller
 					$contentBuffer->setStringValue($content->getStringValue());
 				}
 				$contentBuffer
-					->setRequired($content->getRequired())
 					->setFormType($content->getFormType())
+					->setRequired($content->getRequired())
 				;
 				
 				$categoryBuffer->addContent($contentBuffer);
@@ -218,7 +221,7 @@ class ProfileController extends Controller
 		}
 		
 		$form = $this->createForm(new ProfileBufferType(), $profileBuffer, array(
-			'action' => $this->generateUrl($router->toProfileInfo())
+			'action' => $this->generateUrl($router::ROUTE_PROFILE_INFO)
 		));
 		
 		$message = "* Denotes Required Field";
@@ -236,42 +239,45 @@ class ProfileController extends Controller
 				{
 					$category = $profile->getCategories()->get($keyCategory);
 					
-					$contentsBuffer = $categoryBuffer->getContents();
-					foreach($contentsBuffer as $keyContent => $contentBuffer)
+					if($categoryBuffer->getId() === $category->getId())
 					{
-						$content = $category->getContents()->get($keyContent);
-						
-						if($contentBuffer->getId() === $content->getId() 
-							AND (($contentBuffer->getTextValue() !== $content->getTextValue) OR ($contentBuffer->getStringValue() !== $content->getStringValue)))
+						$contentsBuffer = $categoryBuffer->getContents();
+						foreach($contentsBuffer as $keyContent => $contentBuffer)
 						{
-							if($content->getFormType() === 'textarea')
-							{
-								$content->setTextValue($contentBuffer->getTextValue());
-								$category->getTimeManager()->setUpdateTime(new DateTime());
-							}
-							else
-							{
-								$content->setStringValue($contentBuffer->getStringValue());
-							}
+							$content = $category->getContents()->get($keyContent);
 							
-							$category->getTimeManager()->setUpdateTime(new DateTime());
-							
-							if(($category->getTag() === 'profile_info') AND ($content->getLabel() === 'first_name'))
+							if(($contentBuffer->getId() === $content->getId())
+								AND (($contentBuffer->getStringValue() !== $content->getStringValue())
+									OR ($contentBuffer->getTextValue() !== $content->getTextValue())))
 							{
-								$profile->setFirstName($content->getStringValue());
-								$profile->getTimeManager()->setUpdateTime(new DateTime());
-							}
+								if($content->getFormType() === 'textarea')
+								{
+									$content->setTextValue($contentBuffer->getTextValue());
+								}
+								else
+								{
+									$content->setStringValue($contentBuffer->getStringValue());
+								}
 							
-							if(($category->getTag() === 'profile_info') AND ($content->getLabel() === 'last_name'))
-							{
-								$profile->setLastName($content->getStringValue());
-								$profile->getTimeManager()->setUpdateTime(new DateTime());
-							}
+								$category->update();
+								
+								if(($category->getTag() === $category::TAG_CATEGORY_PROFILE_INFO) AND ($content->getLabel() === $content::LABEL_CONTENT_PROFILE_FIRSTNAME))
+								{
+									$profile->setFirstName($content->getStringValue());
+									$profile->update();
+								}
 							
-							if(($category->getTag() === 'profile_info') AND ($content->getLabel() === 'email'))
-							{
-								$profile->setEmail($content->getStringValue());
-								$profile->getTimeManager()->setUpdateTime(new DateTime());
+								if(($category->getTag() === $category::TAG_CATEGORY_PROFILE_INFO) AND ($content->getLabel() === $content::LABEL_CONTENT_PROFILE_LASTNAME))
+								{
+									$profile->setLastName($content->getStringValue());
+									$profile->update();
+								}
+							
+								if(($category->getTag() === $category::TAG_CATEGORY_PROFILE_INFO) AND ($content->getLabel() === $content::LABEL_CONTENT_PROFILE_EMAIL))
+								{
+									$profile->setEmail($content->getStringValue());
+									$profile->update();
+								}
 							}
 						}
 					}
@@ -283,8 +289,8 @@ class ProfileController extends Controller
 			}
 		}
 		
-		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-			'layout' => 'Layout/profile-edit',
+		return $this->render($layouter::LAYOUT_PROFILE, array(
+			'subLayout' => 'Layout/profile-edit',
 			'profile' => $profile,
 			'form' => $form->createView(),
 			'message' => $message
@@ -294,21 +300,21 @@ class ProfileController extends Controller
 	public function editPictureAction()
     {
 		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
 		if($request->getSession()->get('idProfile') == null)
 		{
-			return $this->redirect($this->generateUrl($router->toProfile()));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoryAndPicture($request->getSession()->get('idProfile'));
-		$categories = $profile->getCategories();
-		$category = $categories[0];
+		$category = $profile->getCategories()->get(0);
 		$oldPicture = ($category->getDocuments()->count() > 0) ? $category->getDocuments()->get(0) : null;
 		
 		$picture = new Document('image');
-		$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router->toProfilePicture())));
+		$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router::ROUTE_PROFILE_PICTURE)));
 		
 		$message = "* Denotes Required Field";
 		
@@ -327,14 +333,15 @@ class ProfileController extends Controller
 				{
 					if($oldPicture != null)
 					{
+						$category->removeDocument($oldPicture);
 						$em->remove($oldPicture);
 					}
 					$category->addDocument($picture);
-					$category->getTimeManager()->setUpdateTime(new DateTime());
+					$category->update();
 					
 					$profile->setPictureName($picture->getName());
 					$profile->setPicturePath($picture->getPath());
-					$profile->getTimeManager()->setUpdateTime(new DateTime());
+					$profile->update();
 					
 					$message = "La photo de profil a été enregistrée avec succès";
 				}
@@ -347,8 +354,8 @@ class ProfileController extends Controller
 			}
 		}
 		
-		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-			'layout' => 'Layout/profile-picture-edit',
+		return $this->render($layout::LAYOUT_PROFILE, array(
+			'subLayout' => 'Layout/profile-picture-edit',
 			'profile' => $profile,
 			'form' => $form->createView(),
 			'message' => $message
@@ -363,12 +370,11 @@ class ProfileController extends Controller
 		
 		if($request->getSession()->get('idProfile') == null)
 		{
-			return $this->redirect($this->generateUrl($router->toProfile()));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoryAndPicture($request->getSession()->get('idProfile'));
-		$categories = $profile->getCategories();
-		$category = $categories[0];
+		$category = $profile->getCategories()->get(0);
 		$picture = ($category->getDocuments()->count() > 0) ? $category->getDocuments()->get(0) : null;
 		
 		if(($picture != null) AND is_file($picture->getAbsolutePath()))
@@ -377,33 +383,35 @@ class ProfileController extends Controller
 			$profile->setPictureName(null);
 			
 			$category->removeDocument($picture);
-			$category->getTimeManager()->setUpdateTime(new DateTime());
+			$category->update();
 			
-			unlink($picture->getAbsolutePath());
 			$em->remove($picture);
 			
 			$em->flush();
 		}
 		
-		return $this->redirect($this->generateUrl($router->toProfilePicture()));
+		return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_PICTURE));
 	}
 	
 	public function editUserAction()
     {
 		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
 		if($request->getSession()->get('idProfile') == null)
 		{
-			return $this->redirect($this->generateUrl($router->toProfile()));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 		}
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithUser($request->getSession()->get('idProfile'));
 		
 		$user = $profile->getUser();
 		$oldPassword = $user->getPassword();
-		$form = $this->createForm(new UserType(), $user, array('action' => $this->generateUrl($router->toProfileUser())));
+		$form = $this->createForm(new UserType(), $user, array(
+			'action' => $this->generateUrl($router::ROUTE_PROFILE_USER)
+		));
 		
 		$message = "* Denotes Required Field";
 		
@@ -415,15 +423,16 @@ class ProfileController extends Controller
 			
 			if(($form->isValid()) AND ($oldPassword === $request->request->get('oldPassword')) AND ($user->getPassword() === $request->request->get('confirmPassword')))
 			{
-				$user->getTimeManager()->setUpdateTime(new DateTime());
+				$user->update();
+				
 				$em->flush();
 		
 				$message = "Les informations ont été enregistrées avec succès";
 			}
 		}
 		
-		return $this->render('MyWebsiteWebBundle:Profile:profile.html.twig', array(
-			'layout' => 'User/user-edit',
+		return $this->render($layouter::LAYOUT_PROFILE, array(
+			'subLayout' => 'User/user-edit',
 			'profile' => $profile,
 			'form' => $form->createView(),
 			'message' => $message,
@@ -432,9 +441,11 @@ class ProfileController extends Controller
 	
 	public function logoutAction()
     {
+		$router = $this->container->get('web_router');
+		
 		$this->getRequest()->getSession()->clear();
 		
-        return $this->redirect($this->generateUrl($this->container->get('web_router')->toHome()));
+        return $this->redirect($this->generateUrl($router::ROUTE_HOME));
     }
 	
 	public function deleteProfileAction()
@@ -443,8 +454,6 @@ class ProfileController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		return $this->redirect($this->generateUrl($router->toError()));
+		return $this->redirect($this->generateUrl($router::ROUTE_ERROR));
 	}
-	
-	
 }

@@ -12,10 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class DocumentRepository extends EntityRepository
 {	
-	public function myFindPictureByProfile($idProfile)
+	public function myFindPictureWithCategoryByProfile($idProfile)
 	{
 		$qb = $this->createQueryBuilder('document');
-		$qb->leftJoin('document.category', 'category', 'WITH', 'category.tag = :tag')
+		$qb->select('document')
+			->leftJoin('document.category', 'category', 'WITH', 'category.tag = :tag')
 			->setParameter('tag', 'profile_picture')
 			->addSelect('category')
 			->leftJoin('category.profile', 'profile', 'WITH', 'profile.id = :id')

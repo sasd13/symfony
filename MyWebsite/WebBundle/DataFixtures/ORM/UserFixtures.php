@@ -5,7 +5,6 @@ namespace MyWebsite\WebBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use MyWebsite\WebBundle\Entity\TimeManager;
 use MyWebsite\WebBundle\Entity\User;
 
 class UserFixtures extends AbstractFixture implements OrderedFixtureInterface
@@ -13,11 +12,13 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface
 	public function load(ObjectManager $manager)
 	{
 		$root = new User();
-		$root->setLogin('root')
+		$root
+			->setLogin('root')
 			->setPassword('root')
-			->setPrivacyLevel(3);
-		
+			->setPrivacyLevel(3)
+		;
 		$manager->persist($root);
+		
 		$manager->flush();
 	}
 	

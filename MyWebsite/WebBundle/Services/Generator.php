@@ -34,17 +34,17 @@ class Generator
 		//RECORD : Category Profile Info Identity
 		$category = new Category('content');
 		$category
-			->setTitle('Identité')
-			->setTag('profile_info')
+			->setTitle($category::TITLE_CATEGORY_PROFILE_INFO)
+			->setTag($content::TAG_CATEGORY_PROFILE_INFO)
 		;
 		$category->setProfile($profile);
 		$this->em->persist($category);
 		$profile->addCategory($category);
-			
+		
 		//RECORD : Content First Name for Category Info Identity
-		$content = new Content('first_name', 'text');
+		$content = new Content($content::LABEL_CONTENT_PROFILE_FIRSTNAME, 'text');
 		$content
-			->setLabelValue('First name')
+			->setLabelValue($content::LABELVALUE_CONTENT_PROFILE_FIRSTNAME)
 			->setStringValue($profile->getFirstName())
 			->setCategory($category)
 			->setRequired(true)
@@ -53,9 +53,9 @@ class Generator
 		$category->addContent($content);
 			
 		//RECORD : Content Last Name for Category Info Identity
-		$content = new Content('last_name', 'text');
+		$content = new Content($content::LABEL_CONTENT_PROFILE_LASTNAME, 'text');
 		$content
-			->setLabelValue('Last name')
+			->setLabelValue($content::LABELVALUE_CONTENT_PROFILE_LASTNAME)
 			->setStringValue($profile->getLastName())
 			->setCategory($category)
 			->setRequired(true)
@@ -64,9 +64,9 @@ class Generator
 		$category->addContent($content);
 			
 		//RECORD : Content Email for Category Info Identity
-		$content = new Content('email', 'email');
+		$content = new Content($content::LABEL_CONTENT_PROFILE_EMAIL, 'email');
 		$content
-			->setLabelValue('Email')
+			->setLabelValue($content::LABELVALUE_CONTENT_PROFILE_EMAIL)
 			->setStringValue($profile->getEmail())
 			->setCategory($category)
 			->setRequired(true)
@@ -103,17 +103,17 @@ class Generator
 		;
 		$this->em->persist($content);
 		$category->addContent($content);
-			
+		*/
 		//RECORD : Category Profile Picture
 		$category = new Category('document');
 		$category
-			->setTitle('Photo de profil')
-			->setTag('profile_picture')
+			->setTitle($category::TITLE_CATEGORY_PROFILE_PICTURE)
+			->setTag($content::TAG_CATEGORY_PROFILE_PICTURE)
 		;
 		$category->setProfile($profile);
 		$this->em->persist($category);
 		$profile->addCategory($category);
-		*/
+		
 		$this->em->flush();
 		
 		return $profile;
