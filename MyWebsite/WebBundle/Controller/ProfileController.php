@@ -148,7 +148,7 @@ class ProfileController extends Controller
 				if (($bufferUser != null) 
 					AND ($form->isValid()) 
 					AND ($bufferUser->getPassword() === $user->getPassword()) 
-					AND ($bufferUser->getPrivacyLevel() === 1))
+					AND ($bufferUser->getPrivacyLevel() === User::PRIVACYLEVEL_LOW))
 				{
 					$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByUser($bufferUser);
 					$request->getSession()->set('idProfile', $profile->getId());
@@ -261,19 +261,19 @@ class ProfileController extends Controller
 							
 								$category->update();
 								
-								if(($category->getTag() === $category::TAG_CATEGORY_PROFILE_INFO) AND ($content->getLabel() === $content::LABEL_CONTENT_PROFILE_FIRSTNAME))
+								if(($category->getTag() === Category::TAG_PROFILE_INFO) AND ($content->getLabel() === Content::LABEL_PROFILE_FIRSTNAME))
 								{
 									$profile->setFirstName($content->getStringValue());
 									$profile->update();
 								}
 							
-								if(($category->getTag() === $category::TAG_CATEGORY_PROFILE_INFO) AND ($content->getLabel() === $content::LABEL_CONTENT_PROFILE_LASTNAME))
+								if(($category->getTag() === Category::TAG_PROFILE_INFO) AND ($content->getLabel() === Content::LABEL_PROFILE_LASTNAME))
 								{
 									$profile->setLastName($content->getStringValue());
 									$profile->update();
 								}
 							
-								if(($category->getTag() === $category::TAG_CATEGORY_PROFILE_INFO) AND ($content->getLabel() === $content::LABEL_CONTENT_PROFILE_EMAIL))
+								if(($category->getTag() === Category::TAG_PROFILE_INFO) AND ($content->getLabel() === Content::LABEL_PROFILE_EMAIL))
 								{
 									$profile->setEmail($content->getStringValue());
 									$profile->update();
@@ -329,7 +329,7 @@ class ProfileController extends Controller
 				$picture->setCategory($category);
 				$em->persist($picture);
 				
-				if($picture->getPath() !== 'path')
+				if($picture->getPath() !== Document::DEFAULT_PATH)
 				{
 					if($oldPicture != null)
 					{
@@ -354,7 +354,7 @@ class ProfileController extends Controller
 			}
 		}
 		
-		return $this->render($layout::LAYOUT_PROFILE, array(
+		return $this->render($layouter::LAYOUT_PROFILE, array(
 			'subLayout' => 'Layout/profile-picture-edit',
 			'profile' => $profile,
 			'form' => $form->createView(),

@@ -3,6 +3,7 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use MyWebsite\WebBundle\Entity\Category;
 
 /**
  * DocumentRepository
@@ -17,7 +18,7 @@ class DocumentRepository extends EntityRepository
 		$qb = $this->createQueryBuilder('document');
 		$qb->select('document')
 			->leftJoin('document.category', 'category', 'WITH', 'category.tag = :tag')
-			->setParameter('tag', 'profile_picture')
+			->setParameter('tag', Category::TAG_PROFILE_PICTURE)
 			->addSelect('category')
 			->leftJoin('category.profile', 'profile', 'WITH', 'profile.id = :id')
 			->setParameter('id', $idProfile)

@@ -52,13 +52,11 @@ class ProfileRepository extends EntityRepository
 	
 	public function myFindWithCategoryAndPicture($idProfile)
 	{
-		$category = new Category();
-		
 		$qb = $this->createQueryBuilder('profile');
 		$qb->where('profile.id = :id')
 			->setParameter('id', $idProfile)
 			->leftJoin('profile.categories', 'category', 'WITH', 'category.tag = :tag')
-			->setParameter('tag', $category::TAG_CATEGORY_PROFILE_PICTURE)
+			->setParameter('tag', Category::TAG_PROFILE_PICTURE)
 			->addSelect('category')
 			->leftJoin('category.documents', 'document')
 			->addSelect('document');

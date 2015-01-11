@@ -15,7 +15,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface
 		$root
 			->setLogin('root')
 			->setPassword('root')
-			->setPrivacyLevel(3)
+			->setPrivacyLevel(User::PRIVACYLEVEL_HIGH)
 		;
 		$manager->persist($root);
 		

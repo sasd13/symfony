@@ -13,13 +13,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Content
 {
-	const LABEL_CONTENT_PROFILE_FIRSTNAME = 'profile_first_name';
-	const LABEL_CONTENT_PROFILE_LASTNAME = 'profile_last_name';
-	const LABEL_CONTENT_PROFILE_EMAIL = 'profile_email';
+	const LABEL_PROFILE_FIRSTNAME = 'profile_first_name';
+	const LABEL_PROFILE_LASTNAME = 'profile_last_name';
+	const LABEL_PROFILE_EMAIL = 'profile_email';
 	
-	const LABELVALUE_CONTENT_PROFILE_FIRSTNAME = 'First name';
-	const LABELVALUE_CONTENT_PROFILE_LASTNAME = 'Last name';
-	const LABELVALUE_CONTENT_PROFILE_EMAIL = 'Email';
+	const LABELVALUE_PROFILE_FIRSTNAME = 'First name';
+	const LABELVALUE_PROFILE_LASTNAME = 'Last name';
+	const LABELVALUE_PROFILE_EMAIL = 'Email';
+	
+	const POLICYLEVEL_LOW = 1;
+	const POLICYLEVEL_MEDIUM = 2;
+	const POLICYLEVEL_HIGH = 3;
+	
+	const DEFAULT_REQUIRED = false;
 	
     /**
      * @var integer
@@ -118,8 +124,8 @@ class Content
 	{
 		$this->label = strtolower($label);
 		$this->formType = $formType;
-		$this->required = false;
-		$this->policyLevel = 1;
+		$this->required = self::DEFAULT_REQUIRED;
+		$this->policyLevel = self::POLICYLEVEL_HIGH;
 		$this->priority = 0;
 	}
 

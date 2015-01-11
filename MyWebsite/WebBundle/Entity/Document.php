@@ -16,6 +16,10 @@ use \DateTime;
  */
 class Document
 {
+	const DEFAULT_MIMETYPE = 'text/plain';
+	const DEFAULT_PATH = 'path';
+	const DEFAULT_HIDE = false;
+	
 	const SUBDIR_DOCUMENT = 'documents';
 	const SUBDIR_IMAGE = 'images';
 	
@@ -91,10 +95,10 @@ class Document
 		}
 		else
 		{
-			$this->mimeType = 'text/plain';
+			$this->mimeType = self::DEFAULT_MIMETYPE;
 		}
-		$this->path = 'path';
-		$this->hide = false;
+		$this->path = self::DEFAULT_PATH;
+		$this->hide = self::DEFAULT_HIDE;
 		$this->uploadDate = new DateTime();
     }
 	

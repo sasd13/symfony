@@ -5,8 +5,8 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use MyWebsite\WebBundle\Entity\Category;
-use MyWebsite\WebBundle\Entity\Document;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
@@ -15,7 +15,7 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Table(name="web_profile")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
  */
-class Profile
+class Profile implements TimeManagerInterface
 {	
     /**
      * @var integer
@@ -102,6 +102,16 @@ class Profile
 	{
 		$this->categories = new ArrayCollection();
 		$this->timeManager = new TimeManager();
+	}
+	
+	public function getCreatedAt()
+	{
+		return $this->timeManager->getCreatedAt();
+	}
+	
+	public function getUpdatedAt()
+	{
+		return $this->timeManager->getUpdatedAt();
 	}
 	
 	public function update()
@@ -232,16 +242,6 @@ class Profile
     public function getPicturePath()
     {
         return $this->picturePath;
-    }
-
-    /**
-     * Get timeManager
-     *
-     * @return \MyWebsite\WebBundle\Entity\TimeManager 
-     */
-    public function getTimeManager()
-    {
-        return $this->timeManager;
     }
 
     /**

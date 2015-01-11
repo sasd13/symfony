@@ -3,9 +3,9 @@
 namespace MyWebsite\WebBundle\Model;
 
 /**
- * iTimeManager
+ * TimeManagerInterface
  */
-interface iTimeManager
+interface TimeManagerInterface
 {
 	public function getCreatedAt();
 	public function getUpdatedAt();

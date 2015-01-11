@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
@@ -12,8 +13,9 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Table(name="web_module")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ModuleRepository")
  */
-class Module
+class Module implements TimeManagerInterface
 {
+	const DEFAULT_ACTIVE = true;
 	private static $number = 0;
 	
     /**
@@ -76,11 +78,20 @@ class Module
 	
 	public function __construct()
     {
-		self::$number++;
-		$this->priority = self::$number;
-		$this->active = true;
+		$this->priority = ++self::$number;
+		$this->active = self::DEFAULT_ACTIVE;
 		$this->timeManager = new TimeManager();
     }
+	
+	public function getCreatedAt()
+	{
+		return $this->timeManager->getCreatedAt();
+	}
+	
+	public function getUpdatedAt()
+	{
+		return $this->timeManager->getUpdatedAt();
+	}
 	
 	public function update()
 	{
@@ -210,15 +221,5 @@ class Module
     public function getReadMe()
     {
         return $this->readMe;
-    }
-
-    /**
-     * Get timeManager
-     *
-     * @return \MyWebsite\WebBundle\Entity\TimeManager 
-     */
-    public function getTimeManager()
-    {
-        return $this->timeManager;
     }
 }

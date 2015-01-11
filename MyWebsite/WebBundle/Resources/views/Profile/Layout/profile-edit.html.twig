@@ -20,7 +20,7 @@
 					{% for formCategory in form.categories %}
 						{% set i = i+1 %}
 						{% set category = attribute(profile.categories, i) %}
-						{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category-form.html.twig" %}
+						{% include "MyWebsiteWebBundle:Profile:Layout/Form/profile-category.html.twig" %}
 					{% endfor %}
 				{% endif %}
 			</ul>

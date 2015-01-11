@@ -15,11 +15,11 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  */
 class Category
 {
-	const TAG_CATEGORY_PROFILE_INFO = 'profile_category_info';
-	const TAG_CATEGORY_PROFILE_PICTURE = 'profile_category_picture';
+	const TAG_PROFILE_INFO = 'profile_category_info';
+	const TAG_PROFILE_PICTURE = 'profile_category_picture';
 	
-	const TITLE_CATEGORY_PROFILE_INFO = 'Identité';
-	const TITLE_CATEGORY_PROFILE_PICTURE = 'Photo de profil';
+	const TITLE_PROFILE_INFO = 'Identité';
+	const TITLE_PROFILE_PICTURE = 'Photo de profil';
 	
     /**
      * @var integer
@@ -79,12 +79,22 @@ class Category
 	private $profile;
 	
 	
-	public function __construct($type = "content")
+	public function __construct($type = 'content')
 	{
 		$this->type = $type;
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
 		$this->timeManager = new TimeManager();
+	}
+	
+	public function getCreatedAt()
+	{
+		return $this->timeManager->getCreatedAt();
+	}
+	
+	public function getUpdatedAt()
+	{
+		return $this->timeManager->getUpdatedAt();
 	}
 	
 	public function update()
@@ -169,16 +179,6 @@ class Category
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Get timeManager
-     *
-     * @return \MyWebsite\WebBundle\Entity\TimeManager 
-     */
-    public function getTimeManager()
-    {
-        return $this->timeManager;
     }
 
     /**
