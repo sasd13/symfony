@@ -5,6 +5,9 @@ namespace MyWebsite\WebBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use MyWebsite\WebBundle\Entity\Profile;
 
 class ProfileType extends AbstractType
 {
@@ -16,10 +19,11 @@ class ProfileType extends AbstractType
     {
 		$builder
             ->setMethod('POST')
+			->add('login', 'text')
+			->add('password', 'password')
 			->add('firstName', 'text')
 			->add('lastName', 'text')
 			->add('email', 'email')
-			->add('categories', 'collection', array('type' => new CategoryType()));
         ;
     }
     
@@ -30,7 +34,6 @@ class ProfileType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'MyWebsite\WebBundle\Entity\Profile',
-			'cascade_validation' => true,
         ));
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace MyWebsite\WebBundle\Entity;
+namespace MyWebsite\WebBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -10,8 +10,7 @@ use MyWebsite\WebBundle\Entity\TimeManager;
 /**
  * User
  *
- * @ORM\Table(name="web_user")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\UserRepository")
+ * @ORM\MappedSuperclass
  */
 class User implements TimeManagerInterface
 {
@@ -19,15 +18,6 @@ class User implements TimeManagerInterface
 	const PRIVACYLEVEL_MEDIUM = 2;
 	const PRIVACYLEVEL_HIGH = 3;
 	
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
     /**
      * @var string
      *
@@ -38,7 +28,7 @@ class User implements TimeManagerInterface
 	 *		max = "50"
 	 * )
      */
-    private $login;
+    protected $login;
 
     /**
      * @var string
@@ -52,7 +42,7 @@ class User implements TimeManagerInterface
 	 *		maxMessage = "Le mot de passe doit faire moins de {{ limit }} caractères"
 	 * )
      */
-    private $password;
+    protected $password;
 	
 	/**
      * @var integer
@@ -65,13 +55,13 @@ class User implements TimeManagerInterface
 	 *      maxMessage = "La priorité doit être moins de {{ limit }}"
      * )
      */
-    private $privacyLevel;
+    protected $privacyLevel;
 	
 	/**
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
-	private $timeManager;
+	protected $timeManager;
 	
 	
 	public function __construct()
@@ -96,16 +86,6 @@ class User implements TimeManagerInterface
 	}
 	
 	/**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * Set login
      *
      * @param string $login

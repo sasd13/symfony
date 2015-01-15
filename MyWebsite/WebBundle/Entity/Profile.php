@@ -5,9 +5,8 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
-use MyWebsite\WebBundle\Model\TimeManagerInterface;
+use MyWebsite\WebBundle\Model\User;
 use MyWebsite\WebBundle\Entity\Category;
-use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
  * Profile
@@ -15,9 +14,9 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Table(name="web_profile")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
  */
-class Profile implements TimeManagerInterface
-{	
-    /**
+class Profile extends User
+{
+	/**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -80,18 +79,6 @@ class Profile implements TimeManagerInterface
     private $picturePath;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-	 */
-	private $timeManager;
-	
-	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\User", cascade={"remove"})
-	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-	 */
-	private $user;
-	
-	/**
 	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Category", mappedBy="profile", cascade={"remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
@@ -100,23 +87,8 @@ class Profile implements TimeManagerInterface
 	
 	public function __construct()
 	{
+		parent::__construct();
 		$this->categories = new ArrayCollection();
-		$this->timeManager = new TimeManager();
-	}
-	
-	public function getCreatedAt()
-	{
-		return $this->timeManager->getCreatedAt();
-	}
-	
-	public function getUpdatedAt()
-	{
-		return $this->timeManager->getUpdatedAt();
-	}
-	
-	public function update()
-	{
-		$this->timeManager->update();
 	}
 	
 	/**
@@ -242,29 +214,6 @@ class Profile implements TimeManagerInterface
     public function getPicturePath()
     {
         return $this->picturePath;
-    }
-
-    /**
-     * Set user
-     *
-     * @param \MyWebsite\WebBundle\Entity\User $user
-     * @return Profile
-     */
-    public function setUser(\MyWebsite\WebBundle\Entity\User $user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \MyWebsite\WebBundle\Entity\User 
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**

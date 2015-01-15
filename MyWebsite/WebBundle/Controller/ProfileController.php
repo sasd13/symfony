@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\Common\Collections\ArrayCollection;
-use MyWebsite\WebBundle\Entity\User;
 use MyWebsite\WebBundle\Entity\Profile;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Content;
@@ -14,7 +13,6 @@ use MyWebsite\WebBundle\Entity\Document;
 use MyWebsite\WebBundle\Entity\ProfileBuffer;
 use MyWebsite\WebBundle\Entity\CategoryBuffer;
 use MyWebsite\WebBundle\Entity\ContentBuffer;
-use MyWebsite\WebBundle\Form\UserType;
 use MyWebsite\WebBundle\Form\ProfileType;
 use MyWebsite\WebBundle\Form\CategoryType;
 use MyWebsite\WebBundle\Form\ContentType;
@@ -46,57 +44,29 @@ class ProfileController extends Controller
 			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 		}
 		
-		$subLayout = null;
-		$entity = null;
-		$form = null;
+		$profile = new Profile();
 		
+		$form = $this->createForm(new ProfileType(), $profile, array(
+			'action' => $this->generateUrl($router::ROUTE_SIGNUP)
+		));
+			
 		$message = "* Denotes Required Field";
 		
-		if($request->getSession()->get('user') == null)
+		if($request->getMethod() === 'POST')
 		{
-			$subLayout = 'Form/signup-user';
+			$form->handleRequest($request);
 			
-			$entity = new User();
-			$form = $this->createForm(new UserType(), $entity, array(
-				'action' => $this->generateUrl($router::ROUTE_SIGNUP)
-			));
-		
-			if($request->getMethod() === 'POST')
-			{
-				$form->handleRequest($request);
+			$message = "Informations érronées";
 			
-				$bufferUser = $em->getRepository('MyWebsiteWebBundle:User')->findByLogin($entity->getLogin());
-				if(($bufferUser == null) 
-					AND ($form->isValid()) 
-					AND ($entity->getPassword() === $request->request->get('confirmPassword')))
-				{
-					$request->getSession()->set('user', $entity);
-					return $this->redirect($this->generateUrl($router::ROUTE_SIGNUP));
-				}
-				
-				$message = "Informations érronées";
-			}
-		}
-		else
-		{
-			$subLayout = 'Form/signup-profile';
-			$user = $request->getSession()->get('user');
-			
-			$entity = new Profile();
-			$form = $this->createForm(new ProfileType(), $entity, array(
-				'action' => $this->generateUrl($router::ROUTE_SIGNUP)
-			));
-			
-			if($request->getMethod() === 'POST')
-			{
-				$form->handleRequest($request);
-				
+			$bufferProfile = $em->getRepository('MyWebsiteWebBundle:Profile')->findByLogin($profile->getLogin());
+			if(($form->isValid())
+				AND ($bufferProfile == null)
+				AND ($profile->getPassword() === $request->request->get('confirmPassword')))
+			{				
 				//Try create Profile with condition on email
-				$profile = $this->container->get('web_generator')->generateProfile($user, $entity);
-				
+				$profile = $this->container->get('web_generator')->generateProfile($profile);
 				if($profile != null)
 				{
-					$request->getSession()->remove('user');
 					$request->getSession()->set('idProfile', $profile->getId());
 					
 					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
@@ -107,8 +77,7 @@ class ProfileController extends Controller
 		}	
 		
 		return $this->render($layouter::LAYOUT_PROFILE_SIGNUP, array(
-			'subLayout' => $subLayout,
-			'entity' => $entity,
+			'profile' => $profile,
 			'form' => $form->createView(),
 			'message' => $message
 		));
@@ -133,8 +102,9 @@ class ProfileController extends Controller
 		 */
 		if($request->getSession()->get('idProfile') == null)
 		{
-			$user = new User();
-			$form = $this->createForm(new UserType(), $user, array(
+			$profile = new Profile();
+			
+			$form = $this->createForm(new ProfileType(), $profile, array(
 				'action' => $this->generateUrl($router::ROUTE_PROFILE)
 			));
 			
@@ -142,16 +112,22 @@ class ProfileController extends Controller
 			
 			if($request->getMethod() === 'POST')
 			{
-				$form->handleRequest($request);
+				/*
+				 * With method handleRequest, the request submit values of all fields present in data even they are missed in form
+				 * All missed field have null value, so the form will not validate them with their own assert rules
+				 *
+				 * This method is used to submit the form in clearing the field that are not present in data
+				 * See method submit of FormInterface in Symfony doc
+				 */
+				$form->submit($request->get($form->getName()), false);
 				
-				$bufferUser = $em->getRepository('MyWebsiteWebBundle:User')->findOneByLogin($user->getLogin());
-				if (($bufferUser != null) 
-					AND ($form->isValid()) 
-					AND ($bufferUser->getPassword() === $user->getPassword()) 
-					AND ($bufferUser->getPrivacyLevel() === User::PRIVACYLEVEL_LOW))
+				$bufferProfile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByLogin($profile->getLogin());
+				if (($form->isValid())
+					AND ($bufferProfile != null) 
+					AND ($bufferProfile->getPassword() === $profile->getPassword()) 
+					AND ($bufferProfile->getPrivacyLevel() === Profile::PRIVACYLEVEL_LOW))
 				{
-					$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByUser($bufferUser);
-					$request->getSession()->set('idProfile', $profile->getId());
+					$request->getSession()->set('idProfile', $bufferProfile->getId());
 					
 					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 				}
@@ -185,9 +161,7 @@ class ProfileController extends Controller
 			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 		}
 		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')
-			->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'))
-		;
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'));
 		
 		//Creating Buffered Form for Profile Information
 		$profileBuffer = new ProfileBuffer($profile->getId());
@@ -405,11 +379,10 @@ class ProfileController extends Controller
 			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 		}
 		
-		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithUser($request->getSession()->get('idProfile'));
+		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->find($request->getSession()->get('idProfile'));
+		$oldPassword = $profile->getPassword();
 		
-		$user = $profile->getUser();
-		$oldPassword = $user->getPassword();
-		$form = $this->createForm(new UserType(), $user, array(
+		$form = $this->createForm(new ProfileType(), $profile, array(
 			'action' => $this->generateUrl($router::ROUTE_PROFILE_USER)
 		));
 		
@@ -417,13 +390,15 @@ class ProfileController extends Controller
 		
 		if($request->getMethod() === 'POST')
 		{
-			$form->handleRequest($request);
+			$form->submit($request->get($form->getName()), false);
 			
 			$message = "Les informations n'ont pas été enregistrées";
 			
-			if(($form->isValid()) AND ($oldPassword === $request->request->get('oldPassword')) AND ($user->getPassword() === $request->request->get('confirmPassword')))
+			if(($form->isValid()) 
+				AND ($oldPassword === $request->request->get('oldPassword')) 
+				AND ($profile->getPassword() === $request->request->get('confirmPassword')))
 			{
-				$user->update();
+				$profile->update();
 				
 				$em->flush();
 		

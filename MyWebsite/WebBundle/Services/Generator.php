@@ -16,7 +16,7 @@ class Generator
 		$this->em = $em;
 	}
 	
-	public function generateProfile(\MyWebsite\WebBundle\Entity\User $user, \MyWebsite\WebBundle\Entity\Profile $profile)
+	public function generateProfile(\MyWebsite\WebBundle\Entity\Profile $profile)
 	{
 		$temp_profile = $this->em->getRepository('MyWebsiteWebBundle:Profile')->findByEmail($profile->getEmail());
 		if($temp_profile != null)
@@ -24,11 +24,7 @@ class Generator
 			return null;
 		}
 			
-		//RECORD : User
-		$this->em->persist($user);
-		
 		//RECORD : Profile
-		$profile->setUser($user);
 		$this->em->persist($profile);
 			
 		//RECORD : Category Profile Info Identity
