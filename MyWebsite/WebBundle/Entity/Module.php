@@ -36,12 +36,12 @@ class Module implements TimeManagerInterface
     private $name;
 	
 	/**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="target", type="string", length=255)
-	 * @Assert\NotBlank
+     * @ORM\Column(name="active", type="boolean")
+	 * @Assert\Type(type="bool")
      */
-    private $target;
+    private $active;
 	
 	/**
      * @var integer
@@ -53,14 +53,6 @@ class Module implements TimeManagerInterface
      * )
      */
     private $priority;
-	
-	/**
-     * @var boolean
-     *
-     * @ORM\Column(name="active", type="boolean")
-	 * @Assert\Type(type="bool")
-     */
-    private $active;
 	
 	/**
      * @var string
@@ -75,11 +67,17 @@ class Module implements TimeManagerInterface
 	 */
 	private $timeManager;
 	
+	/**
+	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="module", cascade={"remove"})
+	 * @ORM\JoinColumn(onDelete="CASCADE")
+	 */
+	private $menu;
+	
 	
 	public function __construct()
     {
-		$this->priority = ++self::$number;
 		$this->active = self::DEFAULT_ACTIVE;
+		$this->priority = ++self::$number;
 		$this->timeManager = new TimeManager();
     }
 	
@@ -132,29 +130,29 @@ class Module implements TimeManagerInterface
     }
 
     /**
-     * Set target
+     * Set active
      *
-     * @param string $target
+     * @param boolean $active
      * @return Module
      */
-    public function setTarget($target)
+    public function setActive($active)
     {
-        $this->target = $target;
+        $this->active = $active;
 
         return $this;
     }
 
     /**
-     * Get target
+     * Get active
      *
-     * @return string 
+     * @return boolean 
      */
-    public function getTarget()
+    public function getActive()
     {
-        return $this->target;
+        return $this->active;
     }
-
-    /**
+	
+	/**
      * Set priority
      *
      * @param integer $priority
@@ -178,29 +176,6 @@ class Module implements TimeManagerInterface
     }
 
     /**
-     * Set active
-     *
-     * @param boolean $active
-     * @return Module
-     */
-    public function setActive($active)
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
-    /**
-     * Get active
-     *
-     * @return boolean 
-     */
-    public function getActive()
-    {
-        return $this->active;
-    }
-
-    /**
      * Set readMe
      *
      * @param string $readMe
@@ -221,5 +196,51 @@ class Module implements TimeManagerInterface
     public function getReadMe()
     {
         return $this->readMe;
+    }
+
+    /**
+     * Set timeManager
+     *
+     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
+     * @return Module
+     */
+    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
+    {
+        $this->timeManager = $timeManager;
+
+        return $this;
+    }
+
+    /**
+     * Get timeManager
+     *
+     * @return \MyWebsite\WebBundle\Entity\TimeManager 
+     */
+    public function getTimeManager()
+    {
+        return $this->timeManager;
+    }
+
+    /**
+     * Set menu
+     *
+     * @param \MyWebsite\WebBundle\Entity\Menu $menu
+     * @return Module
+     */
+    public function setMenu(\MyWebsite\WebBundle\Entity\Menu $menu = null)
+    {
+        $this->menu = $menu;
+
+        return $this;
+    }
+
+    /**
+     * Get menu
+     *
+     * @return \MyWebsite\WebBundle\Entity\Menu 
+     */
+    public function getMenu()
+    {
+        return $this->menu;
     }
 }

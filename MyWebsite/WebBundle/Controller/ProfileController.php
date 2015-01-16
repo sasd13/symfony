@@ -10,17 +10,10 @@ use MyWebsite\WebBundle\Entity\Profile;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Content;
 use MyWebsite\WebBundle\Entity\Document;
-use MyWebsite\WebBundle\Entity\ProfileBuffer;
-use MyWebsite\WebBundle\Entity\CategoryBuffer;
-use MyWebsite\WebBundle\Entity\ContentBuffer;
 use MyWebsite\WebBundle\Form\ProfileType;
 use MyWebsite\WebBundle\Form\CategoryType;
 use MyWebsite\WebBundle\Form\ContentType;
 use MyWebsite\WebBundle\Form\DocumentType;
-use MyWebsite\WebBundle\Form\ProfileBufferType;
-use MyWebsite\WebBundle\Form\CategoryBufferType;
-use MyWebsite\WebBundle\Form\ContentBufferType;
-use \DateTime;
 
 class ProfileController extends Controller
 {
@@ -58,10 +51,10 @@ class ProfileController extends Controller
 			
 			$message = "Informations érronées";
 			
-			$bufferProfile = $em->getRepository('MyWebsiteWebBundle:Profile')->findByLogin($profile->getLogin());
-			if(($form->isValid())
-				AND ($bufferProfile == null)
-				AND ($profile->getPassword() === $request->request->get('confirmPassword')))
+			$profileBuffer = $em->getRepository('MyWebsiteWebBundle:Profile')->findByLogin($profile->getLogin());
+			if($form->isValid()
+				AND $profileBufer == null
+				AND $profile->getPassword() === $request->request->get('confirmPassword'))
 			{				
 				//Try create Profile with condition on email
 				$profile = $this->container->get('web_generator')->generateProfile($profile);
@@ -121,13 +114,13 @@ class ProfileController extends Controller
 				 */
 				$form->submit($request->get($form->getName()), false);
 				
-				$bufferProfile = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByLogin($profile->getLogin());
-				if (($form->isValid())
-					AND ($bufferProfile != null) 
-					AND ($bufferProfile->getPassword() === $profile->getPassword()) 
-					AND ($bufferProfile->getPrivacyLevel() === Profile::PRIVACYLEVEL_LOW))
+				$profileBuffer = $em->getRepository('MyWebsiteWebBundle:Profile')->findOneByLogin($profile->getLogin());
+				if ($form->isValid()
+					AND $profileBuffer != null
+					AND $profileBuffer->getPassword() === $profile->getPassword()
+					AND $profileBuffer->getPrivacyLevel() === Profile::PRIVACYLEVEL_LOW)
 				{
-					$request->getSession()->set('idProfile', $bufferProfile->getId());
+					$request->getSession()->set('idProfile', $profileBuffer->getId());
 					
 					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE));
 				}
@@ -163,38 +156,7 @@ class ProfileController extends Controller
 		
 		$profile = $em->getRepository('MyWebsiteWebBundle:Profile')->myFindWithCategoriesAndContents($request->getSession()->get('idProfile'));
 		
-		//Creating Buffered Form for Profile Information
-		$profileBuffer = new ProfileBuffer($profile->getId());
-		
-		$categories = $profile->getCategories();
-		foreach($categories as $category)
-		{
-			$categoryBuffer = new CategoryBuffer($category->getId());
-			
-			$contents = $category->getContents();
-			foreach($contents as $content)
-			{
-				$contentBuffer = new ContentBuffer($content->getId());
-				if($content->getFormType() === 'textarea')
-				{
-					$contentBuffer->setTextValue($content->getTextValue());
-				}
-				else
-				{
-					$contentBuffer->setStringValue($content->getStringValue());
-				}
-				$contentBuffer
-					->setFormType($content->getFormType())
-					->setRequired($content->getRequired())
-				;
-				
-				$categoryBuffer->addContent($contentBuffer);
-			}
-			
-			$profileBuffer->addCategory($categoryBuffer);
-		}
-		
-		$form = $this->createForm(new ProfileBufferType(), $profileBuffer, array(
+		$form = $this->createForm(new ProfileType(), $profile, array(
 			'action' => $this->generateUrl($router::ROUTE_PROFILE_INFO)
 		));
 		
@@ -202,56 +164,54 @@ class ProfileController extends Controller
 		
 		if($request->getMethod() === 'POST')
 		{
-			$form->handleRequest($request);
+			$form->submit($request->get($form->getName()), false);
 			
 			$message = "Les informations n'ont pas été enregistrées";
 			
 			if($form->isValid())
 			{
-				$categoriesBuffer = $profileBuffer->getCategories();
-				foreach($categoriesBuffer as $keyCategory => $categoryBuffer)
+				$categories = $profile->getCategories();
+				foreach($categories as $keyCategory => $category)
 				{
-					$category = $profile->getCategories()->get($keyCategory);
-					
-					if($categoryBuffer->getId() === $category->getId())
+					$contents = $category->getContents();
+					foreach($contents as $keyContent => $content)
 					{
-						$contentsBuffer = $categoryBuffer->getContents();
-						foreach($contentsBuffer as $keyContent => $contentBuffer)
+						if($content->getFormType() === 'textarea')
 						{
-							$content = $category->getContents()->get($keyContent);
-							
-							if(($contentBuffer->getId() === $content->getId())
-								AND (($contentBuffer->getStringValue() !== $content->getStringValue())
-									OR ($contentBuffer->getTextValue() !== $content->getTextValue())))
+							if($content->getContextChanged() === true)
 							{
-								if($content->getFormType() === 'textarea')
-								{
-									$content->setTextValue($contentBuffer->getTextValue());
-								}
-								else
-								{
-									$content->setStringValue($contentBuffer->getStringValue());
-								}
-							
 								$category->update();
-								
-								if(($category->getTag() === Category::TAG_PROFILE_INFO) AND ($content->getLabel() === Content::LABEL_PROFILE_FIRSTNAME))
-								{
-									$profile->setFirstName($content->getStringValue());
-									$profile->update();
-								}
+							}
+						}
+						else
+						{
+							if($content->getContextChanged() === true)
+							{
+								$category->update();
+							}
+						}
 							
-								if(($category->getTag() === Category::TAG_PROFILE_INFO) AND ($content->getLabel() === Content::LABEL_PROFILE_LASTNAME))
-								{
-									$profile->setLastName($content->getStringValue());
-									$profile->update();
-								}
+						if($category->getTag() === Category::TAG_PROFILE_INFO)
+						{
+							if($content->getLabel() === Content::LABEL_PROFILE_FIRSTNAME
+								AND $content->getStringValue() !== $profile->getFirstName())
+							{
+								$profile->setFirstName($content->getStringValue());
+								$profile->update();
+							}
 							
-								if(($category->getTag() === Category::TAG_PROFILE_INFO) AND ($content->getLabel() === Content::LABEL_PROFILE_EMAIL))
-								{
-									$profile->setEmail($content->getStringValue());
-									$profile->update();
-								}
+							if($content->getLabel() === Content::LABEL_PROFILE_LASTNAME
+								AND $content->getStringValue() !== $profile->getLastName())
+							{
+								$profile->setLastName($content->getStringValue());
+								$profile->update();
+							}
+							
+							if($content->getLabel() === Content::LABEL_PROFILE_EMAIL
+								AND $content->getStringValue() !== $profile->getEmail())
+							{
+								$profile->setEmail($content->getStringValue());
+								$profile->update();
 							}
 						}
 					}
@@ -367,7 +327,7 @@ class ProfileController extends Controller
 		return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_PICTURE));
 	}
 	
-	public function editUserAction()
+	public function editAbstractUserAction()
     {
 		$router = $this->container->get('web_router');
 		$layouter = $this->container->get('web_layouter');
@@ -383,7 +343,7 @@ class ProfileController extends Controller
 		$oldPassword = $profile->getPassword();
 		
 		$form = $this->createForm(new ProfileType(), $profile, array(
-			'action' => $this->generateUrl($router::ROUTE_PROFILE_USER)
+			'action' => $this->generateUrl($router::ROUTE_PROFILE_AbstractUser)
 		));
 		
 		$message = "* Denotes Required Field";
@@ -394,9 +354,9 @@ class ProfileController extends Controller
 			
 			$message = "Les informations n'ont pas été enregistrées";
 			
-			if(($form->isValid()) 
-				AND ($oldPassword === $request->request->get('oldPassword')) 
-				AND ($profile->getPassword() === $request->request->get('confirmPassword')))
+			if($form->isValid()
+				AND $oldPassword === $request->request->get('oldPassword')
+				AND $profile->getPassword() === $request->request->get('confirmPassword'))
 			{
 				$profile->update();
 				
@@ -407,7 +367,7 @@ class ProfileController extends Controller
 		}
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'User/user-edit',
+			'subLayout' => 'AbstractUser/AbstractUser-edit',
 			'profile' => $profile,
 			'form' => $form->createView(),
 			'message' => $message,

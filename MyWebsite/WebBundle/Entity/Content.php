@@ -83,6 +83,13 @@ class Content
     private $required;
 	
 	/**
+     * @var boolean
+     *
+     * @Assert\Type(type="bool")
+     */
+    private $contextChanged;
+	
+	/**
      * @var integer
      *
      * @ORM\Column(name="policyLevel", type="smallint")
@@ -125,7 +132,8 @@ class Content
 		$this->label = strtolower($label);
 		$this->formType = $formType;
 		$this->required = self::DEFAULT_REQUIRED;
-		$this->policyLevel = self::POLICYLEVEL_HIGH;
+		$this->contextChanged = false;
+		$this->policyLevel = self::POLICYLEVEL_MEDIUM;
 		$this->priority = 0;
 	}
 
@@ -275,6 +283,29 @@ class Content
     public function getRequired()
     {
         return $this->required;
+    }
+	
+	/**
+     * Set contextChanged
+     *
+     * @param boolean $contextChanged
+     * @return TimeManager
+     */
+    public function setContextChanged($contextChanged)
+    {
+        $this->contextChanged = $contextChanged;
+
+        return $this;
+    }
+
+    /**
+     * Get contextChanged
+     *
+     * @return boolean 
+     */
+    public function getContextChanged()
+    {
+        return $this->contextChanged;
     }
 
     /**

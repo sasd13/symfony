@@ -9,5 +9,5 @@ interface TimeManagerInterface
 {
 	public function getCreatedAt();
 	public function getUpdatedAt();
-	public function update();	
+	public function update();
 }

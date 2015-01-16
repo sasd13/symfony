@@ -21,6 +21,8 @@ class Category
 	const TITLE_PROFILE_INFO = 'Identité';
 	const TITLE_PROFILE_PICTURE = 'Photo de profil';
 	
+	private static $cloned;
+	
     /**
      * @var integer
      *
@@ -73,7 +75,7 @@ class Category
 	private $documents;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Profile", inversedBy="categories", cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Profile", inversedBy="categories")
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $profile;
@@ -85,6 +87,11 @@ class Category
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
 		$this->timeManager = new TimeManager();
+	}
+	
+	public function __clone()
+	{
+		self::$cloned = true;
 	}
 	
 	public function getCreatedAt()

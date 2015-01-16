@@ -69,7 +69,7 @@ class Generator
 		;
 		$this->em->persist($content);
 		$category->addContent($content);
-		/*
+		
 		//RECORD : Category Profile Info Degree
 		$category = new Category('content');
 		$category
@@ -99,7 +99,7 @@ class Generator
 		;
 		$this->em->persist($content);
 		$category->addContent($content);
-		*/
+		
 		//RECORD : Category Profile Picture
 		$category = new Category('document');
 		$category

@@ -5,6 +5,7 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use MyWebsite\WebBundle\Entity\DocumentInterface;
 use \DateTime;
 
 /**
@@ -14,7 +15,7 @@ use \DateTime;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\DocumentRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Document
+class Document implements DocumentInterface
 {
 	const DEFAULT_MIMETYPE = 'text/plain';
 	const DEFAULT_PATH = 'path';
@@ -81,7 +82,7 @@ class Document
     public $file;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents", cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents")
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $category;

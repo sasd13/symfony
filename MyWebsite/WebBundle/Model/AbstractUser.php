@@ -8,11 +8,11 @@ use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
- * User
+ * AbstractUser
  *
  * @ORM\MappedSuperclass
  */
-class User implements TimeManagerInterface
+class AbstractUser implements TimeManagerInterface
 {
 	const PRIVACYLEVEL_LOW = 1;
 	const PRIVACYLEVEL_MEDIUM = 2;
@@ -89,7 +89,7 @@ class User implements TimeManagerInterface
      * Set login
      *
      * @param string $login
-     * @return User
+     * @return AbstractUser
      */
     public function setLogin($login)
     {
@@ -112,7 +112,7 @@ class User implements TimeManagerInterface
      * Set password
      *
      * @param string $password
-     * @return User
+     * @return AbstractUser
      */
     public function setPassword($password)
     {
@@ -135,7 +135,7 @@ class User implements TimeManagerInterface
      * Set privacyLevel
      *
      * @param integer $privacyLevel
-     * @return User
+     * @return AbstractUser
      */
     public function setPrivacyLevel($privacyLevel)
     {

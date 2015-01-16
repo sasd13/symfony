@@ -5,7 +5,7 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
-use MyWebsite\WebBundle\Model\User;
+use MyWebsite\WebBundle\Model\AbstractUser;
 use MyWebsite\WebBundle\Entity\Category;
 
 /**
@@ -14,7 +14,7 @@ use MyWebsite\WebBundle\Entity\Category;
  * @ORM\Table(name="web_profile")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
  */
-class Profile extends User
+class Profile extends AbstractUser
 {
 	/**
      * @var integer
