@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
@@ -68,16 +69,18 @@ class Module implements TimeManagerInterface
 	private $timeManager;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="module", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="module", cascade={"remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
-	private $menu;
+	private $menus;
 	
 	
-	public function __construct()
+	public function __construct($name)
     {
+		$this->name = $name;
 		$this->active = self::DEFAULT_ACTIVE;
 		$this->priority = ++self::$number;
+		$this->menu = new ArrayCollection();
 		$this->timeManager = new TimeManager();
     }
 	
@@ -222,25 +225,38 @@ class Module implements TimeManagerInterface
     }
 
     /**
-     * Set menu
+     * Add menus
      *
-     * @param \MyWebsite\WebBundle\Entity\Menu $menu
+     * @param \MyWebsite\WebBundle\Entity\Menu $menus
      * @return Module
      */
-    public function setMenu(\MyWebsite\WebBundle\Entity\Menu $menu = null)
+    public function addMenu(\MyWebsite\WebBundle\Entity\Menu $menus)
     {
-        $this->menu = $menu;
+		if(!$this->menus->contains($menus))
+		{
+			$this->menus[] = $menus;
+		}
 
         return $this;
     }
 
     /**
-     * Get menu
+     * Remove menus
      *
-     * @return \MyWebsite\WebBundle\Entity\Menu 
+     * @param \MyWebsite\WebBundle\Entity\Menu $menus
      */
-    public function getMenu()
+    public function removeMenu(\MyWebsite\WebBundle\Entity\Menu $menus)
     {
-        return $this->menu;
+        $this->menus->removeElement($menus);
+    }
+
+    /**
+     * Get menus
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMenus()
+    {
+        return $this->menus;
     }
 }

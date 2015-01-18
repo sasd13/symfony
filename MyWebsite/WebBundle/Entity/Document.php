@@ -5,7 +5,7 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use MyWebsite\WebBundle\Entity\DocumentInterface;
+use MyWebsite\WebBundle\Model\DocumentInterface;
 use \DateTime;
 
 /**
@@ -113,13 +113,13 @@ class Document implements DocumentInterface
         return null === $this->path ? null : $this->getUploadDir().'/'.$this->path;
     }
 
-    protected function getUploadRootDir()
+    public function getUploadRootDir()
     {
         // le chemin absolu du répertoire où les documents uploadés doivent être sauvegardés
         return __DIR__.'/../../../../web/bundles/mywebsiteweb/'.$this->getUploadDir();
     }
 
-    protected function getUploadDir()
+    public function getUploadDir()
     {
         // on se débarrasse de « __DIR__ » afin de ne pas avoir de problème lorsqu'on affiche le document dans la vue.
 		if(strpos($this->mimeType, 'image') >= 0)
@@ -136,7 +136,7 @@ class Document implements DocumentInterface
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function preUpload()
+    protected function preUpload()
     {
         if (null !== $this->file) {
             // faites ce que vous voulez pour générer un nom unique
@@ -151,7 +151,7 @@ class Document implements DocumentInterface
      * @ORM\PostPersist()
      * @ORM\PostUpdate()
      */
-    public function upload()
+    protected function upload()
     {
         if (null === $this->file) {
             return;
@@ -164,12 +164,22 @@ class Document implements DocumentInterface
         $this->file->move($this->getUploadRootDir(), $this->path);
 
         unset($this->file);
+		
+		$this->category->addDocument($this);
+    }
+	
+	/**
+     * @ORM\PreRemove()
+     */
+    protected function preRemove()
+    {
+        $this->category->removeDocument($this);
     }
 
     /**
      * @ORM\PostRemove()
      */
-    public function removeUpload()
+    protected function removeUpload()
     {
         if (is_file($this->getAbsolutePath())) {
 			unlink($this->getAbsolutePath());

@@ -42,26 +42,36 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<a href="{{ path('web_home') }}"><img src="{{ asset('bundles/mywebsiteweb/') }}images/logo.png" title="Webworld" /></a>
 					</div>
 					<!---End-logo---->
-					<!---start-top-nav---->
-					<div class="top-nav" id="navigation">
-						<ul>
-							{% set modules = app.session.get('modules') %}
-							{% set idProfile = app.session.get('idProfile') %}
-							{% for module in modules %}
-								{% if module.name == 'Profile' %}
-									<li><a href="{{ path(module.target) }}">MyProfile</a></li>
-									{% if idProfile == null %}
-										<li><a href="{{ path('web_signup') }}">Sign Up</a></li>
-									{% else %}
-										<li><a href="{{ path(module.target ~ '_logout') }}">D&eacute;connexion</a></li>
-									{% endif %}
-								{% else %}
-									<li><a href="{{ path(module.target) }}">{{ module.name }}</a></li>
-								{% endif %}
-							{% endfor %}
+					{% set idProfile = app.session.get('idProfile') %}
+					{% set menuBar = app.session.get('menuBar') %}
+					{% if menuBar != null %}
+						<!---start-top-nav---->
+						<div class="top-nav" id="navigation">
+							<ul>
+								<li><a href="{{ path('web_home') }}">Home</a></li>
+								{% for menu in menuBar %}
+									<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
+									{% for subMenu in menu.subMenus %}
+										{% if menu.name == 'MyProfile' %}
+											{% if subMenu.name == 'SignUp' %}
+												{% if idProfile == null %}
+													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+												{% endif %}
+											{% endif %}
+											{% if subMenu.name == 'LogOut' %}
+												{% if idProfile != null %}
+													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+												{% endif %}
+											{% endif %}
+										{% else %}
+											<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+										{% endif %}
+									{% endfor %}
+								{% endfor %}
+							</ul>
 							<div class="clear"> </div>
-						</ul>
-					</div>
+						</div>
+					{% endif %}
 					<div class="clear"> </div>
 					<!---//End-top-nav---->
 				</div>

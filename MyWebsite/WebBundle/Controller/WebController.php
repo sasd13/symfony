@@ -13,12 +13,9 @@ class WebController extends Controller
 		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		
-		$modules = $this->container->get('web_moduleHandler')->getActivatedModules();
-		if($modules == null)
-		{
-			return $this->redirect($this->generateUrl($router::ROUTE_ERROR));
-		}
-		$request->getSession()->set('modules', $modules);
+		//Get¨MenuBar
+		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu');
+		$request->getSession()->set('menuBar', $menuBar);
 		
 		return $this->render($layouter::LAYOUT_HOME);
     }

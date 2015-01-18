@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="web_content")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ContentRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Content
 {
@@ -136,6 +137,22 @@ class Content
 		$this->policyLevel = self::POLICYLEVEL_MEDIUM;
 		$this->priority = 0;
 	}
+	
+	/**
+     * @ORM\PostPersist()
+     */
+    protected function postPersist()
+    {
+        $this->category->addContent($this);
+    }
+	
+	/**
+     * @ORM\PreRemove()
+     */
+    protected function preRemove()
+    {
+        $this->category->removeContent($this);
+    }
 
     /**
      * Get id

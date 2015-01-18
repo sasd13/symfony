@@ -24,13 +24,9 @@ class ProfileController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		//Verify activated modules
-		$modules = $this->container->get('web_moduleHandler')->getActivatedModules();
-		if($modules == null)
-		{
-			return $this->redirect($this->generateUrl($router::ROUTE_ERROR));
-		}
-		$request->getSession()->set('modules', $modules);
+		//Get¨MenuBar
+		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu');
+		$request->getSession()->set('menuBar', $menuBar);
 		
 		if($request->getSession()->get('idProfile') != null)
 		{
@@ -40,7 +36,7 @@ class ProfileController extends Controller
 		$profile = new Profile();
 		
 		$form = $this->createForm(new ProfileType(), $profile, array(
-			'action' => $this->generateUrl($router::ROUTE_SIGNUP)
+			'action' => $this->generateUrl($router::ROUTE_PROFILE_SIGNUP)
 		));
 			
 		$message = "* Denotes Required Field";
@@ -53,11 +49,11 @@ class ProfileController extends Controller
 			
 			$profileBuffer = $em->getRepository('MyWebsiteWebBundle:Profile')->findByLogin($profile->getLogin());
 			if($form->isValid()
-				AND $profileBufer == null
+				AND $profileBuffer == null
 				AND $profile->getPassword() === $request->request->get('confirmPassword'))
 			{				
 				//Try create Profile with condition on email
-				$profile = $this->container->get('web_generator')->generateProfile($profile);
+				$profile = $this->container->get('web_profile_generator')->generateProfile($profile);
 				if($profile != null)
 				{
 					$request->getSession()->set('idProfile', $profile->getId());
@@ -83,12 +79,13 @@ class ProfileController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		$modules = $this->container->get('web_moduleHandler')->getActivatedModules();
-		if($modules == null)
-		{
-			return $this->redirect($this->generateUrl($router::ROUTE_ERROR));
-		}
-		$request->getSession()->set('modules', $modules);
+		//Get¨MenuBar
+		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu');
+		$request->getSession()->set('menuBar', $menuBar);
+		
+		//Get¨MenuProfile
+		$menuProfile = $this->container->get('web_menu_generator')->generateMenu('menu_profile');
+		$request->getSession()->set('menuProfile', $menuProfile);
 		
 		/*
 		 * LogIn Action
@@ -343,7 +340,7 @@ class ProfileController extends Controller
 		$oldPassword = $profile->getPassword();
 		
 		$form = $this->createForm(new ProfileType(), $profile, array(
-			'action' => $this->generateUrl($router::ROUTE_PROFILE_AbstractUser)
+			'action' => $this->generateUrl($router::ROUTE_PROFILE_USER)
 		));
 		
 		$message = "* Denotes Required Field";

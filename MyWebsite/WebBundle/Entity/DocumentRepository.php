@@ -15,14 +15,15 @@ class DocumentRepository extends EntityRepository
 {	
 	public function myFindPictureWithCategoryByProfile($idProfile)
 	{
-		$qb = $this->createQueryBuilder('document');
-		$qb->select('document')
+		$qb = $this->createQueryBuilder('document')
+			->select('document')
 			->leftJoin('document.category', 'category', 'WITH', 'category.tag = :tag')
 			->setParameter('tag', Category::TAG_PROFILE_PICTURE)
 			->addSelect('category')
 			->leftJoin('category.profile', 'profile', 'WITH', 'profile.id = :id')
 			->setParameter('id', $idProfile)
-			->addSelect('profile');
+			->addSelect('profile')
+		;
 		
 		$results = $qb->getQuery()->getResult();
 		if($results == null)

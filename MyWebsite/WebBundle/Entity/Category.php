@@ -12,6 +12,7 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  *
  * @ORM\Table(name="web_category")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\CategoryRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Category
 {
@@ -108,6 +109,22 @@ class Category
 	{
 		$this->timeManager->update();
 	}
+	
+	/**
+     * @ORM\PostPersist()
+     */
+    protected function postPersist()
+    {
+        $this->profle->addCategory($this);
+    }
+	
+	/**
+     * @ORM\PreRemove()
+     */
+    protected function preRemove()
+    {
+        $this->profile->removeCategory($this);
+    }
 	
 	/**
      * Get id

@@ -15,13 +15,14 @@ class CategoryRepository extends EntityRepository
 {
 	public function myFindByTagWithContents($idProfile, $tagCategory)
 	{
-		$qb = $this->createQueryBuilder('category');
-		$qb->where('category.tag = :tag')
+		$qb = $this->createQueryBuilder('category')
+			->where('category.tag = :tag')
 			->setParameter('tag', $tagCategory)
 			->leftJoin('category.profile', 'profile', 'WITH', 'profile.id = :id')
 			->setParameter('id', $idProfile)
 			->leftJoin('category.contents', 'content')
-			->addSelect('content');
+			->addSelect('content')
+		;
 		
 		$results = $qb->getQuery()->getResult();
 		if($results == null)
@@ -34,11 +35,12 @@ class CategoryRepository extends EntityRepository
 	
 	public function myFindWithContents($idCategory)
 	{
-		$qb = $this->createQueryBuilder('category');
-		$qb->where('category.id = :id')
+		$qb = $this->createQueryBuilder('category')
+			->where('category.id = :id')
 			->setParameter('id', $idCategory)
 			->leftJoin('category.contents', 'content')
-			->addSelect('content');
+			->addSelect('content')
+		;
 		
 		$results = $qb->getQuery()->getResult();
 		if($results == null)
@@ -51,11 +53,12 @@ class CategoryRepository extends EntityRepository
 	
 	public function myFindWithDocuments($idCategory)
 	{
-		$qb = $this->createQueryBuilder('category');
-		$qb->where('category.id = :id')
+		$qb = $this->createQueryBuilder('category')
+			->where('category.id = :id')
 			->setParameter('id', $idCategory)
 			->leftJoin('category.documents', 'document')
-			->addSelect('document');
+			->addSelect('document')
+		;
 		
 		$results = $qb->getQuery()->getResult();
 		if($results == null)

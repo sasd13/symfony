@@ -3,15 +3,24 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Menu
  *
  * @ORM\Table(name="web_menu")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\MenuRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Menu
 {
+	const DEFAULT_ISROOT = false;
+	const DEFAULT_ACTIVE = true;
+	private static $number = 0;
+	
+	const DISPLAY_PUBLIC_ONLY = 1;
+	const DISPLAY_CONFIG_ONLY = 2;
+	
     /**
      * @var integer
      *
@@ -24,42 +33,52 @@ class Menu
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="target", type="string", length=255)
+     * @ORM\Column(name="target", type="string", length=255, nullable=true)
      */
     private $target;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="configName", type="string", length=255)
+     * @ORM\Column(name="isRoot", type="boolean")
+	 * @Assert\Type(type="bool")
      */
-    private $configName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="configTarget", type="string", length=255)
-     */
-    private $configTarget;
+    private $isRoot;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="active", type="boolean")
+	 * @Assert\Type(type="bool")
      */
     private $active;
+	
+	/**
+     * @var integer
+     *
+     * @ORM\Column(name="display", type="smallint")
+	 * @Assert\Range(
+     *      min = 1,
+     *      max = 3,
+     * )
+     */
+    private $display;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="priority", type="smallint")
+     * @ORM\Column(name="priority", type="integer")
+	 * @Assert\Range(
+     *      min = 0,
+     *      minMessage = "La priorité doit être au moins de 0"
+     * )
      */
     private $priority;
 	
@@ -75,11 +94,45 @@ class Menu
 	private $subMenus;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\Module", inversedBy="menu")
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Module", inversedBy="menus")
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $module;
-
+	
+	
+	public function __construct($name, $target)
+    {
+		$this->name = $name;
+		$this->target = $target;
+		$this->isRoot = self::DEFAULT_ISROOT;
+		$this->active = self::DEFAULT_ACTIVE;
+		$this->display = self::DISPLAY_PUBLIC_ONLY;
+		$this->priority = ++self::$number;
+    }
+	
+	/**
+     * @ORM\PostPersist()
+     */
+    protected function postPersist()
+    {
+        $this->module->addMenu($this);
+		if($this->parentMenu != null)
+		{
+			$this->parentMenu->addSubMenu($this);
+		}
+    }
+	
+	/**
+     * @ORM\PreRemove()
+     */
+    protected function preRemove()
+    {
+        $this->module->removeMenu($this);
+		if($this->parentMenu != null)
+		{
+			$this->parentMenu->removeSubMenu($this);
+		}
+    }
 
     /**
      * Get id
@@ -89,7 +142,6 @@ class Menu
     public function getId()
     {
         return $this->id;
-		$this->subMenus = new ArrayCollection();
     }
 
     /**
@@ -139,49 +191,26 @@ class Menu
     }
 
     /**
-     * Set configName
+     * Set isRoot
      *
-     * @param string $configName
+     * @param boolean $isRoot
      * @return Menu
      */
-    public function setConfigName($configName)
+    public function setIsRoot($isRoot)
     {
-        $this->configName = $configName;
+        $this->isRoot = $isRoot;
 
         return $this;
     }
 
     /**
-     * Get configName
+     * Get isRoot
      *
-     * @return string 
+     * @return boolean 
      */
-    public function getConfigName()
+    public function getIsRoot()
     {
-        return $this->configName;
-    }
-
-    /**
-     * Set configTarget
-     *
-     * @param string $configTarget
-     * @return Menu
-     */
-    public function setConfigTarget($configTarget)
-    {
-        $this->configTarget = $configTarget;
-
-        return $this;
-    }
-
-    /**
-     * Get configTarget
-     *
-     * @return string 
-     */
-    public function getConfigTarget()
-    {
-        return $this->configTarget;
+        return $this->isRoot;
     }
 
     /**
@@ -208,6 +237,29 @@ class Menu
     }
 
     /**
+     * Set display
+     *
+     * @param integer $display
+     * @return Menu
+     */
+    public function setDisplay($display)
+    {
+        $this->display = $display;
+
+        return $this;
+    }
+
+    /**
+     * Get display
+     *
+     * @return integer 
+     */
+    public function getDisplay()
+    {
+        return $this->display;
+    }
+
+    /**
      * Set priority
      *
      * @param integer $priority
@@ -229,13 +281,6 @@ class Menu
     {
         return $this->priority;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->subMenus = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Set parentMenu
@@ -243,9 +288,10 @@ class Menu
      * @param \MyWebsite\WebBundle\Entity\Menu $parentMenu
      * @return Menu
      */
-    public function setParentMenu(\MyWebsite\WebBundle\Entity\Menu $parentMenu)
+    public function setParentMenu(\MyWebsite\WebBundle\Entity\Menu $parentMenu = null)
     {
         $this->parentMenu = $parentMenu;
+		$this->parentMenu->addSubMenu($this);
 
         return $this;
     }

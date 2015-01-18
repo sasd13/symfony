@@ -3,6 +3,8 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use MyWebsite\WebBundle\Entity\Menu;
 
 /**
  * ModuleRepository
@@ -15,18 +17,63 @@ class ModuleRepository extends EntityRepository
 	public function myFindActivated()
 	{
 		$qb = $this->createQueryBuilder('module')
-			->where('module.active = :active')
-			->setParameter('active', true)
-			->addOrderBy('module.priority', 'ASC');
+			->where('module.active = true')
+			->addOrderBy('module.priority', 'ASC')
+		;
 	
-		return $qb->getQuery()->getResult();
+		$results = $qb->getQuery()->getResult();
+		
+		return $results;
+	}
+	
+	public function myFindActivatedWithMenu()
+	{
+		$qb = $this->createQueryBuilder('module')
+			->where('module.active = :module_active')
+			->setParameter('module_active', true)
+			->addOrderBy('module.priority', 'ASC')
+			->leftJoin('module.menus', 'menu')
+			->addSelect('menu')
+			->andWhere('menu.isRoot = :isRoot')
+			->setParameter('isRoot', true)
+			->leftJoin('menu.subMenus', 'subMenu')
+			->addSelect('subMenu')
+		;
+		
+		$results = $qb->getQuery()->getResult();
+		
+		return $results;
+	}
+	
+	public function myFindActivatedWithMenuByDisplay($display)
+	{
+		$qb = $this->createQueryBuilder('module')
+			->where('module.active = :module_active')
+			->setParameter('module_active', true)
+			->addOrderBy('module.priority', 'ASC')
+			->leftJoin('module.menus', 'menu')
+			->addSelect('menu')
+			->andWhere('menu.display = :menu_display')
+			->setParameter('menu_display', $display)
+			->andWhere('menu.isRoot = :menu_isRoot')
+			->setParameter('menu_isRoot', true)
+			->andWhere('menu.active = :menu_active')
+			->setParameter('menu_active', true)
+		;
+		
+		$results = $qb->getQuery()->getResult();
+		
+		return $results;
 	}
 	
 	public function myFindAll()
 	{
 		$qb = $this->createQueryBuilder('module')
-			->addOrderBy('module.priority', 'ASC');
+			->addOrderBy('module.priority', 'ASC')
+		;
 	
-		return $qb->getQuery()->getResult();
+		$results = $qb->getQuery()->getResult();
+		
+		return $results;
 	}
 }

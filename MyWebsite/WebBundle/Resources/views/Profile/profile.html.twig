@@ -1,6 +1,6 @@
 {% extends "MyWebsiteWebBundle::layout.html.twig" %}
 
-{% block title %}{{ parent() }} - MyProfil{% endblock %}
+{% block title %}{{ parent() }} - MyProfile{% endblock %}
 
 {% block css %} 
 	{% stylesheets
@@ -22,7 +22,7 @@
 				<div class="left-sidebar2">
 					<div class="side-head">
 						<div class="feature-grid-head">
-							<h3><span>My</span>Profil</h3>
+							<h3><span></span>Menu</h3>
 						</div>
 						<div class="picture">
 							{% if profile.picturePath != null %}
@@ -34,47 +34,24 @@
 					</div>
 					<!----side-bar---->
 					<div class="recent-posts">
-						<div class="side-heading side-heading1">
-							<label> </label><span>CV</span><label> </label>
-							<div class="clear"> </div>
-						</div>
-						<div class="recent-post-list">
-							<ul>
-								<li><a href="#">New</a></li>
-								<li><a href="#">Edit</a></li>
-							</ul>
-						</div>
-						<div class="side-heading side-heading1">
-							<label> </label><span>Project</span><label> </label>
-							<div class="clear"> </div>
-						</div>
-						<div class="recent-post-list">
-							<ul>
-								<li><a href="#">New</a></li>
-								<li><a href="#">Edit</a></li>
-							</ul>
-						</div>
-						<div class="side-heading side-heading1">
-							<label> </label><span>Portfolio</span><label> </label>
-							<div class="clear"> </div>
-						</div>
-						<div class="recent-post-list">
-							<ul>
-								<li><a href="#">New</a></li>
-								<li><a href="#">Edit</a></li>
-							</ul>
-						</div>
-						<div class="side-heading side-heading1">
-							<label> </label><span>Profile</span><label> </label>
-							<div class="clear"> </div>
-						</div>
-						<div class="recent-post-list">
-							<ul>
-								<li><a href="{{ path('web_profile_info') }}">Informations</a></li>
-								<li><a href="{{ path('web_profile_picture') }}">Photo de profil</a></li>
-								<li><a href="{{ path('web_profile_user') }}">Log In Options</a></li>
-							</ul>
-						</div>
+						{% set menuProfile = app.session.get('menuProfile') %}
+						{% if menuProfile != null %}
+							{% for menu in menuProfile %}
+								<div class="side-heading side-heading1">
+									<label> </label><span>{{ menu.name }}</span><label> </label>
+									<div class="clear"> </div>
+								</div>
+								{% if menu.subMenus != null %}
+									<div class="recent-post-list">
+										<ul>
+											{% for subMenu in menu.subMenus %}
+												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+											{% endfor %}
+										</ul>
+									</div>
+								{% endif %}
+							{% endfor %}
+						{% endif %}
 					</div>
 					<!---end-side-bar-->
 				</div>

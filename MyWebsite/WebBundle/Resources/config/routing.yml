@@ -2,13 +2,13 @@ web_home:
     pattern:  /
     defaults: { _controller: MyWebsiteWebBundle:Web:index}
 
-web_signup:
-    pattern:  /signup
-    defaults: { _controller: MyWebsiteWebBundle:Profile:newProfile}
-
 web_profile:
     pattern:  /profile
     defaults: { _controller: MyWebsiteWebBundle:Profile:loadProfile}
+
+web_profile_signup:
+    pattern:  /signup
+    defaults: { _controller: MyWebsiteWebBundle:Profile:newProfile}
 
 web_profile_info:
     pattern:  /profile/info

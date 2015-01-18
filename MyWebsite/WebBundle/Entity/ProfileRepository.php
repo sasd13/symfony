@@ -13,33 +13,17 @@ use MyWebsite\WebBundle\Entity\Category;
  */
 class ProfileRepository extends EntityRepository
 {
-	public function myFindWithUser($idProfile)
-	{
-		$qb = $this->createQueryBuilder('profile');
-		$qb->where('profile.id = :id')
-			->setParameter('id', $idProfile)
-			->leftJoin('profile.user', 'user')
-			->addSelect('user');
-		
-		$results = $qb->getQuery()->getResult();
-		if($results == null)
-		{
-			return null;
-		}
-		
-		return $results[0];
-	}
-	
 	public function myFindWithCategoriesAndContents($idProfile)
 	{
-		$qb = $this->createQueryBuilder('profile');
-		$qb->where('profile.id = :id')
+		$qb = $this->createQueryBuilder('profile')
+			->where('profile.id = :id')
 			->setParameter('id', $idProfile)
 			->leftJoin('profile.categories', 'category', 'WITH', 'category.type = :type')
 			->setParameter('type', 'content')
 			->addSelect('category')
 			->leftJoin('category.contents', 'content')
-			->addSelect('content');
+			->addSelect('content')
+		;
 		
 		$results = $qb->getQuery()->getResult();
 		if($results == null)
@@ -52,14 +36,15 @@ class ProfileRepository extends EntityRepository
 	
 	public function myFindWithCategoryAndPicture($idProfile)
 	{
-		$qb = $this->createQueryBuilder('profile');
-		$qb->where('profile.id = :id')
+		$qb = $this->createQueryBuilder('profile')
+			->where('profile.id = :id')
 			->setParameter('id', $idProfile)
 			->leftJoin('profile.categories', 'category', 'WITH', 'category.tag = :tag')
 			->setParameter('tag', Category::TAG_PROFILE_PICTURE)
 			->addSelect('category')
 			->leftJoin('category.documents', 'document')
-			->addSelect('document');
+			->addSelect('document')
+		;
 		
 		$results = $qb->getQuery()->getResult();
 		if($results == null)

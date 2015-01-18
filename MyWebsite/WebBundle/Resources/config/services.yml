@@ -17,7 +17,11 @@ services:
         class: MyWebsite\WebBundle\Services\ModuleHandler
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
-    web_generator:
-        class: MyWebsite\WebBundle\Services\Generator
+    web_menu_generator:
+        class: MyWebsite\WebBundle\Services\MenuGenerator
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+    web_profile_generator:
+        class: MyWebsite\WebBundle\Services\ProfileGenerator
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
