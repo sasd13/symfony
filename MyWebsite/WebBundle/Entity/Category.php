@@ -5,6 +5,9 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use MyWebsite\WebBundle\Model\CopyInterface;
+use MyWebsite\WebBundle\Model\LifeCycleInterface;
+use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
@@ -14,15 +17,13 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\CategoryRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Category
+class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterface
 {
 	const TAG_PROFILE_INFO = 'profile_category_info';
 	const TAG_PROFILE_PICTURE = 'profile_category_picture';
 	
 	const TITLE_PROFILE_INFO = 'Identité';
 	const TITLE_PROFILE_PICTURE = 'Photo de profil';
-	
-	private static $cloned;
 	
     /**
      * @var integer
@@ -81,6 +82,13 @@ class Category
 	 */
 	private $profile;
 	
+	/**
+     * @var boolean
+     *
+     * @Assert\Type(type="integer")
+     */
+    private $idCopy;
+	
 	
 	public function __construct($type = 'content')
 	{
@@ -88,11 +96,6 @@ class Category
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
 		$this->timeManager = new TimeManager();
-	}
-	
-	public function __clone()
-	{
-		self::$cloned = true;
 	}
 	
 	public function getCreatedAt()
@@ -111,20 +114,62 @@ class Category
 	}
 	
 	/**
-     * @ORM\PostPersist()
+     * @ORM\PrePersist()
      */
-    protected function postPersist()
+    public function prePersist()
     {
-        $this->profle->addCategory($this);
+		//Control before persist
+		//Throw Exception
     }
 	
 	/**
-     * @ORM\PreRemove()
+	 * @ORM\PostPersist()
      */
-    protected function preRemove()
+    public function postPersist()
+    {
+        $this->profile->addCategory($this);
+    }
+	
+	/**
+	 * @ORM\PreRemove()
+     */
+    public function preRemove()
     {
         $this->profile->removeCategory($this);
     }
+	
+	public function setIdCopy($idCopy)
+	{
+		$this->idCopy = $idCopy;
+		
+		return $this;
+	}
+	
+	public function getIdCopy()
+	{
+		return $this->idCopy;
+	}
+	
+	public function copy()
+	{
+		$category = new Category($this->type);
+		$category
+			->setIdCopy($this->id)
+			->setTitle($this->title)
+			->setTag($this->tag)
+			->setProfile($this->profile)
+		;
+		foreach($this->contents as $content)
+		{
+			$category->addContent($content->copy());
+		}
+		foreach($this->documents as $document)
+		{
+			$category->addDocument($document->copy());
+		}
+		
+		return $category;
+	}
 	
 	/**
      * Get id

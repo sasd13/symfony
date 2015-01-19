@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Model\AbstractUser;
+use MyWebsite\WebBundle\Model\CopyInterface;
 use MyWebsite\WebBundle\Entity\Category;
 
 /**
@@ -14,7 +15,7 @@ use MyWebsite\WebBundle\Entity\Category;
  * @ORM\Table(name="web_profile")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
  */
-class Profile extends AbstractUser
+class Profile extends AbstractUser implements CopyInterface
 {
 	/**
      * @var integer
@@ -67,14 +68,14 @@ class Profile extends AbstractUser
 	/**
      * @var string
 	 *
-     * @ORM\Column(name="pictureName", type="string", length=255, nullable=true)
+	 * @ORM\Column(name="pictureName", type="string", length=255, nullable=true)
      */
     private $pictureName;
 	
 	/**
      * @var string
 	 *
-     * @ORM\Column(name="picturePath", type="string", length=255, nullable=true)
+	 * @ORM\Column(name="picturePath", type="string", length=255, nullable=true)
      */
     private $picturePath;
 	
@@ -84,11 +85,49 @@ class Profile extends AbstractUser
 	 */
 	private $categories;
 	
+	/**
+     * @var boolean
+     *
+     * @Assert\Type(type="integer")
+     */
+    private $idCopy;
+	
 	
 	public function __construct()
 	{
 		parent::__construct();
 		$this->categories = new ArrayCollection();
+	}
+	
+	public function setIdCopy($idCopy)
+	{
+		$this->idCopy = $idCopy;
+		
+		return $this;
+	}
+	
+	public function getIdCopy()
+	{
+		return $this->idCopy;
+	}
+	
+	public function copy()
+	{
+		$profile = new Profile();
+		$profile
+			->setIdCopy($this->id)
+			->setFirstName($this->firstName)
+			->setLastName($this->lastName)
+			->setEmail($this->email)
+			->setPictureName($this->pictureName)
+			->setPicturePath($this->picturePath)
+		;
+		foreach($this->categories as $category)
+		{
+			$profile->addCategory($category->copy());
+		}
+		
+		return $profile;
 	}
 	
 	/**

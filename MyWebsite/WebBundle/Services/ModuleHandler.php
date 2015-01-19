@@ -3,8 +3,6 @@
 namespace MyWebsite\WebBundle\Services;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Collections\ArrayCollection;
-use MyWebsite\WebBundle\Entity\Menu;
 
 class ModuleHandler
 {
@@ -15,9 +13,9 @@ class ModuleHandler
 		$this->em = $em;
 	}
 	
-	public function getModules()
+	public function getActivatedModules()
 	{
-		$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindAll();
+		$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindAtivated();
 		
 		return $modules;
 	}

@@ -33,24 +33,28 @@ class ModuleProfileFixtures extends AbstractFixture implements OrderedFixtureInt
 		
 		//Public Menu MyProfile
 		$menu = new Menu('MyProfile', $router::ROUTE_PROFILE);
-		$menu->setIsRoot(true);
-		$menu->setModule($module);
+		$menu
+			->setIsRoot(true)
+			->setModule($module)
+		;
 		$manager->persist($menu);
 		
 		//SubMenu for Menu MyProfile
 		$subMenus = new ArrayCollection();
 		
-		$sub = new Menu('SignUp', $router::ROUTE_PROFILE_SIGNUP);
+		$sub = new Menu('Sign up', $router::ROUTE_PROFILE_SIGNUP);
 		$subMenus[] = $sub;
 		
-		$sub = new Menu('LogOut', $router::ROUTE_PROFILE_LOGOUT);
+		$sub = new Menu('Log out', $router::ROUTE_PROFILE_LOGOUT);
 		$subMenus[] = $sub;
 		
 		foreach($subMenus as $subMenu)
 		{
 			
-			$subMenu->setModule($module);
-			$subMenu->setParentMenu($menu);
+			$subMenu
+				->setModule($module)
+				->setParentMenu($menu)
+			;
 			$manager->persist($subMenu);
 		}
 		
@@ -59,8 +63,8 @@ class ModuleProfileFixtures extends AbstractFixture implements OrderedFixtureInt
 		$menu
 			->setDisplay(Menu::DISPLAY_CONFIG_ONLY)
 			->setIsRoot(true)
+			->setModule($module)
 		;
-		$menu->setModule($module);
 		$manager->persist($menu);
 		
 		//SubMenu for Menu Profile
@@ -74,15 +78,17 @@ class ModuleProfileFixtures extends AbstractFixture implements OrderedFixtureInt
 		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
 		$subMenus[] = $sub;
 		
-		$sub = new Menu('LogIn options', $router::ROUTE_PROFILE_USER);
+		$sub = new Menu('Log in options', $router::ROUTE_PROFILE_USER);
 		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
 		$subMenus[] = $sub;
 		
 		foreach($subMenus as $subMenu)
 		{
 			
-			$subMenu->setModule($module);
-			$subMenu->setParentMenu($menu);
+			$subMenu
+				->setModule($module)
+				->setParentMenu($menu)
+			;
 			$manager->persist($subMenu);
 		}
 		

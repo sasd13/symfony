@@ -5,6 +5,8 @@ namespace MyWebsite\WebBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class ContentType extends AbstractType
 {
@@ -18,13 +20,29 @@ class ContentType extends AbstractType
 			->setMethod('POST')
 			->add('label')
             ->add('labelValue')
-			->add('stringValue', 'text')
-			->add('textValue', 'textarea')
-            ->add('formType')
+			->add('formType')
             ->add('required')
             ->add('policyLevel')
             ->add('placeholder')
         ;
+		
+		$builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+			$data = $event->getData();
+			$form = $event->getForm();
+			
+			if($data->getFormType() === 'textarea')
+			{
+				$form->add('textValue', $data->getFormType(), array(
+					'required' => $data->getRequired()
+				));
+			}
+			else
+			{
+				$form->add('stringValue', $data->getFormType(), array(
+					'required' => $data->getRequired()
+				));
+			}
+		});
     }
     
     /**

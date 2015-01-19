@@ -5,6 +5,7 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use MyWebsite\WebBundle\Model\LifeCycleInterface;
 use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
@@ -13,10 +14,12 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  *
  * @ORM\Table(name="web_module")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ModuleRepository")
+ * @ORM\HasLifecycleCallbacks
  */
-class Module implements TimeManagerInterface
+class Module implements TimeManagerInterface, LifeCycleInterface
 {
 	const DEFAULT_ACTIVE = true;
+	
 	private static $number = 0;
 	
     /**
@@ -80,7 +83,7 @@ class Module implements TimeManagerInterface
 		$this->name = $name;
 		$this->active = self::DEFAULT_ACTIVE;
 		$this->priority = ++self::$number;
-		$this->menu = new ArrayCollection();
+		$this->menus = new ArrayCollection();
 		$this->timeManager = new TimeManager();
     }
 	
@@ -98,6 +101,33 @@ class Module implements TimeManagerInterface
 	{
 		$this->timeManager->update();
 	}
+	
+	/**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+		//Control before persist
+		//Throw Exception
+    }
+	
+	/**
+	 * @ORM\PostPersist()
+     */
+    public function postPersist()
+    {
+        //Control after persist
+		//Throw Exception
+    }
+	
+	/**
+	 * @ORM\PreRemove()
+     */
+    public function preRemove()
+    {
+        //Control before remove
+		//Throw Exception
+    }
 
     /**
      * Get id

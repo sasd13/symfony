@@ -17,8 +17,7 @@ class ModuleType extends AbstractType
 		$builder
 			->setMethod('POST')
             ->add('name', 'text')
-            ->add('target', 'text')
-            ->add('active', 'checkbox')
+			->add('active', 'checkbox')
             ->add('readMe', 'textarea')
         ;
     }

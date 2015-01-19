@@ -80,6 +80,7 @@ class ProfileGenerator
 		$content
 			->setLabelValue('Intitulé')
 			->setStringValue('Licence Mathématiques et Informatique')
+			->setRequired(false)
 			->setCategory($category)
 		;
 		$this->em->persist($content);
@@ -89,6 +90,7 @@ class ProfileGenerator
 		$content
 			->setLabelValue('Année')
 			->setStringValue('2013')
+			->setRequired(false)
 			->setCategory($category)
 		;
 		$this->em->persist($content);

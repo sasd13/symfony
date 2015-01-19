@@ -5,7 +5,9 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use MyWebsite\WebBundle\Model\CopyInterface;
 use MyWebsite\WebBundle\Model\DocumentInterface;
+use MyWebsite\WebBundle\Model\LifeCycleInterface;
 use \DateTime;
 
 /**
@@ -15,7 +17,7 @@ use \DateTime;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\DocumentRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Document implements DocumentInterface
+class Document implements DocumentInterface, LifeCycleInterface, CopyInterface
 {
 	const DEFAULT_MIMETYPE = 'text/plain';
 	const DEFAULT_PATH = 'path';
@@ -74,6 +76,12 @@ class Document implements DocumentInterface
     private $uploadDate;
 	
 	/**
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents")
+	 * @ORM\JoinColumn(nullable=false)
+	 */
+	private $category;
+	
+	/**
      * @Assert\File(
      *     maxSize = "5120k",
 	 *     maxSizeMessage = "Fichier trop volumineux"
@@ -82,10 +90,11 @@ class Document implements DocumentInterface
     public $file;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Category", inversedBy="documents")
-	 * @ORM\JoinColumn(nullable=false)
-	 */
-	private $category;
+     * @var boolean
+     *
+     * @Assert\Type(type="integer")
+     */
+    private $idCopy;
 	
 	
 	public function __construct($type = 'document')
@@ -136,7 +145,7 @@ class Document implements DocumentInterface
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    protected function preUpload()
+    public function prePersist()
     {
         if (null !== $this->file) {
             // faites ce que vous voulez pour générer un nom unique
@@ -151,7 +160,7 @@ class Document implements DocumentInterface
      * @ORM\PostPersist()
      * @ORM\PostUpdate()
      */
-    protected function upload()
+    public function postPersist()
     {
         if (null === $this->file) {
             return;
@@ -171,7 +180,7 @@ class Document implements DocumentInterface
 	/**
      * @ORM\PreRemove()
      */
-    protected function preRemove()
+    public function preRemove()
     {
         $this->category->removeDocument($this);
     }
@@ -179,13 +188,40 @@ class Document implements DocumentInterface
     /**
      * @ORM\PostRemove()
      */
-    protected function removeUpload()
+    protected function postRemove()
     {
         if (is_file($this->getAbsolutePath())) {
 			unlink($this->getAbsolutePath());
         }
     }
-
+	
+	public function setIdCopy($idCopy)
+	{
+		$this->idCopy = $idCopy;
+		
+		return $this;
+	}
+	
+	public function getIdCopy()
+	{
+		return $this->idCopy;
+	}
+	
+	public function copy()
+	{
+		$document = new Document();
+		$document
+			->setIdCopy($this->id)
+			->setName($this->name)
+			->setMimeType($this->mimeType)
+			->setHide($this->hide)
+			->setPath($this->path)
+			->setUploadDate($this->uploadDate)
+			->setCategory($this->category)
+		;
+		
+		return $document;
+	}
     /**
      * Get id
      *

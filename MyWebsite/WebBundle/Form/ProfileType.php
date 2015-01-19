@@ -5,9 +5,7 @@ namespace MyWebsite\WebBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use MyWebsite\WebBundle\Entity\Profile;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class ProfileType extends AbstractType
 {
@@ -24,7 +22,9 @@ class ProfileType extends AbstractType
 			->add('firstName', 'text')
 			->add('lastName', 'text')
 			->add('email', 'email')
-			->add('categories', 'collection', array('type' => new CategoryType()));
+			->add('categories', 'collection', array(
+				'type' => new CategoryType()
+			))
         ;
     }
     

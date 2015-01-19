@@ -3,7 +3,6 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use MyWebsite\WebBundle\Entity\Category;
 
 /**
  * DocumentRepository
@@ -12,25 +11,5 @@ use MyWebsite\WebBundle\Entity\Category;
  * repository methods below.
  */
 class DocumentRepository extends EntityRepository
-{	
-	public function myFindPictureWithCategoryByProfile($idProfile)
-	{
-		$qb = $this->createQueryBuilder('document')
-			->select('document')
-			->leftJoin('document.category', 'category', 'WITH', 'category.tag = :tag')
-			->setParameter('tag', Category::TAG_PROFILE_PICTURE)
-			->addSelect('category')
-			->leftJoin('category.profile', 'profile', 'WITH', 'profile.id = :id')
-			->setParameter('id', $idProfile)
-			->addSelect('profile')
-		;
-		
-		$results = $qb->getQuery()->getResult();
-		if($results == null)
-		{
-			return null;
-		}
-		
-		return $results[0];
-	}
+{
 }

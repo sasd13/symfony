@@ -13,26 +13,6 @@ use MyWebsite\WebBundle\Entity\Profile;
  */
 class CategoryRepository extends EntityRepository
 {
-	public function myFindByTagWithContents($idProfile, $tagCategory)
-	{
-		$qb = $this->createQueryBuilder('category')
-			->where('category.tag = :tag')
-			->setParameter('tag', $tagCategory)
-			->leftJoin('category.profile', 'profile', 'WITH', 'profile.id = :id')
-			->setParameter('id', $idProfile)
-			->leftJoin('category.contents', 'content')
-			->addSelect('content')
-		;
-		
-		$results = $qb->getQuery()->getResult();
-		if($results == null)
-		{
-			return null;
-		}
-		
-		return $results[0];
-	}
-	
 	public function myFindWithContents($idCategory)
 	{
 		$qb = $this->createQueryBuilder('category')

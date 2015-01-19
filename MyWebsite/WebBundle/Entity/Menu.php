@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Model\LifeCycleInterface;
 
 /**
  * Menu
@@ -12,14 +13,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\MenuRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Menu
+class Menu implements LifeCycleInterface
 {
 	const DEFAULT_ISROOT = false;
 	const DEFAULT_ACTIVE = true;
-	private static $number = 0;
 	
 	const DISPLAY_PUBLIC_ONLY = 1;
 	const DISPLAY_CONFIG_ONLY = 2;
+	
+	private static $number = 0;
 	
     /**
      * @var integer
@@ -111,9 +113,24 @@ class Menu
     }
 	
 	/**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+        $this->module->addMenu($this);
+		if($this->parentMenu != null)
+		{
+			$this->parentMenu->addSubMenu($this);
+		}
+		
+		//Control before persist
+		//Throw Exception
+    }
+	
+	/**
      * @ORM\PostPersist()
      */
-    protected function postPersist()
+    public function postPersist()
     {
         $this->module->addMenu($this);
 		if($this->parentMenu != null)
@@ -125,7 +142,7 @@ class Menu
 	/**
      * @ORM\PreRemove()
      */
-    protected function preRemove()
+    public function preRemove()
     {
         $this->module->removeMenu($this);
 		if($this->parentMenu != null)
@@ -290,8 +307,19 @@ class Menu
      */
     public function setParentMenu(\MyWebsite\WebBundle\Entity\Menu $parentMenu = null)
     {
-        $this->parentMenu = $parentMenu;
-		$this->parentMenu->addSubMenu($this);
+		if($this->parentMenu != null)
+		{
+			if ($parentMenu != null)
+			{
+				$this->parentMenu->addSubMenu($this);
+			}
+			else
+			{
+				$this->parentMenu->removeSubMenu($this);
+			}
+		}
+		
+		$this->parentMenu = $parentMenu;
 
         return $this;
     }

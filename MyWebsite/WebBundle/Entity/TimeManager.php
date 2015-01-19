@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use \DateTime;
 
 /**
@@ -12,7 +13,7 @@ use \DateTime;
  * @ORM\Table(name="web_timemanager")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\TimeManagerRepository")
  */
-class TimeManager
+class TimeManager implements TimeManagerInterface
 {
 	/**
      * @var integer

@@ -22,17 +22,18 @@ class MenuGenerator
 		if($type === 'menu_profile')
 		{
 			//Bug creating
-			//Create new instances of Module
-			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedWithMenuByDisplay(Menu::DISPLAY_CONFIG_ONLY);
+			//Create new instances of Module managed by the EntityManager
+			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedWithMenusByDisplay(Menu::DISPLAY_CONFIG_ONLY);
 		}
 		else
 		{
-			//Create new instances of Module
-			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedWithMenuByDisplay(Menu::DISPLAY_PUBLIC_ONLY);
+			//Bug creating
+			//Create new instances of Module by the EntityManager
+			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedWithMenusByDisplay(Menu::DISPLAY_PUBLIC_ONLY);
 		}
 		
 		//Bug resolver
-		//Clear the new instances of Module before persisting
+		//Clear these new instances of Module before persisting
 		$this->em->clear();
 		
 		$menuBar = new ArrayCollection();

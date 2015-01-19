@@ -17,7 +17,8 @@ class ModuleRepository extends EntityRepository
 	public function myFindActivated()
 	{
 		$qb = $this->createQueryBuilder('module')
-			->where('module.active = true')
+			->where('module.active = :active')
+			->setParameter('active', true)
 			->addOrderBy('module.priority', 'ASC')
 		;
 	
@@ -26,26 +27,7 @@ class ModuleRepository extends EntityRepository
 		return $results;
 	}
 	
-	public function myFindActivatedWithMenu()
-	{
-		$qb = $this->createQueryBuilder('module')
-			->where('module.active = :module_active')
-			->setParameter('module_active', true)
-			->addOrderBy('module.priority', 'ASC')
-			->leftJoin('module.menus', 'menu')
-			->addSelect('menu')
-			->andWhere('menu.isRoot = :isRoot')
-			->setParameter('isRoot', true)
-			->leftJoin('menu.subMenus', 'subMenu')
-			->addSelect('subMenu')
-		;
-		
-		$results = $qb->getQuery()->getResult();
-		
-		return $results;
-	}
-	
-	public function myFindActivatedWithMenuByDisplay($display)
+	public function myFindActivatedWithMenusByDisplay($display)
 	{
 		$qb = $this->createQueryBuilder('module')
 			->where('module.active = :module_active')
@@ -61,17 +43,6 @@ class ModuleRepository extends EntityRepository
 			->setParameter('menu_active', true)
 		;
 		
-		$results = $qb->getQuery()->getResult();
-		
-		return $results;
-	}
-	
-	public function myFindAll()
-	{
-		$qb = $this->createQueryBuilder('module')
-			->addOrderBy('module.priority', 'ASC')
-		;
-	
 		$results = $qb->getQuery()->getResult();
 		
 		return $results;

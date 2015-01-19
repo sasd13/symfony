@@ -25,7 +25,7 @@ class ProfileController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		
 		//Get¨MenuBar
-		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu');
+		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu_bar');
 		$request->getSession()->set('menuBar', $menuBar);
 		
 		if($request->getSession()->get('idProfile') != null)
@@ -80,7 +80,7 @@ class ProfileController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		
 		//Get¨MenuBar
-		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu');
+		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu_bar');
 		$request->getSession()->set('menuBar', $menuBar);
 		
 		//Get¨MenuProfile
@@ -161,6 +161,8 @@ class ProfileController extends Controller
 		
 		if($request->getMethod() === 'POST')
 		{
+			$profileOld = $profile->copy();
+			
 			$form->submit($request->get($form->getName()), false);
 			
 			$message = "Les informations n'ont pas été enregistrées";
@@ -173,18 +175,29 @@ class ProfileController extends Controller
 					$contents = $category->getContents();
 					foreach($contents as $keyContent => $content)
 					{
-						if($content->getFormType() === 'textarea')
+						$contentOld = $profileOld
+							->getCategories()
+							->get($keyCategory)
+							->getContents()
+							->get($keyContent)
+						;
+						
+						if($content->getId() === $contentOld->getIdCopy())
 						{
-							if($content->getContextChanged() === true)
+							if($content->getFormType() === 'textarea')
 							{
-								$category->update();
+								if($content->getTextValue() !== $contentOld->getTextValue())
+								{
+									$category->update();
+								}
 							}
-						}
-						else
-						{
-							if($content->getContextChanged() === true)
+							else
 							{
-								$category->update();
+								//Compare values only, not types
+								if($content->getStringValue() != $contentOld->getStringValue())
+								{
+									$category->update();
+								}
 							}
 						}
 							
@@ -324,7 +337,7 @@ class ProfileController extends Controller
 		return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_PICTURE));
 	}
 	
-	public function editAbstractUserAction()
+	public function editUserAction()
     {
 		$router = $this->container->get('web_router');
 		$layouter = $this->container->get('web_layouter');
@@ -364,7 +377,7 @@ class ProfileController extends Controller
 		}
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'AbstractUser/AbstractUser-edit',
+			'subLayout' => 'User/user-edit',
 			'profile' => $profile,
 			'form' => $form->createView(),
 			'message' => $message,

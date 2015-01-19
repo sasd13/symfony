@@ -4,6 +4,8 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Model\CopyInterface;
+use MyWebsite\WebBundle\Model\LifeCycleInterface;
 
 /**
  * Content
@@ -12,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ContentRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Content
+class Content implements LifeCycleInterface, CopyInterface
 {
 	const LABEL_PROFILE_FIRSTNAME = 'profile_first_name';
 	const LABEL_PROFILE_LASTNAME = 'profile_last_name';
@@ -22,11 +24,13 @@ class Content
 	const LABELVALUE_PROFILE_LASTNAME = 'Last name';
 	const LABELVALUE_PROFILE_EMAIL = 'Email';
 	
+	const DEFAULT_REQUIRED = false;
+	
 	const POLICYLEVEL_LOW = 1;
 	const POLICYLEVEL_MEDIUM = 2;
 	const POLICYLEVEL_HIGH = 3;
 	
-	const DEFAULT_REQUIRED = false;
+	private static $number = 0;
 	
     /**
      * @var integer
@@ -84,13 +88,6 @@ class Content
     private $required;
 	
 	/**
-     * @var boolean
-     *
-     * @Assert\Type(type="bool")
-     */
-    private $contextChanged;
-	
-	/**
      * @var integer
      *
      * @ORM\Column(name="policyLevel", type="smallint")
@@ -127,6 +124,13 @@ class Content
 	 */
 	private $category;
 	
+	/**
+     * @var boolean
+     *
+     * @Assert\Type(type="integer")
+     */
+    private $idCopy;
+	
 	
 	public function __construct($label, $formType = 'text')
 	{
@@ -135,13 +139,22 @@ class Content
 		$this->required = self::DEFAULT_REQUIRED;
 		$this->contextChanged = false;
 		$this->policyLevel = self::POLICYLEVEL_MEDIUM;
-		$this->priority = 0;
+		$this->priority = ++self::$number;
 	}
+	
+	/**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+		//Control before persist
+		//Throw Exception
+    }
 	
 	/**
      * @ORM\PostPersist()
      */
-    protected function postPersist()
+    public function postPersist()
     {
         $this->category->addContent($this);
     }
@@ -149,10 +162,40 @@ class Content
 	/**
      * @ORM\PreRemove()
      */
-    protected function preRemove()
+    public function preRemove()
     {
         $this->category->removeContent($this);
     }
+	
+	public function setIdCopy($idCopy)
+	{
+		$this->idCopy = $idCopy;
+		
+		return $this;
+	}
+	
+	public function getIdCopy()
+	{
+		return $this->idCopy;
+	}
+	
+	public function copy()
+	{
+		$content = new Content($this->label, $this->formType);
+		$content
+			->setIdCopy($this->id)
+			->setLabelValue($this->labelValue)
+			->setStringValue($this->stringValue)
+			->setTextValue($this->textValue)
+			->setRequired($this->required)
+			->setPolicyLevel($this->policyLevel)
+			->setPriority($this->priority)
+			->setPlaceholder($this->placeholder)
+			->setCategory($this->category)
+		;
+		
+		return $content;
+	}
 
     /**
      * Get id

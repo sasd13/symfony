@@ -14,7 +14,7 @@ class WebController extends Controller
 		$request = $this->getRequest();
 		
 		//Get¨MenuBar
-		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu');
+		$menuBar = $this->container->get('web_menu_generator')->generateMenu('menu_bar');
 		$request->getSession()->set('menuBar', $menuBar);
 		
 		return $this->render($layouter::LAYOUT_HOME);

@@ -4,6 +4,7 @@ namespace MyWebsite\WebBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Model\LifeCycleInterface;
 use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use MyWebsite\WebBundle\Entity\TimeManager;
 
@@ -12,7 +13,7 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  *
  * @ORM\MappedSuperclass
  */
-class AbstractUser implements TimeManagerInterface
+class AbstractUser implements TimeManagerInterface, LifeCycleInterface
 {
 	const PRIVACYLEVEL_LOW = 1;
 	const PRIVACYLEVEL_MEDIUM = 2;
@@ -84,6 +85,33 @@ class AbstractUser implements TimeManagerInterface
 	{
 		$this->timeManager->update();
 	}
+	
+	/**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+		//Control before persist
+		//Throw Exception
+    }
+	
+	/**
+	 * @ORM\PostPersist()
+     */
+    public function postPersist()
+    {
+        //Control after persist
+		//Throw Exception
+    }
+	
+	/**
+	 * @ORM\PreRemove()
+     */
+    public function preRemove()
+    {
+        //Control before remove
+		//Throw Exception
+    }
 	
 	/**
      * Set login
