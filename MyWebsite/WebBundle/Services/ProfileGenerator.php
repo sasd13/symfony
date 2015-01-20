@@ -55,7 +55,16 @@ class ProfileGenerator
 			->setRequired(true)
 		;
 		$this->em->persist($content);
-			
+		
+		//RECORD : Category Profile Coordonnees
+		$category = new Category('content');
+		$category
+			->setTitle(Category::TITLE_PROFILE_CONTACT)
+			->setTag(Category::TAG_PROFILE_CONTACT)
+		;
+		$category->setProfile($profile);
+		$this->em->persist($category);
+		
 		//RECORD : Content Email for Category Info Identity
 		$content = new Content(Content::LABEL_PROFILE_EMAIL, 'email');
 		$content
@@ -65,32 +74,57 @@ class ProfileGenerator
 			->setRequired(true)
 		;
 		$this->em->persist($content);
-		
-		//RECORD : Category Profile Info Degree
-		$category = new Category('content');
-		$category
-			->setTitle('Diplômes')
-			->setTag('profile_diplome')
-		;
-		$category->setProfile($profile);
-		$this->em->persist($category);
-		
-		//RECORD : Content First Name for Category Info
-		$content = new Content('intitule', 'text');
+			
+		//RECORD : Content Last Name for Category Info
+		$content = new Content('contact_numero_voie', 'text');
 		$content
-			->setLabelValue('Intitulé')
-			->setStringValue('Licence Mathématiques et Informatique')
-			->setRequired(false)
+			->setLabelValue('N°')
+			->setPlaceholder('1, 2-3, 4 bis...')
 			->setCategory($category)
 		;
 		$this->em->persist($content);
-			
+		
 		//RECORD : Content Last Name for Category Info
-		$content = new Content('year', 'number');
+		$content = new Content('contact_libelle_voie', 'text');
 		$content
-			->setLabelValue('Année')
-			->setStringValue('2013')
-			->setRequired(false)
+			->setLabelValue('Voie')
+			->setPlaceholder('rue de la paix')
+			->setCategory($category)
+		;
+		$this->em->persist($content);
+		
+		//RECORD : Content Last Name for Category Info
+		$content = new Content('contact_code_postal', 'text');
+		$content
+			->setLabelValue('Code postal')
+			->setPlaceholder('75000')
+			->setCategory($category)
+		;
+		$this->em->persist($content);
+		
+		//RECORD : Content Last Name for Category Info
+		$content = new Content('contact_commune', 'text');
+		$content
+			->setLabelValue('Commune')
+			->setPlaceholder('Paris')
+			->setCategory($category)
+		;
+		$this->em->persist($content);
+		
+		//RECORD : Content Last Name for Category Info
+		$content = new Content('contact_pays', 'text');
+		$content
+			->setLabelValue('Pays')
+			->setPlaceholder('France')
+			->setCategory($category)
+		;
+		$this->em->persist($content);
+		
+		//RECORD : Content First Name for Category Info
+		$content = new Content('contact_telephone', 'text');
+		$content
+			->setLabelValue('Téléphone')
+			->setPlaceholder('33 1 23 45 67 89')
 			->setCategory($category)
 		;
 		$this->em->persist($content);

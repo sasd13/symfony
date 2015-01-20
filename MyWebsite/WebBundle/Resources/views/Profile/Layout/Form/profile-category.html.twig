@@ -14,13 +14,15 @@
 					{% if content.formType == 'textarea' %}
 						{{ form_label(formContent.textValue, content.labelValue) }}
 						{{ form_widget(formContent.textValue, {'attr': {
-							'name':  content.id ~ '_text_' ~ content.label
+							'name':  content.id ~ '_text_' ~ content.label,
+							'placeholder' : content.placeholder
 							}}) 
 						}}
 					{% else %}
 						{{ form_label(formContent.stringValue, content.labelValue) }}
 						{{ form_widget(formContent.stringValue, {'attr': {
-							'name':  content.id ~ '_string_' ~ content.label
+							'name':  content.id ~ '_string_' ~ content.label,
+							'placeholder' : content.placeholder
 							}})
 						}}
 					{% endif %}

@@ -20,9 +20,11 @@ use MyWebsite\WebBundle\Entity\TimeManager;
 class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterface
 {
 	const TAG_PROFILE_INFO = 'profile_category_info';
+	const TAG_PROFILE_CONTACT = 'profile_category_contact';
 	const TAG_PROFILE_PICTURE = 'profile_category_picture';
 	
 	const TITLE_PROFILE_INFO = 'Identité';
+	const TITLE_PROFILE_CONTACT = 'Contact';
 	const TITLE_PROFILE_PICTURE = 'Photo de profil';
 	
     /**
