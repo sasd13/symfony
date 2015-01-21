@@ -4,10 +4,8 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
-use MyWebsite\WebBundle\Model\AbstractUser;
+use MyWebsite\WebBundle\Entity\User;
 use MyWebsite\WebBundle\Model\CopyInterface;
-use MyWebsite\WebBundle\Entity\Category;
 
 /**
  * Profile
@@ -15,17 +13,8 @@ use MyWebsite\WebBundle\Entity\Category;
  * @ORM\Table(name="web_profile")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
  */
-class Profile extends AbstractUser implements CopyInterface
+class Profile extends User implements CopyInterface
 {
-	/**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-	
 	/**
      * @var string
      *
@@ -56,17 +45,6 @@ class Profile extends AbstractUser implements CopyInterface
 	
 	/**
      * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255)
-	 * @Assert\Email(
-     *     message = "'{{ value }}' n'est pas un email valide",
-     *     checkMX = true
-     * )
-     */
-    private $email;
-	
-	/**
-     * @var string
 	 *
 	 * @ORM\Column(name="pictureName", type="string", length=255, nullable=true)
      */
@@ -80,12 +58,6 @@ class Profile extends AbstractUser implements CopyInterface
     private $picturePath;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Category", mappedBy="profile", cascade={"remove"})
-	 * @ORM\JoinColumn(onDelete="CASCADE")
-	 */
-	private $categories;
-	
-	/**
      * @var boolean
      *
      * @Assert\Type(type="integer")
@@ -96,7 +68,6 @@ class Profile extends AbstractUser implements CopyInterface
 	public function __construct()
 	{
 		parent::__construct();
-		$this->categories = new ArrayCollection();
 	}
 	
 	public function setIdCopy($idCopy)
@@ -115,14 +86,14 @@ class Profile extends AbstractUser implements CopyInterface
 	{
 		$profile = new Profile();
 		$profile
-			->setIdCopy($this->id)
+			->setIdCopy($this->getId())
+			->setEmail($this->getEmail())
 			->setFirstName($this->firstName)
 			->setLastName($this->lastName)
-			->setEmail($this->email)
 			->setPictureName($this->pictureName)
 			->setPicturePath($this->picturePath)
 		;
-		foreach($this->categories as $category)
+		foreach($this->getCategories() as $category)
 		{
 			$profile->addCategory($category->copy());
 		}
@@ -131,16 +102,6 @@ class Profile extends AbstractUser implements CopyInterface
 	}
 	
 	/**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * Set firstName
      *
      * @param string $firstName
@@ -184,29 +145,6 @@ class Profile extends AbstractUser implements CopyInterface
     public function getLastName()
     {
         return $this->lastName;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     * @return Profile
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string 
-     */
-    public function getEmail()
-    {
-        return $this->email;
     }
 	
 	/**
@@ -253,41 +191,5 @@ class Profile extends AbstractUser implements CopyInterface
     public function getPicturePath()
     {
         return $this->picturePath;
-    }
-
-    /**
-     * Add categories
-     *
-     * @param \MyWebsite\WebBundle\Entity\Category $categories
-     * @return Profile
-     */
-    public function addCategory(\MyWebsite\WebBundle\Entity\Category $categories)
-    {
-		if(!$this->categories->contains($categories))
-		{
-			$this->categories[] = $categories;
-		}
-
-        return $this;
-    }
-
-    /**
-     * Remove categories
-     *
-     * @param \MyWebsite\WebBundle\Entity\Category $categories
-     */
-    public function removeCategory(\MyWebsite\WebBundle\Entity\Category $categories)
-    {
-        $this->categories->removeElement($categories);
-    }
-
-    /**
-     * Get categories
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getCategories()
-    {
-        return $this->categories;
     }
 }

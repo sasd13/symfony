@@ -5,10 +5,9 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use MyWebsite\WebBundle\Model\CopyInterface;
 use MyWebsite\WebBundle\Model\DocumentInterface;
-use MyWebsite\WebBundle\Model\LifeCycleInterface;
 use \DateTime;
+use MyWebsite\WebBundle\Model\CopyInterface;
 
 /**
  * Document
@@ -17,7 +16,7 @@ use \DateTime;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\DocumentRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Document implements DocumentInterface, LifeCycleInterface, CopyInterface
+class Document implements DocumentInterface, CopyInterface
 {
 	const DEFAULT_MIMETYPE = 'text/plain';
 	const DEFAULT_PATH = 'path';
@@ -145,7 +144,7 @@ class Document implements DocumentInterface, LifeCycleInterface, CopyInterface
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function prePersist()
+    private function prePersist()
     {
         if (null !== $this->file) {
             // faites ce que vous voulez pour générer un nom unique
@@ -160,7 +159,7 @@ class Document implements DocumentInterface, LifeCycleInterface, CopyInterface
      * @ORM\PostPersist()
      * @ORM\PostUpdate()
      */
-    public function postPersist()
+    private function postPersist()
     {
         if (null === $this->file) {
             return;
@@ -180,7 +179,7 @@ class Document implements DocumentInterface, LifeCycleInterface, CopyInterface
 	/**
      * @ORM\PreRemove()
      */
-    public function preRemove()
+    private function preRemove()
     {
         $this->category->removeDocument($this);
     }
@@ -188,7 +187,7 @@ class Document implements DocumentInterface, LifeCycleInterface, CopyInterface
     /**
      * @ORM\PostRemove()
      */
-    protected function postRemove()
+    private function postRemove()
     {
         if (is_file($this->getAbsolutePath())) {
 			unlink($this->getAbsolutePath());
@@ -222,6 +221,7 @@ class Document implements DocumentInterface, LifeCycleInterface, CopyInterface
 		
 		return $document;
 	}
+	
     /**
      * Get id
      *

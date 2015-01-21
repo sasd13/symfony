@@ -5,7 +5,6 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use MyWebsite\WebBundle\Model\CopyInterface;
-use MyWebsite\WebBundle\Model\LifeCycleInterface;
 
 /**
  * Content
@@ -14,7 +13,7 @@ use MyWebsite\WebBundle\Model\LifeCycleInterface;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ContentRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Content implements LifeCycleInterface, CopyInterface
+class Content implements CopyInterface
 {
 	const LABEL_PROFILE_FIRSTNAME = 'profile_first_name';
 	const LABEL_PROFILE_LASTNAME = 'profile_last_name';
@@ -145,7 +144,7 @@ class Content implements LifeCycleInterface, CopyInterface
 	/**
      * @ORM\PrePersist()
      */
-    public function prePersist()
+    private function prePersist()
     {
 		//Control before persist
 		//Throw Exception
@@ -154,7 +153,7 @@ class Content implements LifeCycleInterface, CopyInterface
 	/**
      * @ORM\PostPersist()
      */
-    public function postPersist()
+    private function postPersist()
     {
         $this->category->addContent($this);
     }
@@ -162,7 +161,7 @@ class Content implements LifeCycleInterface, CopyInterface
 	/**
      * @ORM\PreRemove()
      */
-    public function preRemove()
+    private function preRemove()
     {
         $this->category->removeContent($this);
     }

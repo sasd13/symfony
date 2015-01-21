@@ -4,11 +4,9 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Model\AbstractEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Model\CopyInterface;
-use MyWebsite\WebBundle\Model\LifeCycleInterface;
-use MyWebsite\WebBundle\Model\TimeManagerInterface;
-use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
  * Category
@@ -17,7 +15,7 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\CategoryRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterface
+class Category extends AbstractEntity implements CopyInterface
 {
 	const TAG_PROFILE_INFO = 'profile_category_info';
 	const TAG_PROFILE_CONTACT = 'profile_category_contact';
@@ -61,12 +59,6 @@ class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterfac
     private $type;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-	 */
-	private $timeManager;
-	
-	/**
 	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Content", mappedBy="category", cascade={"remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
@@ -79,10 +71,10 @@ class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterfac
 	private $documents;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Profile", inversedBy="categories")
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\ModuleEntity", inversedBy="categories")
 	 * @ORM\JoinColumn(nullable=false)
 	 */
-	private $profile;
+	private $moduleEntity;
 	
 	/**
      * @var boolean
@@ -94,31 +86,16 @@ class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterfac
 	
 	public function __construct($type = 'content')
 	{
+		parent::__construct();
 		$this->type = $type;
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
-		$this->timeManager = new TimeManager();
-	}
-	
-	public function getCreatedAt()
-	{
-		return $this->timeManager->getCreatedAt();
-	}
-	
-	public function getUpdatedAt()
-	{
-		return $this->timeManager->getUpdatedAt();
-	}
-	
-	public function update()
-	{
-		$this->timeManager->update();
 	}
 	
 	/**
      * @ORM\PrePersist()
      */
-    public function prePersist()
+    private function prePersist()
     {
 		//Control before persist
 		//Throw Exception
@@ -127,17 +104,17 @@ class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterfac
 	/**
 	 * @ORM\PostPersist()
      */
-    public function postPersist()
+    private function postPersist()
     {
-        $this->profile->addCategory($this);
+        $this->moduleEntity->addCategory($this);
     }
 	
 	/**
 	 * @ORM\PreRemove()
      */
-    public function preRemove()
+    private function preRemove()
     {
-        $this->profile->removeCategory($this);
+        $this->moduleEntity->removeCategory($this);
     }
 	
 	public function setIdCopy($idCopy)
@@ -159,7 +136,7 @@ class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterfac
 			->setIdCopy($this->id)
 			->setTitle($this->title)
 			->setTag($this->tag)
-			->setProfile($this->profile)
+			->setModuleEntity($this->moduleEntity)
 		;
 		foreach($this->contents as $content)
 		{
@@ -325,25 +302,25 @@ class Category implements TimeManagerInterface, LifeCycleInterface, CopyInterfac
     }
 
     /**
-     * Set profile
+     * Set moduleEntity
      *
-     * @param \MyWebsite\WebBundle\Entity\Profile $profile
+     * @param \MyWebsite\WebBundle\Entity\ModuleEntity $moduleEntity
      * @return Category
      */
-    public function setProfile(\MyWebsite\WebBundle\Entity\Profile $profile)
+    public function setModuleEntity(\MyWebsite\WebBundle\Entity\ModuleEntity $moduleEntity)
     {
-        $this->profile = $profile;
+        $this->moduleEntity = $moduleEntity;
 
         return $this;
     }
 
     /**
-     * Get profile
+     * Get moduleEntity
      *
-     * @return \MyWebsite\WebBundle\Entity\Profile 
+     * @return \MyWebsite\WebBundle\Entity\ModuleEntity 
      */
-    public function getProfile()
+    public function getModuleEntity()
     {
-        return $this->profile;
+        return $this->moduleEntity;
     }
 }

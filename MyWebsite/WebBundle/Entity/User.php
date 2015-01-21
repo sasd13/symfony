@@ -1,19 +1,18 @@
 <?php
 
-namespace MyWebsite\WebBundle\Model;
+namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Model\LifeCycleInterface;
-use MyWebsite\WebBundle\Model\TimeManagerInterface;
-use MyWebsite\WebBundle\Entity\TimeManager;
+use MyWebsite\WebBundle\Entity\ModuleEntity;
 
 /**
- * AbstractUser
+ * User
  *
- * @ORM\MappedSuperclass
+ * @ORM\Table(name="web_user")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
  */
-class AbstractUser implements TimeManagerInterface, LifeCycleInterface
+class User extends ModuleEntity
 {
 	const PRIVACYLEVEL_LOW = 1;
 	const PRIVACYLEVEL_MEDIUM = 2;
@@ -29,7 +28,7 @@ class AbstractUser implements TimeManagerInterface, LifeCycleInterface
 	 *		max = "50"
 	 * )
      */
-    protected $login;
+    private $login;
 
     /**
      * @var string
@@ -43,7 +42,18 @@ class AbstractUser implements TimeManagerInterface, LifeCycleInterface
 	 *		maxMessage = "Le mot de passe doit faire moins de {{ limit }} caractères"
 	 * )
      */
-    protected $password;
+    private $password;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255)
+	 * @Assert\Email(
+     *     message = "'{{ value }}' n'est pas un email valide",
+     *     checkMX = true
+     * )
+     */
+    private $email;
 	
 	/**
      * @var integer
@@ -56,34 +66,13 @@ class AbstractUser implements TimeManagerInterface, LifeCycleInterface
 	 *      maxMessage = "La priorité doit être moins de {{ limit }}"
      * )
      */
-    protected $privacyLevel;
-	
-	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-	 */
-	protected $timeManager;
+    private $privacyLevel;
 	
 	
 	public function __construct()
 	{
+		parent::__construct();
 		$this->privacyLevel = self::PRIVACYLEVEL_LOW;
-		$this->timeManager = new TimeManager();
-	}
-	
-	public function getCreatedAt()
-	{
-		return $this->timeManager->getCreatedAt();
-	}
-	
-	public function getUpdatedAt()
-	{
-		return $this->timeManager->getUpdatedAt();
-	}
-	
-	public function update()
-	{
-		$this->timeManager->update();
 	}
 	
 	/**
@@ -157,6 +146,29 @@ class AbstractUser implements TimeManagerInterface, LifeCycleInterface
     public function getPassword()
     {
         return $this->password;
+    }
+	
+	/**
+     * Set email
+     *
+     * @param string $email
+     * @return Profile
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     /**

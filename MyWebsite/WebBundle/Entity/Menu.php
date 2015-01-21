@@ -4,7 +4,6 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Model\LifeCycleInterface;
 
 /**
  * Menu
@@ -13,7 +12,7 @@ use MyWebsite\WebBundle\Model\LifeCycleInterface;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\MenuRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Menu implements LifeCycleInterface
+class Menu
 {
 	const DEFAULT_ISROOT = false;
 	const DEFAULT_ACTIVE = true;
@@ -115,7 +114,7 @@ class Menu implements LifeCycleInterface
 	/**
      * @ORM\PrePersist()
      */
-    public function prePersist()
+    private function prePersist()
     {
         $this->module->addMenu($this);
 		if($this->parentMenu != null)
@@ -130,7 +129,7 @@ class Menu implements LifeCycleInterface
 	/**
      * @ORM\PostPersist()
      */
-    public function postPersist()
+    private function postPersist()
     {
         $this->module->addMenu($this);
 		if($this->parentMenu != null)
@@ -142,7 +141,7 @@ class Menu implements LifeCycleInterface
 	/**
      * @ORM\PreRemove()
      */
-    public function preRemove()
+    private function preRemove()
     {
         $this->module->removeMenu($this);
 		if($this->parentMenu != null)

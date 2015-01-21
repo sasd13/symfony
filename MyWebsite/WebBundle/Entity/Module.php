@@ -4,10 +4,8 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use MyWebsite\WebBundle\Model\AbstractEntity;
 use Doctrine\Common\Collections\ArrayCollection;
-use MyWebsite\WebBundle\Model\LifeCycleInterface;
-use MyWebsite\WebBundle\Model\TimeManagerInterface;
-use MyWebsite\WebBundle\Entity\TimeManager;
 
 /**
  * Module
@@ -16,7 +14,7 @@ use MyWebsite\WebBundle\Entity\TimeManager;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ModuleRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Module implements TimeManagerInterface, LifeCycleInterface
+class Module extends AbstractEntity
 {
 	const DEFAULT_ACTIVE = true;
 	
@@ -66,12 +64,6 @@ class Module implements TimeManagerInterface, LifeCycleInterface
     private $readMe;
 	
 	/**
-	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
-	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-	 */
-	private $timeManager;
-	
-	/**
 	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="module", cascade={"remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
@@ -80,50 +72,26 @@ class Module implements TimeManagerInterface, LifeCycleInterface
 	
 	public function __construct($name)
     {
+		parent::__construct();
 		$this->name = $name;
 		$this->active = self::DEFAULT_ACTIVE;
 		$this->priority = ++self::$number;
 		$this->menus = new ArrayCollection();
-		$this->timeManager = new TimeManager();
     }
-	
-	public function getCreatedAt()
-	{
-		return $this->timeManager->getCreatedAt();
-	}
-	
-	public function getUpdatedAt()
-	{
-		return $this->timeManager->getUpdatedAt();
-	}
-	
-	public function update()
-	{
-		$this->timeManager->update();
-	}
 	
 	/**
      * @ORM\PrePersist()
      */
-    public function prePersist()
+    private function prePersist()
     {
 		//Control before persist
 		//Throw Exception
     }
 	
 	/**
-	 * @ORM\PostPersist()
-     */
-    public function postPersist()
-    {
-        //Control after persist
-		//Throw Exception
-    }
-	
-	/**
 	 * @ORM\PreRemove()
      */
-    public function preRemove()
+    private function preRemove()
     {
         //Control before remove
 		//Throw Exception
@@ -229,29 +197,6 @@ class Module implements TimeManagerInterface, LifeCycleInterface
     public function getReadMe()
     {
         return $this->readMe;
-    }
-
-    /**
-     * Set timeManager
-     *
-     * @param \MyWebsite\WebBundle\Entity\TimeManager $timeManager
-     * @return Module
-     */
-    public function setTimeManager(\MyWebsite\WebBundle\Entity\TimeManager $timeManager)
-    {
-        $this->timeManager = $timeManager;
-
-        return $this;
-    }
-
-    /**
-     * Get timeManager
-     *
-     * @return \MyWebsite\WebBundle\Entity\TimeManager 
-     */
-    public function getTimeManager()
-    {
-        return $this->timeManager;
     }
 
     /**

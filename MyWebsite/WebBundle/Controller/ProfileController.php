@@ -43,7 +43,7 @@ class ProfileController extends Controller
 		
 		if($request->getMethod() === 'POST')
 		{
-			$form->handleRequest($request);
+			$form->submit($request->get($form->getName()), false);
 			
 			$message = "Informations érronées";
 			
@@ -201,28 +201,25 @@ class ProfileController extends Controller
 							}
 						}
 							
-						if($category->getTag() === Category::TAG_PROFILE_INFO)
+						if($content->getLabel() === Content::LABEL_PROFILE_FIRSTNAME
+							AND $content->getStringValue() !== $profile->getFirstName())
 						{
-							if($content->getLabel() === Content::LABEL_PROFILE_FIRSTNAME
-								AND $content->getStringValue() !== $profile->getFirstName())
-							{
-								$profile->setFirstName($content->getStringValue());
-								$profile->update();
-							}
-							
-							if($content->getLabel() === Content::LABEL_PROFILE_LASTNAME
-								AND $content->getStringValue() !== $profile->getLastName())
-							{
-								$profile->setLastName($content->getStringValue());
-								$profile->update();
-							}
-							
-							if($content->getLabel() === Content::LABEL_PROFILE_EMAIL
-								AND $content->getStringValue() !== $profile->getEmail())
-							{
-								$profile->setEmail($content->getStringValue());
-								$profile->update();
-							}
+							$profile->setFirstName($content->getStringValue());
+							$profile->update();
+						}
+						
+						if($content->getLabel() === Content::LABEL_PROFILE_LASTNAME
+							AND $content->getStringValue() !== $profile->getLastName())
+						{
+							$profile->setLastName($content->getStringValue());
+							$profile->update();
+						}
+						
+						if($content->getLabel() === Content::LABEL_PROFILE_EMAIL
+							AND $content->getStringValue() !== $profile->getEmail())
+						{
+							$profile->setEmail($content->getStringValue());
+							$profile->update();
 						}
 					}
 				}
@@ -268,6 +265,8 @@ class ProfileController extends Controller
 			
 			$message = "La photo de profil n'a pas été enregistrée";
 			
+			die(var_dump($form));
+			
 			if($form->isValid())
 			{
 				$picture->setCategory($category);
@@ -280,7 +279,6 @@ class ProfileController extends Controller
 						$category->removeDocument($oldPicture);
 						$em->remove($oldPicture);
 					}
-					$category->addDocument($picture);
 					$category->update();
 					
 					$profile->setPictureName($picture->getName());

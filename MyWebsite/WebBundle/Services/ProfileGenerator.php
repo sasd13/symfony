@@ -26,14 +26,14 @@ class ProfileGenerator
 			
 		//RECORD : Profile
 		$this->em->persist($profile);
-			
+		
 		//RECORD : Category Profile Info Identity
 		$category = new Category('content');
 		$category
 			->setTitle(Category::TITLE_PROFILE_INFO)
 			->setTag(Category::TAG_PROFILE_INFO)
 		;
-		$category->setProfile($profile);
+		$category->setModuleEntity($profile);
 		$this->em->persist($category);
 		
 		//RECORD : Content First Name for Category Info Identity
@@ -62,7 +62,7 @@ class ProfileGenerator
 			->setTitle(Category::TITLE_PROFILE_CONTACT)
 			->setTag(Category::TAG_PROFILE_CONTACT)
 		;
-		$category->setProfile($profile);
+		$category->setModuleEntity($profile);
 		$this->em->persist($category);
 		
 		//RECORD : Content Email for Category Info Identity
@@ -135,7 +135,7 @@ class ProfileGenerator
 			->setTitle(Category::TITLE_PROFILE_PICTURE)
 			->setTag(Category::TAG_PROFILE_PICTURE)
 		;
-		$category->setProfile($profile);
+		$category->setModuleEntity($profile);
 		$this->em->persist($category);
 		
 		$this->em->flush();
