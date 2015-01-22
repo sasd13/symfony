@@ -4,147 +4,192 @@ namespace MyWebsite\WebBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Entity\Admin;
 use MyWebsite\WebBundle\Entity\Category;
-use \DateTime;
+use MyWebsite\WebBundle\Entity\Content;
+use MyWebsite\WebBundle\Entity\Document;
+use MyWebsite\WebBundle\Form\AdminType;
+use MyWebsite\WebBundle\Form\CategoryType;
+use MyWebsite\WebBundle\Form\ContentType;
+use MyWebsite\WebBundle\Form\DocumentType;
 
 class AdminController extends Controller
-{
-	public function loadAdminAction()
+{	
+	public function loadAction()
     {
+		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		$modules = $em->getRepository('MyWebsiteWebBundle:ModuleHandler')->myFindOrdered();
-		if($modules == null)
-		{
-			return $this->redirect($this->generateUrl('web_error'));
-		}
-		$request->getSession()->set('modules', $modules);
+		//Get¨MenuBar
+		$menuBar = $this->container->get('web_generator')->generateMenu('menu_home');
+		$request->getSession()->set('menuBar', $menuBar);
 		
-		$admin = null;
+		//Get¨MenuAdmin
+		$menuAdmin = $this->container->get('web_generator')->generateMenu('menu_admin');
+		$request->getSession()->set('menuProfile', $menuAdmin);
+		
+		/*
+		 * LogIn Action
+		 */
 		if($request->getSession()->get('idAdmin') == null)
 		{
-			$user = $em->getRepository('MyWebsiteWebBundle:User')->findOneByLogin($request->request->get('login'));
-			if ($request->getMethod() == 'POST' AND $user != null AND strcmp($request->request->get('password'), $user->getPassword()) === 0 AND $user->getPrivacyLevel() == 1)
-			{
-				$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->findOneByUser($user);
-				$request->getSession()->set('idAdmin', $admin->getId());
-			}
-			else
-			{
-				return $this->render('MyWebsiteWebBundle:Admin:login.html.twig');
-			}
-		}
-		else 
-		{
-			$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->find($request->getSession()->get('idAdmin'));
-		}
-		
-		if($admin != null)
-		{
-			$formAdmin = $this->createFormBuilder($admin)
-				->add('email', 'email', array('required' => false))
-				->getForm();
+			$admin = new Admin();
 			
-			$arrayOfFormsViewsCategories = null;
-			$arrayOfArraysOfFormsViewsContents = null;
+			$form = $this->createForm(new AdminType(), $admin, array(
+				'action' => $this->generateUrl($router::ROUTE_ADMIN)
+			));
 			
-			//creer myFindCategories
-			$categories = $em->getRepository('MyWebsiteWebBundle:Category')->findByTimeManager($admin->getTimeManager()->getId());
-			if($categories != null)
+			$message = "* Denotes Required Field";
+			
+			if($request->getMethod() === 'POST')
 			{
-				$arrayOfFormsViewsContents = null;
+				/*
+				 * With method handleRequest, the request submit values of all fields present in data even they are missed in form
+				 * All missed field have null value, so the form will not validate them with their own assert rules
+				 *
+				 * This method is used to submit the form in clearing the field that are not present in data
+				 * See method submit of FormInterface in Symfony doc
+				 */
+				$form->submit($request->get($form->getName()), false);
 				
-				foreach($categories as $category)
+				$adminBuffer = $em->getRepository('MyWebsiteWebBundle:Admin')->findOneByLogin($admin->getLogin());
+				if ($form->isValid()
+					AND $adminBuffer != null
+					AND $adminBuffer->getPassword() === $admin->getPassword()
+					AND $adminBuffer->getPrivacyLevel() === Admin::PRIVACYLEVEL_LOW)
 				{
-					$arrayOfFormsViewsCategories[] = $this->createFormBuilder($category)
-						->add('title', 'text', array('required' => false))
-						->add('tag', 'text', array('required' => false))
-						->getForm()
-						->createView();
+					$request->getSession()->set('idAdmin', $adminBuffer->getId());
 					
-					$contents = $category->getContents();
-					foreach($contents as $key => $content)
-					{
-						$arrayOfFormsViewsContents[] = $this->createFormBuilder($content)
-							->add('title', 'text', array('required' => false))
-							->add('tag', 'text', array('required' => false))
-							->getForm()
-							->createView();
-					}
+					return $this->redirect($this->generateUrl($router::ROUTE_ADMIN));
 				}
+				
+				$message = "* Identifiants erronés";
 			}
-			
-			return $this->render('MyWebsiteWebBundle:Admin:admin.html.twig', array(
-																						'layout' => 'admin-edit',
-																						'admin' => $admin,
-																						'formAdmin' => $formAdmin->createView(),
-																						'categories' => $categories,
-																						'formsViewsCategories' => $arrayOfFormsViewsCategories
+				
+			return $this->render($layouter::LAYOUT_PROFILE_LOGIN, array(
+				'title' => 'Administration',
+				'form' => $form->createView(),
+				'message' => $message
 			));
 		}
 		
-		return $this->redirect($this->generateUrl('web_error'));
+		$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->find($request->getSession()->get('idAdmin'));
+		
+		return $this->render($layouter::LAYOUT_PROFILE, array(
+			'subLayout' => 'Admin/admin-default',
+			'profile' => $admin,
+		));
 	}
 	
-	public function editAdminAction()
+	public function editAction()
     {
+		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
 		if($request->getSession()->get('idAdmin') == null)
 		{
-			return $this->redirect($this->generateUrl('web_admin'));
+			return $this->redirect($this->generateUrl($router::ROUTE_ADMIN));
 		}
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->find($request->getSession()->get('idAdmin'));
-		if($admin != null)
-		{
-			$formAdmin = $this->createFormBuilder($admin)
-				->add('email', 'email')
-				->getForm();
-			$formAdmin->handleRequest($request);
-			
-			$category = $em->getRepository('MyWebsiteWebBundle:Category')->find($request->request->get('idCategory'));
-			if($category != null)
-			{
-				$formCategory = $this->createFormBuilder($category)
-					->add('title', 'text')
-					->add('tag', 'text')
-					->getForm();
-				$formCategory->handleRequest($request);
-				
-				$message = "Les informations n'ont pas été enregistrées";
-				if($request->getSession()->get('idAdmin') != null)
-				{
-					$admin->getTimeManager()->setUpdateTime(new DateTime());
-					$em->persist($admin);
-					$em->persist($category);
-					$em->flush();
-					
-					$message = "Les informations ont été enregistrées avec succès";
-				}
+		$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->myFindWithCategoriesAndContents($request->getSession()->get('idAdmin'));
 		
-				$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->find($request->getSession()->get('idAdmin'));
-				return $this->render('MyWebsiteWebBundle:Admin:admin.html.twig', array(
-																							'layout' => 'admin-edit', 
-																							'admin' => $admin, 
-																							'category' => $category,
-																							'formAdmin' => $formAdmin->createView(),
-																							'formCategory' => $formCategory->createView(),
-																							'message' => $message
-				));
+		$form = $this->createForm(new AdminType(), $admin, array(
+			'action' => $this->generateUrl($router::ROUTE_ADMIN_INFO)
+		));
+		
+		$message = "* Denotes Required Field";
+		
+		if($request->getMethod() === 'POST')
+		{
+			$adminOld = $admin->copy();
+			
+			$form->submit($request->get($form->getName()), false);
+			
+			$message = "Les informations n'ont pas été enregistrées";
+			
+			if($form->isValid())
+			{
+				$categories = $admin->getCategories();
+				foreach($categories as $keyCategory => $category)
+				{
+					$contents = $category->getContents();
+					foreach($contents as $keyContent => $content)
+					{
+						$contentOld = $adminOld
+							->getCategories()
+							->get($keyCategory)
+							->getContents()
+							->get($keyContent)
+						;
+						
+						if($content->getId() === $contentOld->getIdCopy())
+						{
+							if($content->getFormType() === 'textarea')
+							{
+								if($content->getTextValue() !== $contentOld->getTextValue())
+								{
+									$category->update();
+								}
+							}
+							else
+							{
+								//Compare values only, not types
+								if($content->getStringValue() != $contentOld->getStringValue())
+								{
+									$category->update();
+								}
+							}
+						}
+							
+						if($content->getLabel() === Content::LABEL_ADMIN_FIRSTNAME
+							AND $content->getStringValue() !== $admin->getFirstName())
+						{
+							$admin->setFirstName($content->getStringValue());
+							$admin->update();
+						}
+						
+						if($content->getLabel() === Content::LABEL_ADMIN_LASTNAME
+							AND $content->getStringValue() !== $admin->getLastName())
+						{
+							$admin->setLastName($content->getStringValue());
+							$admin->update();
+						}
+						
+						if($content->getLabel() === Content::LABEL_USER_EMAIL
+							AND $content->getStringValue() !== $admin->getEmail())
+						{
+							$admin->setEmail($content->getStringValue());
+							$admin->update();
+						}
+					}
+				}
+				
+				$em->flush();
+				
+				$message = "Les informations ont été enregistrées";
 			}
 		}
 		
-		return $this->redirect($this->generateUrl('web_error'));
-    }
+		return $this->render($layouter::LAYOUT_PROFILE, array(
+			'subLayout' => 'Admin/admin-edit',
+			'profile' => $admin,
+			'form' => $form->createView(),
+			'message' => $message,
+		));
+	}
 	
-	public function logoutAction()
+	public function deleteAction()
     {
-		if ($this->getRequest()->getSession()->get('idAdmin') != null) $this->getRequest()->getSession()->remove('idAdmin');
+		$router = $this->container->get('web_router');
+		$request = $this->getRequest();
+		$em = $this->getDoctrine()->getManager();
 		
-        return $this->redirect($this->generateUrl('web_home'));
-    }
+		return $this->redirect($this->generateUrl($router::ROUTE_ERROR));
+	}
 }

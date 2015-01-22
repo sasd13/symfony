@@ -5,9 +5,8 @@ namespace MyWebsite\WebBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 
-class ProfileType extends AbstractType
+class UserType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -19,12 +18,6 @@ class ProfileType extends AbstractType
             ->setMethod('POST')
 			->add('login', 'text')
 			->add('password', 'password')
-			->add('firstName', 'text')
-			->add('lastName', 'text')
-			->add('email', 'email')
-			->add('categories', 'collection', array(
-				'type' => new CategoryType()
-			))
         ;
     }
     
@@ -34,8 +27,7 @@ class ProfileType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'MyWebsite\WebBundle\Entity\Profile',
-			'cascade_validation' => true,
+            'data_class' => 'MyWebsite\WebBundle\Entity\User',
         ));
     }
 
@@ -44,6 +36,6 @@ class ProfileType extends AbstractType
      */
     public function getName()
     {
-        return 'mywebsite_webbundle_profile';
+        return 'mywebsite_webbundle_user';
     }
 }

@@ -15,13 +15,13 @@ use MyWebsite\WebBundle\Model\CopyInterface;
  */
 class Content implements CopyInterface
 {
-	const LABEL_PROFILE_FIRSTNAME = 'profile_first_name';
-	const LABEL_PROFILE_LASTNAME = 'profile_last_name';
-	const LABEL_PROFILE_EMAIL = 'profile_email';
+	const LABEL_CLIENT_FIRSTNAME = 'client_first_name';
+	const LABEL_CLIENT_LASTNAME = 'client_last_name';
+	const LABEL_USER_EMAIL = 'user_email';
 	
-	const LABELVALUE_PROFILE_FIRSTNAME = 'First name';
-	const LABELVALUE_PROFILE_LASTNAME = 'Last name';
-	const LABELVALUE_PROFILE_EMAIL = 'Email';
+	const LABELVALUE_CLIENT_FIRSTNAME = 'First name';
+	const LABELVALUE_CLIENT_LASTNAME = 'Last name';
+	const LABELVALUE_USER_EMAIL = 'Email';
 	
 	const DEFAULT_REQUIRED = false;
 	

@@ -3,7 +3,6 @@
 namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use MyWebsite\WebBundle\Entity\Profile;
 
 /**
  * CategoryRepository

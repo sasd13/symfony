@@ -8,12 +8,12 @@ use MyWebsite\WebBundle\Entity\User;
 use MyWebsite\WebBundle\Model\CopyInterface;
 
 /**
- * Profile
+ * Client
  *
- * @ORM\Table(name="web_profile")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
+ * @ORM\Table(name="web_client")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ClientRepository")
  */
-class Profile extends User implements CopyInterface
+class Client extends User implements CopyInterface
 {
 	/**
      * @var string
@@ -84,8 +84,8 @@ class Profile extends User implements CopyInterface
 	
 	public function copy()
 	{
-		$profile = new Profile();
-		$profile
+		$client = new Client();
+		$client
 			->setIdCopy($this->getId())
 			->setEmail($this->getEmail())
 			->setFirstName($this->firstName)
@@ -95,17 +95,17 @@ class Profile extends User implements CopyInterface
 		;
 		foreach($this->getCategories() as $category)
 		{
-			$profile->addCategory($category->copy());
+			$client->addCategory($category->copy());
 		}
 		
-		return $profile;
+		return $client;
 	}
 	
 	/**
      * Set firstName
      *
      * @param string $firstName
-     * @return Profile
+     * @return Client
      */
     public function setFirstName($firstName)
     {
@@ -128,7 +128,7 @@ class Profile extends User implements CopyInterface
      * Set lastName
      *
      * @param string $lastName
-     * @return Profile
+     * @return Client
      */
     public function setLastName($lastName)
     {
@@ -151,7 +151,7 @@ class Profile extends User implements CopyInterface
      * Set pictureName
      *
      * @param string $pictureName
-     * @return Profile
+     * @return Client
      */
     public function setPictureName($pictureName)
     {
@@ -174,7 +174,7 @@ class Profile extends User implements CopyInterface
      * Set picturePath
      *
      * @param string $picturePath
-     * @return Profile
+     * @return Client
      */
     public function setPicturePath($picturePath)
     {

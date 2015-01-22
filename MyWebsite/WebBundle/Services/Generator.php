@@ -3,11 +3,13 @@
 namespace MyWebsite\WebBundle\Services;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use MyWebsite\WebBundle\Entity\Menu;
+use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\WebBundle\Entity\Category;
 use MyWebsite\WebBundle\Entity\Content;
 use MyWebsite\WebBundle\Entity\Document;
 
-class ProfileGenerator
+class Generator
 {
 	protected $em;
 	
@@ -16,60 +18,102 @@ class ProfileGenerator
 		$this->em = $em;
 	}
 	
-	public function generateProfile(\MyWebsite\WebBundle\Entity\Profile $profile)
+	public function generateMenu($type)
 	{
-		$temp_profile = $this->em->getRepository('MyWebsiteWebBundle:Profile')->findByEmail($profile->getEmail());
-		if($temp_profile != null)
+		$modules = null;
+		
+		if($type === 'menu_admin')
+		{
+			$moduleName = 'Admin';
+			//Bug creating
+			//Create new instances of Module managed by the EntityManager
+			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedByNameWithMenusByDisplay($moduleName, Menu::DISPLAY_CONFIG_ONLY);
+		}
+		else if($type === 'menu_client')
+		{
+			$moduleName = 'Client';
+			//Bug creating
+			//Create new instances of Module managed by the EntityManager
+			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedByNameWithMenusByDisplay($moduleName, Menu::DISPLAY_CONFIG_ONLY);
+		}
+		else
+		{
+			//Bug creating
+			//Create new instances of Module by the EntityManager
+			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedWithMenusByDisplay(Menu::DISPLAY_PUBLIC_ONLY);
+		}
+		
+		//Bug resolver
+		//Clear these new instances of Module before persisting
+		$this->em->clear();
+		
+		$menuBar = new ArrayCollection();
+		foreach($modules as $module)
+		{
+			$menus = $module->getMenus();
+			foreach($menus as $menu)
+			{
+				$menuBar[] = $menu;
+			}
+		}
+		
+		return $menuBar;
+	}
+	
+	public function generateClient(\MyWebsite\WebBundle\Entity\Client $client)
+	{
+		$temp_client = $this->em->getRepository('MyWebsiteWebBundle:Client')->findByEmail($client->getEmail());
+		if($temp_client != null)
 		{
 			return null;
 		}
 			
-		//RECORD : Profile
-		$this->em->persist($profile);
+		//RECORD : Client
+		$this->em->persist($client);
 		
-		//RECORD : Category Profile Info Identity
+		//RECORD : Category Client Info Identity
 		$category = new Category('content');
 		$category
 			->setTitle(Category::TITLE_PROFILE_INFO)
 			->setTag(Category::TAG_PROFILE_INFO)
 		;
-		$category->setModuleEntity($profile);
+		$category->setModuleEntity($client);
 		$this->em->persist($category);
 		
 		//RECORD : Content First Name for Category Info Identity
-		$content = new Content(Content::LABEL_PROFILE_FIRSTNAME, 'text');
+		$content = new Content(Content::LABEL_CLIENT_FIRSTNAME, 'text');
 		$content
-			->setLabelValue(Content::LABELVALUE_PROFILE_FIRSTNAME)
-			->setStringValue($profile->getFirstName())
+			->setLabelValue(Content::LABELVALUE_CLIENT_FIRSTNAME)
+			->setStringValue($client->getFirstName())
 			->setCategory($category)
 			->setRequired(true)
 		;
 		$this->em->persist($content);
 			
 		//RECORD : Content Last Name for Category Info Identity
-		$content = new Content(Content::LABEL_PROFILE_LASTNAME, 'text');
+		$content = new Content(Content::LABEL_CLIENT_LASTNAME, 'text');
 		$content
-			->setLabelValue(Content::LABELVALUE_PROFILE_LASTNAME)
-			->setStringValue($profile->getLastName())
+			->setLabelValue(Content::LABELVALUE_CLIENT_LASTNAME)
+			->setStringValue($client->getLastName())
 			->setCategory($category)
 			->setRequired(true)
 		;
 		$this->em->persist($content);
 		
-		//RECORD : Category Profile Coordonnees
+		//RECORD : Category Client Coordonnees
 		$category = new Category('content');
 		$category
 			->setTitle(Category::TITLE_PROFILE_CONTACT)
 			->setTag(Category::TAG_PROFILE_CONTACT)
 		;
-		$category->setModuleEntity($profile);
+		$category->setModuleEntity($client);
 		$this->em->persist($category);
 		
 		//RECORD : Content Email for Category Info Identity
-		$content = new Content(Content::LABEL_PROFILE_EMAIL, 'email');
+		$content = new Content(Content::LABEL_USER_EMAIL, 'email');
 		$content
-			->setLabelValue(Content::LABELVALUE_PROFILE_EMAIL)
-			->setStringValue($profile->getEmail())
+			->setLabelValue(Content::LABELVALUE_USER_EMAIL)
+			->setStringValue($client->getEmail())
 			->setCategory($category)
 			->setRequired(true)
 		;
@@ -129,17 +173,17 @@ class ProfileGenerator
 		;
 		$this->em->persist($content);
 		
-		//RECORD : Category Profile Picture
+		//RECORD : Category Client Picture
 		$category = new Category('document');
 		$category
 			->setTitle(Category::TITLE_PROFILE_PICTURE)
 			->setTag(Category::TAG_PROFILE_PICTURE)
 		;
-		$category->setModuleEntity($profile);
+		$category->setModuleEntity($client);
 		$this->em->persist($category);
 		
 		$this->em->flush();
 		
-		return $profile;
+		return $client;
 	}
 }

@@ -35,6 +35,6 @@ class ModuleProjectFixtures extends AbstractFixture implements OrderedFixtureInt
 	
 	public function getOrder()
     {
-        return 3; // l'ordre dans lequel les fichiers sont chargés
+        return 5; // l'ordre dans lequel les fichiers sont chargés
     }
 }

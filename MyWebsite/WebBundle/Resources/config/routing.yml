@@ -2,41 +2,49 @@ web_home:
     pattern:  /
     defaults: { _controller: MyWebsiteWebBundle:Web:index}
 
-web_profile:
-    pattern:  /profile
-    defaults: { _controller: MyWebsiteWebBundle:Profile:loadProfile}
-
 web_profile_signup:
     pattern:  /signup
-    defaults: { _controller: MyWebsiteWebBundle:Profile:newProfile}
-
-web_profile_info:
-    pattern:  /profile/info
-    defaults: { _controller: MyWebsiteWebBundle:Profile:editProfile}
-
-web_profile_picture:
-    pattern:  /profile/picture
-    defaults: { _controller: MyWebsiteWebBundle:Profile:editPicture}
-
-web_profile_picture_delete:
-    pattern:  /profile/picture/delete
-    defaults: { _controller: MyWebsiteWebBundle:Profile:deletePicture}
+    defaults: { _controller: MyWebsiteWebBundle:User:signup}
 
 web_profile_user:
-    pattern:  /profile/user
-    defaults: { _controller: MyWebsiteWebBundle:Profile:editUser}
+    pattern:  /user
+    defaults: { _controller: MyWebsiteWebBundle:User:edit}
 
 web_profile_logout:
-    pattern:  /profile/logout
-    defaults: { _controller: MyWebsiteWebBundle:Profile:logout}
+    pattern:  /logout
+    defaults: { _controller: MyWebsiteWebBundle:User:logout}
 
-web_profile_delete:
-    pattern:  /profile/delete
-    defaults: { _controller: MyWebsiteWebBundle:Profile:deleteProfile}
+web_client:
+    pattern:  /client
+    defaults: { _controller: MyWebsiteWebBundle:Client:load}
+
+web_client_info:
+    pattern:  /client/info
+    defaults: { _controller: MyWebsiteWebBundle:Client:edit}
+
+web_client_picture:
+    pattern:  /client/picture
+    defaults: { _controller: MyWebsiteWebBundle:Client:editPicture}
+
+web_client_picture_delete:
+    pattern:  /client/picture/delete
+    defaults: { _controller: MyWebsiteWebBundle:Client:deletePicture}
+
+web_client_delete:
+    pattern:  /client/delete
+    defaults: { _controller: MyWebsiteWebBundle:Client:delete}
 
 web_admin:
     pattern:  /admin
-    defaults: { _controller: MyWebsiteWebBundle:Admin:loadAdmin}
+    defaults: { _controller: MyWebsiteWebBundle:Admin:load}
+
+web_admin_info:
+    pattern:  /client/info
+    defaults: { _controller: MyWebsiteWebBundle:Admin:edit}
+
+web_admin_delete:
+    pattern:  /client/delete
+    defaults: { _controller: MyWebsiteWebBundle:Admin:delete}
 
 web_error:
     pattern:  /error

@@ -69,6 +69,17 @@ class Module extends AbstractEntity
 	 */
 	private $menus;
 	
+	/**
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Module", inversedBy="subModules")
+	 */
+	private $parentModule;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Module", mappedBy="parentModule", cascade={"remove"})
+	 * @ORM\JoinColumn(onDelete="CASCADE")
+	 */
+	private $subModules;
+	
 	
 	public function __construct($name)
     {
@@ -80,21 +91,25 @@ class Module extends AbstractEntity
     }
 	
 	/**
-     * @ORM\PrePersist()
+     * @ORM\PostPersist()
      */
-    private function prePersist()
+    private function postPersist()
     {
-		//Control before persist
-		//Throw Exception
+        if($this->parentModule != null)
+		{
+			$this->parentModule->addSubModule($this);
+		}
     }
 	
 	/**
-	 * @ORM\PreRemove()
+     * @ORM\PreRemove()
      */
     private function preRemove()
     {
-        //Control before remove
-		//Throw Exception
+        if($this->parentModule != null)
+		{
+			$this->parentModule->removeSubModule($this);
+		}
     }
 
     /**
@@ -233,5 +248,73 @@ class Module extends AbstractEntity
     public function getMenus()
     {
         return $this->menus;
+    }
+	
+	/**
+     * Set parentModule
+     *
+     * @param \MyWebsite\WebBundle\Entity\Module $parentModule
+     * @return Module
+     */
+    public function setParentModule(\MyWebsite\WebBundle\Entity\Module $parentModule = null)
+    {
+		if($this->parentModule != null)
+		{
+			if ($parentModule != null)
+			{
+				$this->parentModule->addSubModule($this);
+			}
+			else
+			{
+				$this->parentModule->removeSubModule($this);
+			}
+		}
+		
+		$this->parentModule = $parentModule;
+
+        return $this;
+    }
+
+    /**
+     * Get parentModule
+     *
+     * @return \MyWebsite\WebBundle\Entity\Module 
+     */
+    public function getParentModule()
+    {
+        return $this->parentModule;
+    }
+
+    /**
+     * Add subModules
+     *
+     * @param \MyWebsite\WebBundle\Entity\Module $subModules
+     * @return Module
+     */
+    public function addSubModule(\MyWebsite\WebBundle\Entity\Module $subModules)
+    {
+        $this->subModules[] = $subModules;
+
+        return $this;
+    }
+
+    /**
+     * Remove subModules
+     *
+     * @param \MyWebsite\WebBundle\Entity\Module $subModules
+     */
+    public function removeSubModule(\MyWebsite\WebBundle\Entity\Module $subModules)
+    {
+        $this->subModules->removeElement($subModules);
+    }
+
+    /**
+     * Get subModules
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getSubModules()
+    {
+        return $this->subModules;
     }
 }

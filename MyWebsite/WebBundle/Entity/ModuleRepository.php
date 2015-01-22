@@ -27,7 +27,33 @@ class ModuleRepository extends EntityRepository
 		return $results;
 	}
 	
-	public function myFindActivatedWithMenusByDisplay($display)
+	public function myFindActivatedByNameWithMenusByDisplay($moduleName, $menuDisplay)
+	{
+		$qb = $this->createQueryBuilder('module')
+			->where('module.name = :module_name')
+			->setParameter('module_name', $moduleName)
+			->andWhere('module.active = :module_active')
+			->setParameter('module_active', true)
+			->leftJoin('module.menus', 'menu')
+			->addSelect('menu')
+			->andWhere('menu.display = :menu_display')
+			->setParameter('menu_display', $menuDisplay)
+			->andWhere('menu.isRoot = :menu_isRoot')
+			->setParameter('menu_isRoot', true)
+			->andWhere('menu.active = :menu_active')
+			->setParameter('menu_active', true)
+			->leftJoin('menu.subMenus', 'subMenu')
+			->addSelect('subMenu')
+			->andWhere('subMenu.active = :subMenu_active')
+			->setParameter('subMenu_active', true)
+		;
+		
+		$results = $qb->getQuery()->getResult();
+		
+		return $results;
+	}
+	
+	public function myFindActivatedWithMenusByDisplay($menuDisplay)
 	{
 		$qb = $this->createQueryBuilder('module')
 			->where('module.active = :module_active')
@@ -36,11 +62,15 @@ class ModuleRepository extends EntityRepository
 			->leftJoin('module.menus', 'menu')
 			->addSelect('menu')
 			->andWhere('menu.display = :menu_display')
-			->setParameter('menu_display', $display)
+			->setParameter('menu_display', $menuDisplay)
 			->andWhere('menu.isRoot = :menu_isRoot')
 			->setParameter('menu_isRoot', true)
 			->andWhere('menu.active = :menu_active')
 			->setParameter('menu_active', true)
+			->leftJoin('menu.subMenus', 'subMenu')
+			->addSelect('subMenu')
+			->andWhere('subMenu.active = :subMenu_active')
+			->setParameter('subMenu_active', true)
 		;
 		
 		$results = $qb->getQuery()->getResult();

@@ -1,6 +1,6 @@
 {% extends "MyWebsiteWebBundle::layout.html.twig" %}
 
-{% block title %}{{ parent() }} - MyProfile{% endblock %}
+{% block title %}{{ parent() }} - Log in{% endblock %}
 
 {% block css %} 
 	{% stylesheets
@@ -20,7 +20,7 @@
 			<div class="contact-form">
 				<div class="feature-grids">
 					<div class="feature-grid-head">
-						<h3><span>Log in to</span> MyProfile</h3>
+						<h3><span>Log in to</span>{{ title }}</h3>
 						<div class="feature-grid-head-top">
 							<label> </label><span> </span> <label> </label>
 							<div class="clear"> </div>
@@ -46,9 +46,11 @@
 							<li>
 								<input type="submit" class="submit" value="Login"/>
 							</li>
-							<li>
-								<p>Pas encore membre? Inscrivez-vous ici: <a href="{{ path('web_profile_signup') }}">Sign up</a></p>
-							</li>
+							{% if title == 'MyProfile' %}
+								<li>
+									<p>Pas encore membre? Inscrivez-vous ici: <a href="{{ path('web_profile_signup') }}">Sign up</a></p>
+								</li>
+							{% endif %}
 						</ul>
 						{{ form_widget(form._token) }}
 					{{ form_end(form, {'render_rest': false}) }}

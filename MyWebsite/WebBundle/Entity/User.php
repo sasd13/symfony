@@ -10,7 +10,7 @@ use MyWebsite\WebBundle\Entity\ModuleEntity;
  * User
  *
  * @ORM\Table(name="web_user")
- * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ProfileRepository")
+ * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\UserRepository")
  */
 class User extends ModuleEntity
 {

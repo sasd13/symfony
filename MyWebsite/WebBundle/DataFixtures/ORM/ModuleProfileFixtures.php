@@ -5,11 +5,11 @@ namespace MyWebsite\WebBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use MyWebsite\WebBundle\Entity\Module;
 use MyWebsite\WebBundle\Entity\Menu;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class ModuleProfileFixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
@@ -27,70 +27,11 @@ class ModuleProfileFixtures extends AbstractFixture implements OrderedFixtureInt
 	{
 		$router = $this->container->get('web_router');
 		
-		//Module Profile
+		//Module Client
 		$module = new Module('Profile');
 		$manager->persist($module);
 		
-		//Public Menu MyProfile
-		$menu = new Menu('MyProfile', $router::ROUTE_PROFILE);
-		$menu
-			->setIsRoot(true)
-			->setModule($module)
-		;
-		$manager->persist($menu);
-		
-		//SubMenu for Menu MyProfile
-		$subMenus = new ArrayCollection();
-		
-		$sub = new Menu('Sign up', $router::ROUTE_PROFILE_SIGNUP);
-		$subMenus[] = $sub;
-		
-		$sub = new Menu('Log out', $router::ROUTE_PROFILE_LOGOUT);
-		$subMenus[] = $sub;
-		
-		foreach($subMenus as $subMenu)
-		{
-			
-			$subMenu
-				->setModule($module)
-				->setParentMenu($menu)
-			;
-			$manager->persist($subMenu);
-		}
-		
-		//Config Menu Profile
-		$menu = new Menu('Profile', $router::ROUTE_PROFILE);
-		$menu
-			->setDisplay(Menu::DISPLAY_CONFIG_ONLY)
-			->setIsRoot(true)
-			->setModule($module)
-		;
-		$manager->persist($menu);
-		
-		//SubMenu for Menu Profile
-		$subMenus = new ArrayCollection();
-		
-		$sub = new Menu('Informations', $router::ROUTE_PROFILE_INFO);
-		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
-		$subMenus[] = $sub;
-		
-		$sub = new Menu('Profile picture', $router::ROUTE_PROFILE_PICTURE);
-		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
-		$subMenus[] = $sub;
-		
-		$sub = new Menu('Log in options', $router::ROUTE_PROFILE_USER);
-		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
-		$subMenus[] = $sub;
-		
-		foreach($subMenus as $subMenu)
-		{
-			
-			$subMenu
-				->setModule($module)
-				->setParentMenu($menu)
-			;
-			$manager->persist($subMenu);
-		}
+		$this->addReference('module_profile', $module);
 		
 		$manager->flush();
 	}

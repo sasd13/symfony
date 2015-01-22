@@ -112,21 +112,6 @@ class Menu
     }
 	
 	/**
-     * @ORM\PrePersist()
-     */
-    private function prePersist()
-    {
-        $this->module->addMenu($this);
-		if($this->parentMenu != null)
-		{
-			$this->parentMenu->addSubMenu($this);
-		}
-		
-		//Control before persist
-		//Throw Exception
-    }
-	
-	/**
      * @ORM\PostPersist()
      */
     private function postPersist()

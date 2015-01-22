@@ -1,3 +1,6 @@
+{% set idAdmin = app.session.get('idAdmin') %}
+{% set idClient = app.session.get('idClient') %}
+
 <!--
 Author: W3layouts
 Author URL: http://w3layouts.com
@@ -42,7 +45,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<a href="{{ path('web_home') }}"><img src="{{ asset('bundles/mywebsiteweb/') }}images/logo.png" title="Webworld" /></a>
 					</div>
 					<!---End-logo---->
-					{% set idProfile = app.session.get('idProfile') %}
 					{% set menuBar = app.session.get('menuBar') %}
 					{% if menuBar != null %}
 						<!---start-top-nav---->
@@ -50,23 +52,36 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<ul>
 								<li><a href="{{ path('web_home') }}">Home</a></li>
 								{% for menu in menuBar %}
-									<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
-									{% for subMenu in menu.subMenus %}
-										{% if menu.name == 'MyProfile' %}
-											{% if subMenu.name == 'Sign up' %}
-												{% if idProfile == null %}
-													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
-												{% endif %}
-											{% endif %}
-											{% if subMenu.name == 'Log out' %}
-												{% if idProfile != null %}
-													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
-												{% endif %}
-											{% endif %}
-										{% else %}
-											<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+									{% if menu.name == 'Admin' %}
+										{% if idAdmin != null %}
+											<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
+											{% for subMenu in menu.subMenus %}
+												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+											{% endfor %}
 										{% endif %}
-									{% endfor %}
+									{% elseif menu.name == 'MyProfile' %}
+										<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
+										{% for subMenu in menu.subMenus %}
+											{% if subMenu.name == 'Sign up' %}
+												{% if idClient == null %}
+													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+												{% endif %}
+											{% elseif subMenu.name == 'Log out' %}
+												{% if idClient != null %}
+													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+												{% endif %}
+											{% else %}
+												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+											{% endif %}
+										{% endfor %}
+									{% else %}
+										{% if menu.isRoot == true %}
+											<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
+											{% for subMenu in menu.subMenus %}
+												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+											{% endfor %}
+										{% endif %}
+									{% endif %}
 								{% endfor %}
 							</ul>
 							<div class="clear"> </div>
@@ -110,7 +125,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<input type="submit" value="Go" />
 						</form>
 						<br/>
-						{% if idProfile == null %}
+						{% if idClient == null %}
 							<p><a id="log" href="{{ path('web_admin') }}">Go to Administration</a></p>
 						{% endif %}
 					</div>					
