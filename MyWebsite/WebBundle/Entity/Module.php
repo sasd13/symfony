@@ -16,7 +16,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Module extends AbstractEntity
 {
-	const DEFAULT_ISROOT = false;
 	const DEFAULT_ACTIVE = true;
 	
 	private static $number = 0;
@@ -33,18 +32,10 @@ class Module extends AbstractEntity
     /**
      * @var string
 	 *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      * @Assert\NotBlank
      */
     private $name;
-	
-	/**
-     * @var boolean
-     *
-     * @ORM\Column(name="isRoot", type="boolean")
-	 * @Assert\Type(type="bool")
-     */
-    private $isRoot;
 	
 	/**
      * @var boolean
@@ -73,56 +64,44 @@ class Module extends AbstractEntity
     private $readMe;
 	
 	/**
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Bundle", inversedBy="modules")
+	 * @ORM\JoinColumn(nullable=false)
+	 */
+	private $bundle;
+	
+	/**
 	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="module", cascade={"remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $menus;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Module", inversedBy="subModules")
-	 */
-	private $parentModule;
-	
-	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Module", mappedBy="parentModule", cascade={"remove"})
-	 * @ORM\JoinColumn(onDelete="CASCADE")
-	 */
-	private $subModules;
 	
 	
 	public function __construct($name)
     {
 		parent::__construct();
 		$this->name = $name;
-		$this->isRoot = self::DEFAULT_ISROOT;
 		$this->active = self::DEFAULT_ACTIVE;
 		$this->priority = ++self::$number;
 		$this->menus = new ArrayCollection();
     }
 	
 	/**
-     * @ORM\PostPersist()
+	 * @ORM\PostPersist()
      */
     public function postPersist()
     {
-        if($this->parentModule != null)
-		{
-			$this->parentModule->addSubModule($this);
-		}
+        $this->bundle->addModule($this);
     }
 	
 	/**
-     * @ORM\PreRemove()
+	 * @ORM\PreRemove()
      */
     public function preRemove()
     {
-        if($this->parentModule != null)
-		{
-			$this->parentModule->removeSubModule($this);
-		}
+        $this->bundle->removeModule($this);
     }
-
-    /**
+	
+	/**
      * Get id
      *
      * @return integer 
@@ -153,29 +132,6 @@ class Module extends AbstractEntity
     public function getName()
     {
         return $this->name;
-    }
-	
-	/**
-     * Set isRoot
-     *
-     * @param boolean $isRoot
-     * @return Menu
-     */
-    public function setIsRoot($isRoot)
-    {
-        $this->isRoot = $isRoot;
-
-        return $this;
-    }
-
-    /**
-     * Get isRoot
-     *
-     * @return boolean 
-     */
-    public function getIsRoot()
-    {
-        return $this->isRoot;
     }
 
     /**
@@ -246,6 +202,29 @@ class Module extends AbstractEntity
     {
         return $this->readMe;
     }
+	
+	/**
+     * Set bundle
+     *
+     * @param \MyWebsite\WebBundle\Entity\Bundle $bundle
+     * @return Menu
+     */
+    public function setBundle(\MyWebsite\WebBundle\Entity\Bundle $bundle)
+    {
+        $this->bundle = $bundle;
+
+        return $this;
+    }
+
+    /**
+     * Get bundle
+     *
+     * @return \MyWebsite\WebBundle\Entity\Bundle 
+     */
+    public function getBundle()
+    {
+        return $this->bundle;
+    }
 
     /**
      * Add menus
@@ -281,73 +260,5 @@ class Module extends AbstractEntity
     public function getMenus()
     {
         return $this->menus;
-    }
-	
-	/**
-     * Set parentModule
-     *
-     * @param \MyWebsite\WebBundle\Entity\Module $parentModule
-     * @return Module
-     */
-    public function setParentModule(\MyWebsite\WebBundle\Entity\Module $parentModule = null)
-    {
-		if($this->parentModule != null)
-		{
-			if ($parentModule != null)
-			{
-				$this->parentModule->addSubModule($this);
-			}
-			else
-			{
-				$this->parentModule->removeSubModule($this);
-			}
-		}
-		
-		$this->parentModule = $parentModule;
-
-        return $this;
-    }
-
-    /**
-     * Get parentModule
-     *
-     * @return \MyWebsite\WebBundle\Entity\Module 
-     */
-    public function getParentModule()
-    {
-        return $this->parentModule;
-    }
-
-    /**
-     * Add subModules
-     *
-     * @param \MyWebsite\WebBundle\Entity\Module $subModules
-     * @return Module
-     */
-    public function addSubModule(\MyWebsite\WebBundle\Entity\Module $subModules)
-    {
-        $this->subModules[] = $subModules;
-
-        return $this;
-    }
-
-    /**
-     * Remove subModules
-     *
-     * @param \MyWebsite\WebBundle\Entity\Module $subModules
-     */
-    public function removeSubModule(\MyWebsite\WebBundle\Entity\Module $subModules)
-    {
-        $this->subModules->removeElement($subModules);
-    }
-
-    /**
-     * Get subModules
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getSubModules()
-    {
-        return $this->subModules;
     }
 }

@@ -2,3 +2,11 @@ services:
 #    my_website_cv.example:
 #        class: MyWebsite\CvBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+    cv_router:
+        class: MyWebsite\CvBundle\Services\Router
+    cv_layouter:
+        class: MyWebsite\CvBundle\Services\Layouter
+    cv_generator:
+        class: MyWebsite\CvBundle\Services\Generator
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]

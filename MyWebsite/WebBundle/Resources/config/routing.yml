@@ -2,52 +2,10 @@ web_home:
     pattern:  /
     defaults: { _controller: MyWebsiteWebBundle:Web:index}
 
-web_profile_user:
-    pattern:  /user
-    defaults: { _controller: MyWebsiteWebBundle:User:load}
-web_profile_user_signup:
-    pattern:  /signup
-    defaults: { _controller: MyWebsiteWebBundle:User:signup}
-web_profile_user_logout:
-    pattern:  /logout
-    defaults: { _controller: MyWebsiteWebBundle:User:logout}
-web_profile_user_upgrade:
-    pattern:  /user/upgrade
-    defaults: { _controller: MyWebsiteWebBundle:User:upgrade}
-web_profile_user_downgrade:
-    pattern:  /user/downgrade
-    defaults: { _controller: MyWebsiteWebBundle:User:downgrade}
-
-web_profile_admin:
-    pattern:  /admin
-    defaults: { _controller: MyWebsiteWebBundle:Admin:load}
-web_profile_admin_info:
-    pattern:  /admin/info
-    defaults: { _controller: MyWebsiteWebBundle:Admin:edit}
-web_profile_admin_delete:
-    pattern:  /admin/delete
-    defaults: { _controller: MyWebsiteWebBundle:Admin:delete}
-
-web_profile_client:
-    pattern:  /myprofile
-    defaults: { _controller: MyWebsiteWebBundle:Client:load}
-web_profile_client_info:
-    pattern:  /myprofile/info
-    defaults: { _controller: MyWebsiteWebBundle:Client:edit}
-web_profile_client_picture:
-    pattern:  /myprofile/picture
-    defaults: { _controller: MyWebsiteWebBundle:Client:editPicture}
-web_profile_client_picture_delete:
-    pattern:  /myprofile/picture/delete
-    defaults: { _controller: MyWebsiteWebBundle:Client:deletePicture}
-web_profile_client_delete:
-    pattern:  /myprofile/delete
-    defaults: { _controller: MyWebsiteWebBundle:Client:delete}
-
-web_error:
+web_exception_error:
     pattern:  /error
     defaults: { _controller: MyWebsiteWebBundle:Exception:error}
-web_error404:
+web_exception_error404:
     pattern:  /{errorURL}
     defaults: { _controller: MyWebsiteWebBundle:Exception:error404}
     requirements:

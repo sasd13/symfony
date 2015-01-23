@@ -15,14 +15,6 @@ use MyWebsite\WebBundle\Model\CopyInterface;
  */
 class Content implements CopyInterface
 {
-	const LABEL_CLIENT_FIRSTNAME = 'client_first_name';
-	const LABEL_CLIENT_LASTNAME = 'client_last_name';
-	const LABEL_USER_EMAIL = 'user_email';
-	
-	const LABELVALUE_CLIENT_FIRSTNAME = 'First name';
-	const LABELVALUE_CLIENT_LASTNAME = 'Last name';
-	const LABELVALUE_USER_EMAIL = 'Email';
-	
 	const DEFAULT_REQUIRED = false;
 	
 	const POLICYLEVEL_LOW = 1;

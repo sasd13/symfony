@@ -17,15 +17,7 @@ use MyWebsite\WebBundle\Model\CopyInterface;
  */
 class Category extends AbstractEntity implements CopyInterface
 {
-	const TAG_PROFILE_INFO = 'profile_info';
-	const TAG_PROFILE_CONTACT = 'profile_contact';
-	const TAG_PROFILE_PICTURE = 'profile_picture';
-	
-	const TITLE_PROFILE_INFO = 'Identité';
-	const TITLE_PROFILE_CONTACT = 'Contact';
-	const TITLE_PROFILE_PICTURE = 'Photo de profil';
-	
-    /**
+	/**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")

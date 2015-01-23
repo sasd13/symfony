@@ -12,13 +12,13 @@ class ExceptionController extends Controller
 		$layouter = $this->container->get('web_layouter');
 		$this->getRequest()->getSession()->clear();
 		
-		return $this->render($layouter::LAYOUT_ERROR);
+		return $this->render($layouter::LAYOUT_WEB_EXCEPTION_ERROR);
     }
 	
 	public function error404Action($errorURL)
     {
 		$layouter = $this->container->get('web_layouter');
 		
-		return $this->render($layouter::LAYOUT_ERROR404);
+		return $this->render($layouter::LAYOUT_WEB_EXCEPTION_ERROR404);
     }
 }

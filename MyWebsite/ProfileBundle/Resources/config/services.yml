@@ -1,0 +1,12 @@
+services:
+#    my_website_profile.example:
+#        class: MyWebsite\ProfileBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+    profile_router:
+        class: MyWebsite\ProfileBundle\Services\Router
+    profile_layouter:
+        class: MyWebsite\ProfileBundle\Services\Layouter
+    profile_generator:
+        class: MyWebsite\ProfileBundle\Services\Generator
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]

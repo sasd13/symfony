@@ -21,3 +21,4 @@ services:
         class: MyWebsite\WebBundle\Services\Generator
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+

@@ -1,33 +1,3 @@
-project_list:
-    pattern:  /projects
-    defaults: { _controller: MyWebsiteWebBundle:Project:afficherListProjects}
-
-project_afficher:
-    pattern:  /project-{idProject}
-    defaults: { _controller: MyWebsiteWebBundle:Project:afficher, idProject:0}
-    requirements:
-        idProject: \d*
-
-project_project_profil_project_list:
-    pattern:  /profil/projects
-    defaults: { _controller: MyWebsiteWebBundle:Profil:listeProject}
-
-project_profil_project_afficher:
-    pattern:  /profil/project-{idProject}
-    defaults: { _controller: MyWebsiteWebBundle:Profil:gestionProject, idProject: 0}
-    requirements:
-        idProject: \d*
-
-project_profil_project_nouveau:
-    pattern:  /profil/project/nouveau
-    defaults: { _controller: MyWebsiteWebBundle:Project:nouveau}
-
-project_profil_project_modifier:
-    pattern:  /profil/project/modifier
-    defaults: { _controller: MyWebsiteWebBundle:Project:modifier}
-
-project_profil_project_supprimer:
-    pattern:  /profil/project/supprimer-{idProject}
-    defaults: { _controller: MyWebsiteWebBundle:Project:supprimer, idProject: 0}
-    requirements:
-        idProject: \d*
+my_website_project_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: MyWebsiteProjectBundle:Default:index }

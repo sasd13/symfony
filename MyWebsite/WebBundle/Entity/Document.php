@@ -175,7 +175,7 @@ class Document implements DocumentInterface, CopyInterface
     {
         if (null === $this->file) 
 		{
-            return;
+			return;
         }
 
         // s'il y a une erreur lors du déplacement du fichier, une exception

@@ -84,6 +84,12 @@ class Menu
     private $priority;
 	
 	/**
+	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Module", inversedBy="menus")
+	 * @ORM\JoinColumn(nullable=false)
+	 */
+	private $module;
+	
+	/**
 	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Menu", inversedBy="subMenus")
 	 */
 	private $parentMenu;
@@ -93,12 +99,6 @@ class Menu
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $subMenus;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="MyWebsite\WebBundle\Entity\Module", inversedBy="menus")
-	 * @ORM\JoinColumn(nullable=false)
-	 */
-	private $module;
 	
 	
 	public function __construct($name, $target)
@@ -282,6 +282,29 @@ class Menu
     {
         return $this->priority;
     }
+	
+	/**
+     * Set module
+     *
+     * @param \MyWebsite\WebBundle\Entity\Module $module
+     * @return Menu
+     */
+    public function setModule(\MyWebsite\WebBundle\Entity\Module $module)
+    {
+        $this->module = $module;
+
+        return $this;
+    }
+
+    /**
+     * Get module
+     *
+     * @return \MyWebsite\WebBundle\Entity\Module 
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
 
     /**
      * Set parentMenu
@@ -349,28 +372,5 @@ class Menu
     public function getSubMenus()
     {
         return $this->subMenus;
-    }
-
-    /**
-     * Set module
-     *
-     * @param \MyWebsite\WebBundle\Entity\Module $module
-     * @return Menu
-     */
-    public function setModule(\MyWebsite\WebBundle\Entity\Module $module)
-    {
-        $this->module = $module;
-
-        return $this;
-    }
-
-    /**
-     * Get module
-     *
-     * @return \MyWebsite\WebBundle\Entity\Module 
-     */
-    public function getModule()
-    {
-        return $this->module;
     }
 }
