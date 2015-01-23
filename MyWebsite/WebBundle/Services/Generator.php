@@ -18,13 +18,22 @@ class Generator
 		$this->em = $em;
 	}
 	
-	public function generateMenu($type)
+	public function generateMenu($type, $moduleName = null)
 	{
 		$modules = null;
 		
-		if($type === 'menu_admin')
+		if($type === 'menu_home')
+		{
+			$moduleName = ($moduleName == null) ? 'Client' : $moduleName;
+			
+			//Bug creating
+			//Create new instances of Module managed by the EntityManager
+			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedByNameWithMenusByDisplay($moduleName, Menu::DISPLAY_PUBLIC_ONLY);
+		}
+		else if($type === 'menu_admin')
 		{
 			$moduleName = 'Admin';
+			
 			//Bug creating
 			//Create new instances of Module managed by the EntityManager
 			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedByNameWithMenusByDisplay($moduleName, Menu::DISPLAY_CONFIG_ONLY);
@@ -32,15 +41,10 @@ class Generator
 		else if($type === 'menu_client')
 		{
 			$moduleName = 'Client';
+			
 			//Bug creating
 			//Create new instances of Module managed by the EntityManager
 			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedByNameWithMenusByDisplay($moduleName, Menu::DISPLAY_CONFIG_ONLY);
-		}
-		else
-		{
-			//Bug creating
-			//Create new instances of Module by the EntityManager
-			$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->myFindActivatedWithMenusByDisplay(Menu::DISPLAY_PUBLIC_ONLY);
 		}
 		
 		//Bug resolver

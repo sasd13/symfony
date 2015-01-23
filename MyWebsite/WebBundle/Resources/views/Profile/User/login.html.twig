@@ -1,0 +1,62 @@
+{% extends "MyWebsiteWebBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Log in{% endblock %}
+
+{% block css %} 
+	{% stylesheets
+			'bundles/mywebsiteweb/css/form-style.css'
+			filter='cssrewrite' %}
+			<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+	{% endstylesheets %}
+{% endblock %}
+
+{% block class_header %}header2{% endblock %}
+
+{% block section %}
+	<!---Start-content---->
+	<div class="content">
+		<div class="wrap">
+			<!---start-Features---->
+			<div class="contact-form">
+				<div class="feature-grids">
+					<div class="feature-grid-head">
+						<h3><span>Log in to</span> {{ title }}</h3>
+						<div class="feature-grid-head-top">
+							<label> </label><span> </span> <label> </label>
+							<div class="clear"> </div>
+						</div>
+					</div>
+					{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+						{{ form_errors(form) }}
+						<ul class="form-content">
+							<li>
+								<h2>Identifiants</h2>
+								<span class="required_notification">{{ message }}</span>
+							</li>
+							<li>
+								{{ form_label(form.login, "Login") }}
+								{{ form_widget(form.login) }}
+							</li>
+							<li>
+								{{ form_label(form.password, "Mot de passe") }}
+								{{ form_widget(form.password) }}
+							</li>
+						</ul>
+						<ul class="form-submit">
+							<li>
+								<input type="submit" class="submit" value="Login"/>
+							</li>
+							{% if title == 'MyProfile' %}
+								<li>
+									<p>Pas encore membre? Inscrivez-vous ici: <a href="{{ path('web_profile_user_signup') }}">Sign up</a></p>
+								</li>
+							{% endif %}
+						</ul>
+						{{ form_widget(form._token) }}
+					{{ form_end(form, {'render_rest': false}) }}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!---End-content---->
+{% endblock %}

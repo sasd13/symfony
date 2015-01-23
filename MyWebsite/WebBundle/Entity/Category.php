@@ -95,7 +95,7 @@ class Category extends AbstractEntity implements CopyInterface
 	/**
      * @ORM\PrePersist()
      */
-    private function prePersist()
+    public function prePersist()
     {
 		//Control before persist
 		//Throw Exception
@@ -104,7 +104,7 @@ class Category extends AbstractEntity implements CopyInterface
 	/**
 	 * @ORM\PostPersist()
      */
-    private function postPersist()
+    public function postPersist()
     {
         $this->moduleEntity->addCategory($this);
     }
@@ -112,7 +112,7 @@ class Category extends AbstractEntity implements CopyInterface
 	/**
 	 * @ORM\PreRemove()
      */
-    private function preRemove()
+    public function preRemove()
     {
         $this->moduleEntity->removeCategory($this);
     }

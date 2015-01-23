@@ -35,7 +35,7 @@ class ModuleProfileSubModuleAdminFixtures extends AbstractFixture implements Ord
 		$manager->persist($subModule);
 		
 		//Public Menu MyProfile
-		$menu = new Menu('Admin', $router::ROUTE_ADMIN);
+		$menu = new Menu('Admin', $router::ROUTE_PROFILE_ADMIN);
 		$menu
 			->setIsRoot(true)
 			->setModule($subModule)
@@ -45,7 +45,7 @@ class ModuleProfileSubModuleAdminFixtures extends AbstractFixture implements Ord
 		//SubMenus for Menu MyProfile
 		$subMenus = new ArrayCollection();
 		
-		$sub = new Menu('Log out', $router::ROUTE_PROFILE_LOGOUT);
+		$sub = new Menu('Log out', $router::ROUTE_PROFILE_USER_LOGOUT);
 		$subMenus[] = $sub;
 		
 		foreach($subMenus as $subMenu)
@@ -59,7 +59,7 @@ class ModuleProfileSubModuleAdminFixtures extends AbstractFixture implements Ord
 		}
 		
 		//Config Menu Profile
-		$menu = new Menu('Profile', $router::ROUTE_ADMIN);
+		$menu = new Menu('Profile', $router::ROUTE_PROFILE_ADMIN);
 		$menu
 			->setDisplay(Menu::DISPLAY_CONFIG_ONLY)
 			->setIsRoot(true)
@@ -70,11 +70,15 @@ class ModuleProfileSubModuleAdminFixtures extends AbstractFixture implements Ord
 		//SubMenu for Menu Profile
 		$subMenus = new ArrayCollection();
 		
-		$sub = new Menu('Informations', $router::ROUTE_ADMIN_INFO);
+		$sub = new Menu('Informations', $router::ROUTE_PROFILE_ADMIN_INFO);
 		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
 		$subMenus[] = $sub;
 		
 		$sub = new Menu('Log in options', $router::ROUTE_PROFILE_USER);
+		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
+		$subMenus[] = $sub;
+		
+		$sub = new Menu('Downgrade to Client only', $router::ROUTE_PROFILE_USER_DOWNGRADE);
 		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
 		$subMenus[] = $sub;
 		

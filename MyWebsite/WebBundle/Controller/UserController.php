@@ -5,9 +5,10 @@ namespace MyWebsite\WebBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use MyWebsite\WebBundle\Entity\User;
+use MyWebsite\WebBundle\Form\UserType;
 use MyWebsite\WebBundle\Entity\Client;
 use MyWebsite\WebBundle\Form\ClientType;
-use MyWebsite\WebBundle\Form\UserType;
 
 class UserController extends Controller
 {
@@ -19,23 +20,18 @@ class UserController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		
 		//Get¨MenuBar
-		$menuBar = $this->container->get('web_generator')->generateMenu('menu_home');
+		$menuBar = $this->container->get('web_generator')->generateMenu('menu_home', 'Client');
 		$request->getSession()->set('menuBar', $menuBar);
 		
-		if($request->getSession()->get('idClient') != null)
+		if($request->getSession()->get('idUser') != null)
 		{
-			return $this->redirect($this->generateUrl($router::ROUTE_CLIENT));
-		}
-		
-		if($request->getSession()->get('idAdmin') != null)
-		{
-			return $this->redirect($this->generateUrl($router::ROUTE_ADMIN));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 		}
 		
 		$client = new Client();
 		
 		$form = $this->createForm(new ClientType(), $client, array(
-			'action' => $this->generateUrl($router::ROUTE_PROFILE_SIGNUP)
+			'action' => $this->generateUrl($router::ROUTE_PROFILE_USER_SIGNUP)
 		));
 			
 		$message = "* Denotes Required Field";
@@ -55,34 +51,35 @@ class UserController extends Controller
 				$client = $this->container->get('web_generator')->generateClient($client);
 				if($client != null)
 				{
-					$request->getSession()->set('idClient', $client->getId());
+					$request->getSession()->set('idUser', $client->getId());
 					
-					return $this->redirect($this->generateUrl($router::ROUTE_CLIENT));
+					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 				}
 				
 				$message = "Email indisponible";
 			}
 		}	
 		
-		return $this->render($layouter::LAYOUT_PROFILE_SIGNUP, array(
+		return $this->render($layouter::LAYOUT_PROFILE_USER_SIGNUP, array(
 			'form' => $form->createView(),
 			'message' => $message
 		));
 	}
 	
-	public function editAction()
+	public function loadAction()
     {
 		$router = $this->container->get('web_router');
 		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idClient') == null)
+		if($request->getSession()->get('idUser') == null)
 		{
-			return $this->redirect($this->generateUrl($router::ROUTE_CLIENT));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 		}
 		
-		$user = $em->getRepository('MyWebsiteWebBundle:User')->find($request->getSession()->get('idClient'));
+		$user = $em->getRepository('MyWebsiteWebBundle:User')->find($request->getSession()->get('idUser'));
+		
 		$oldPassword = $user->getPassword();
 		
 		$form = $this->createForm(new UserType(), $user, array(
@@ -109,19 +106,9 @@ class UserController extends Controller
 			}
 		}
 		
-		$profile = null;
-		if($request->getSession()->get('idClient') != null)
-		{
-			$profile = $em->getRepository('MyWebsiteWebBundle:Client')->find($request->getSession()->get('idClient'));
-		}
-		else if($request->getSession()->get('idAdmin') != null)
-		{
-			$profile = $em->getRepository('MyWebsiteWebBundle:Admin')->find($request->getSession()->get('idAdmin'));
-		}
-		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'User/user-edit',
-			'profile' => $profile,
+			'subLayout' => 'User/user',
+			'user' => $user,
 			'form' => $form->createView(),
 			'message' => $message,
 		));
@@ -134,5 +121,47 @@ class UserController extends Controller
 		$this->getRequest()->getSession()->clear();
 		
         return $this->redirect($this->generateUrl($router::ROUTE_HOME));
+    }
+	
+	public function upgradeAction()
+    {
+		$router = $this->container->get('web_router');
+		$request = $this->getRequest();
+		$em = $this->getDoctrine()->getManager();
+		
+		if($request->getSession()->get('idUser') == null)
+		{
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
+		}
+		
+		$user = $em->getRepository('MyWebsiteWebBundle:User')->find($request->getSession()->get('idUser'));
+		$user->setPrivacyLevel(User::PRIVACYLEVEL_MEDIUM);
+		
+		$em->flush();
+		
+		$this->getRequest()->getSession()->clear();
+		
+        return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_ADMIN));
+    }
+	
+	public function downgradeAction()
+    {
+		$router = $this->container->get('web_router');
+		$request = $this->getRequest();
+		$em = $this->getDoctrine()->getManager();
+		
+		if($request->getSession()->get('idUser') == null)
+		{
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_ADMIN));
+		}
+		
+		$user = $em->getRepository('MyWebsiteWebBundle:User')->find($request->getSession()->get('idUser'));
+		$user->setPrivacyLevel(User::PRIVACYLEVEL_LOW);
+		
+		$em->flush();
+		
+		$this->getRequest()->getSession()->clear();
+		
+        return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
     }
 }

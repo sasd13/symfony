@@ -18,6 +18,7 @@ use MyWebsite\WebBundle\Model\CopyInterface;
  */
 class Document implements DocumentInterface, CopyInterface
 {
+	const DEFAULT_NAME = 'inconnu.gif';
 	const DEFAULT_MIMETYPE = 'text/plain';
 	const DEFAULT_PATH = 'path';
 	const DEFAULT_HIDE = false;
@@ -37,10 +38,18 @@ class Document implements DocumentInterface, CopyInterface
     /**
      * @var string
 	 *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="title", type="string", length=255)
      * @Assert\NotBlank
      */
-    private $name;
+    private $title;
+	
+	/**
+     * @var string
+	 *
+     * @ORM\Column(name="originalName", type="string", length=255)
+     * @Assert\NotBlank
+     */
+    private $originalName;
 	
 	/**
      * @var string
@@ -98,6 +107,7 @@ class Document implements DocumentInterface, CopyInterface
 	
 	public function __construct($type = 'document')
     {
+		$this->originalName = self::DEFAULT_NAME;
 		if($type === 'image')
 		{
 			$this->mimeType = 'image/png';
@@ -144,12 +154,14 @@ class Document implements DocumentInterface, CopyInterface
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    private function prePersist()
+    public function prePersist()
     {
-        if (null !== $this->file) {
+		if (null !== $this->file) 
+		{
             // faites ce que vous voulez pour générer un nom unique
             $this->path = sha1(uniqid(mt_rand(), true)).'_'.$this->file->getClientOriginalName();
 			
+			$this->originalName = $this->file->getClientOriginalName();
 			$this->mimeType = $this->file->getMimeType();
 			$this->uploadDate = new DateTime();
         }
@@ -159,9 +171,10 @@ class Document implements DocumentInterface, CopyInterface
      * @ORM\PostPersist()
      * @ORM\PostUpdate()
      */
-    private function postPersist()
+    public function postPersist()
     {
-        if (null === $this->file) {
+        if (null === $this->file) 
+		{
             return;
         }
 
@@ -179,7 +192,7 @@ class Document implements DocumentInterface, CopyInterface
 	/**
      * @ORM\PreRemove()
      */
-    private function preRemove()
+    public function preRemove()
     {
         $this->category->removeDocument($this);
     }
@@ -187,9 +200,10 @@ class Document implements DocumentInterface, CopyInterface
     /**
      * @ORM\PostRemove()
      */
-    private function postRemove()
+    public function postRemove()
     {
-        if (is_file($this->getAbsolutePath())) {
+        if (is_file($this->getAbsolutePath())) 
+		{
 			unlink($this->getAbsolutePath());
         }
     }
@@ -211,7 +225,8 @@ class Document implements DocumentInterface, CopyInterface
 		$document = new Document();
 		$document
 			->setIdCopy($this->id)
-			->setName($this->name)
+			->setTitle($this->title)
+			->setOriginalName($this->originalName)
 			->setMimeType($this->mimeType)
 			->setHide($this->hide)
 			->setPath($this->path)
@@ -233,26 +248,49 @@ class Document implements DocumentInterface, CopyInterface
     }
 
     /**
-     * Set name
+     * Set title
      *
-     * @param string $name
+     * @param string $title
      * @return Document
      */
-    public function setName($name)
+    public function setTitle($title)
     {
-        $this->name = $name;
+        $this->title = $title;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get title
      *
      * @return string 
      */
-    public function getName()
+    public function getTitle()
     {
-        return $this->name;
+        return $this->title;
+    }
+	
+	/**
+     * Set originalName
+     *
+     * @param string $originalName
+     * @return Document
+     */
+    public function setOriginalName($originalName)
+    {
+        $this->originalName = $originalName;
+
+        return $this;
+    }
+
+    /**
+     * Get originalName
+     *
+     * @return string 
+     */
+    public function getOriginalName()
+    {
+        return $this->originalName;
     }
 
     /**

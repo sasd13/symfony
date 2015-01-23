@@ -114,7 +114,7 @@ class Menu
 	/**
      * @ORM\PostPersist()
      */
-    private function postPersist()
+    public function postPersist()
     {
         $this->module->addMenu($this);
 		if($this->parentMenu != null)
@@ -126,7 +126,7 @@ class Menu
 	/**
      * @ORM\PreRemove()
      */
-    private function preRemove()
+    public function preRemove()
     {
         $this->module->removeMenu($this);
 		if($this->parentMenu != null)

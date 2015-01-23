@@ -13,6 +13,10 @@ services:
         class: MyWebsite\WebBundle\Services\Router
     web_layouter:
         class: MyWebsite\WebBundle\Services\Layouter
+    web_moduleHandler:
+        class: MyWebsite\WebBundle\Services\ModuleHandler
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
     web_generator:
         class: MyWebsite\WebBundle\Services\Generator
         calls:

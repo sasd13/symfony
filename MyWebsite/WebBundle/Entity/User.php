@@ -11,6 +11,7 @@ use MyWebsite\WebBundle\Entity\ModuleEntity;
  *
  * @ORM\Table(name="web_user")
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\UserRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class User extends ModuleEntity
 {
@@ -85,18 +86,18 @@ class User extends ModuleEntity
     }
 	
 	/**
-	 * @ORM\PostPersist()
+	 * @ORM\PreRemove()
      */
-    public function postPersist()
+    public function preRemove()
     {
-        //Control after persist
+        //Control before remove
 		//Throw Exception
     }
 	
 	/**
-	 * @ORM\PreRemove()
+	 * @ORM\PostRemove()
      */
-    public function preRemove()
+    public function postRemove()
     {
         //Control before remove
 		//Throw Exception

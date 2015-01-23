@@ -1,0 +1,91 @@
+{% extends "MyWebsiteWebBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Sign up{% endblock %}
+
+{% block css %} 
+	{% stylesheets
+			'bundles/mywebsiteweb/css/form-style.css'
+			filter='cssrewrite' %}
+			<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+	{% endstylesheets %}
+{% endblock %}
+
+{% block class_header %}header2{% endblock %}
+
+{% block section %}
+	<!---Start-content---->
+	<div class="content">
+		<div class="wrap">
+			<!---start-Features---->
+			<div class="contact-form">
+				<div class="feature-grids">
+					<div class="feature-grid-head">
+						<h3><span>Sign up to</span> MyProfile</h3>
+						<div class="feature-grid-head-top">
+							<label> </label><span> </span> <label> </label>
+							<div class="clear"> </div>
+						</div>
+					</div>
+					<div class="new-form">
+						{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+							{{ form_errors(form) }}
+							<ul class="form-content">
+								<li>
+									<h2>Identifiants de connexion</h2>
+									<span class="required_notification">{{ message }}</span>
+								</li>
+								<li>
+									{{ form_label(form.login, "Login :") }}
+									{{ form_widget(form.login) }}
+								</li>
+								<li>
+									{{ form_label(form.password, "Mot de passe :") }}
+									{{ form_widget(form.password) }}
+								</li>
+								<li>
+									<label for="confirmPassword">Confirmer :</label>
+									<input type="password" name="confirmPassword" placeholder="confirmer mot de passe" maxlength="20" required/>
+								</li>
+							</ul>
+							<br/>
+							<br/>
+							<ul class="form-content">
+								<li>
+									<h2>Identité</h2>
+								</li>
+								<li>
+									{{ form_label(form.firstName, "Prénom :") }}
+									{{ form_widget(form.firstName) }}
+								</li>
+								<li>
+									{{ form_label(form.lastName, "Nom :") }}
+									{{ form_widget(form.lastName) }}
+								</li>
+							</ul>
+							<br/>
+							<br/>
+							<ul class="form-content">
+								<li>
+									<h2>Contact</h2>
+								</li>
+								<li>
+									{{ form_label(form.email, "Email :") }}
+									{{ form_widget(form.email) }}
+								</li>
+							</ul>
+							<br/>
+							<br/>
+							<ul class="form-submit">
+								<li>
+									<input type="submit" class="submit" value="Enregistrer"/>
+								</li>
+							</ul>
+							{{ form_widget(form._token) }}
+						{{ form_end(form, {'render_rest': false}) }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!---End-content---->
+{% endblock %}

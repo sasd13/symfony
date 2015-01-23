@@ -46,9 +46,9 @@ class Client extends User implements CopyInterface
 	/**
      * @var string
 	 *
-	 * @ORM\Column(name="pictureName", type="string", length=255, nullable=true)
+	 * @ORM\Column(name="pictureTitle", type="string", length=255, nullable=true)
      */
-    private $pictureName;
+    private $pictureTitle;
 	
 	/**
      * @var string
@@ -90,7 +90,7 @@ class Client extends User implements CopyInterface
 			->setEmail($this->getEmail())
 			->setFirstName($this->firstName)
 			->setLastName($this->lastName)
-			->setPictureName($this->pictureName)
+			->setPictureTitle($this->pictureTitle)
 			->setPicturePath($this->picturePath)
 		;
 		foreach($this->getCategories() as $category)
@@ -148,26 +148,26 @@ class Client extends User implements CopyInterface
     }
 	
 	/**
-     * Set pictureName
+     * Set pictureTitle
      *
-     * @param string $pictureName
+     * @param string $pictureTitle
      * @return Client
      */
-    public function setPictureName($pictureName)
+    public function setPictureTitle($pictureTitle)
     {
-        $this->pictureName = $pictureName;
+        $this->pictureTitle = $pictureTitle;
 
         return $this;
     }
 
     /**
-     * Get pictureName
+     * Get pictureTitle
      *
      * @return string 
      */
-    public function getPictureName()
+    public function getPictureTitle()
     {
-        return $this->pictureName;
+        return $this->pictureTitle;
     }
 
     /**

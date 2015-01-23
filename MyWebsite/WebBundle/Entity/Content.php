@@ -144,7 +144,7 @@ class Content implements CopyInterface
 	/**
      * @ORM\PrePersist()
      */
-    private function prePersist()
+    public function prePersist()
     {
 		//Control before persist
 		//Throw Exception
@@ -153,7 +153,7 @@ class Content implements CopyInterface
 	/**
      * @ORM\PostPersist()
      */
-    private function postPersist()
+    public function postPersist()
     {
         $this->category->addContent($this);
     }
@@ -161,7 +161,7 @@ class Content implements CopyInterface
 	/**
      * @ORM\PreRemove()
      */
-    private function preRemove()
+    public function preRemove()
     {
         $this->category->removeContent($this);
     }

@@ -24,8 +24,30 @@ class AdminController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
+		$this->container->get('web_moduleHandler')->checkModules();
+		
+		$request->attributes->get('_controller');
+		// will get name\nameBundle\Controller\nameController::nameAction
+		
+		$params = explode('::',$request->attributes->get('_controller'));
+		// $params[0] = 'nameBundle\Controller\nameController';
+		
+		$params = explode('\\',$params[0]);
+		// $params[3] = 'nameController';
+		
+		$controllerName = substr($params[3],0,-10);
+		// $actionName = 'name';
+		
+		$module = $em->getRepository('MyWebsiteWebBundle:Module')->findOneByName($controllerName);
+			
+		if($module == null
+			OR $module->getActive() === false)
+		{
+			return $this->redirect($this->generateUrl($router::ROUTE_HOME));
+		}
+			
 		//Get¨MenuBar
-		$menuBar = $this->container->get('web_generator')->generateMenu('menu_home');
+		$menuBar = $this->container->get('web_generator')->generateMenu('menu_home', 'Admin');
 		$request->getSession()->set('menuBar', $menuBar);
 		
 		//Get¨MenuAdmin
@@ -35,12 +57,16 @@ class AdminController extends Controller
 		/*
 		 * LogIn Action
 		 */
-		if($request->getSession()->get('idAdmin') == null)
+		if($request->getSession()->get('idUser') == null)
 		{
+			//Get¨MenuBar
+			$menuBar = $this->container->get('web_generator')->generateMenu('menu_home', 'Client');
+			$request->getSession()->set('menuBar', $menuBar);
+		
 			$admin = new Admin();
 			
 			$form = $this->createForm(new AdminType(), $admin, array(
-				'action' => $this->generateUrl($router::ROUTE_ADMIN)
+				'action' => $this->generateUrl($router::ROUTE_PROFILE_ADMIN)
 			));
 			
 			$message = "* Denotes Required Field";
@@ -56,32 +82,33 @@ class AdminController extends Controller
 				 */
 				$form->submit($request->get($form->getName()), false);
 				
-				$adminBuffer = $em->getRepository('MyWebsiteWebBundle:Admin')->findOneByLogin($admin->getLogin());
+				$adminBuffer = $em->getRepository('MyWebsiteWebBundle:User')->findOneByLogin($admin->getLogin());
 				if ($form->isValid()
 					AND $adminBuffer != null
 					AND $adminBuffer->getPassword() === $admin->getPassword()
-					AND $adminBuffer->getPrivacyLevel() === Admin::PRIVACYLEVEL_LOW)
+					AND ($adminBuffer->getPrivacyLevel() === Admin::PRIVACYLEVEL_MEDIUM
+						OR $adminBuffer->getPrivacyLevel() === Admin::PRIVACYLEVEL_HIGH))
 				{
-					$request->getSession()->set('idAdmin', $adminBuffer->getId());
+					$request->getSession()->set('idUser', $adminBuffer->getId());
 					
-					return $this->redirect($this->generateUrl($router::ROUTE_ADMIN));
+					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_ADMIN));
 				}
 				
 				$message = "* Identifiants erronés";
 			}
 				
-			return $this->render($layouter::LAYOUT_PROFILE_LOGIN, array(
+			return $this->render($layouter::LAYOUT_PROFILE_USER_LOGIN, array(
 				'title' => 'Administration',
 				'form' => $form->createView(),
 				'message' => $message
 			));
 		}
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->find($request->getSession()->get('idAdmin'));
+		$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->find($request->getSession()->get('idUser'));
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'Admin/admin-default',
-			'profile' => $admin,
+			'subLayout' => 'Admin/admin',
+			'user' => $admin,
 		));
 	}
 	
@@ -92,15 +119,15 @@ class AdminController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idAdmin') == null)
+		if($request->getSession()->get('idUser') == null)
 		{
-			return $this->redirect($this->generateUrl($router::ROUTE_ADMIN));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_ADMIN));
 		}
 		
-		$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->myFindWithCategoriesAndContents($request->getSession()->get('idAdmin'));
+		$admin = $em->getRepository('MyWebsiteWebBundle:Admin')->myFindWithCategoriesAndContents($request->getSession()->get('idUser'));
 		
 		$form = $this->createForm(new AdminType(), $admin, array(
-			'action' => $this->generateUrl($router::ROUTE_ADMIN_INFO)
+			'action' => $this->generateUrl($router::ROUTE_PROFILE_ADMIN_INFO)
 		));
 		
 		$message = "* Denotes Required Field";
@@ -178,7 +205,7 @@ class AdminController extends Controller
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
 			'subLayout' => 'Admin/admin-edit',
-			'profile' => $admin,
+			'user' => $admin,
 			'form' => $form->createView(),
 			'message' => $message,
 		));

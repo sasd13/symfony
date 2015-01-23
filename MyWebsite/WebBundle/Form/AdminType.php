@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class DocumentType extends AbstractType
+class AdminType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -15,12 +15,15 @@ class DocumentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 		$builder
-			->setMethod('POST')
-			->add('title', 'text')
-			->add('hide', 'checkbox', array(
-				'required' => false,
+            ->setMethod('POST')
+			->add('login', 'text')
+			->add('password', 'password')
+			->add('firstName', 'text')
+			->add('lastName', 'text')
+			->add('email', 'email')
+			->add('categories', 'collection', array(
+				'type' => new CategoryType()
 			))
-			->add('file', 'file')
         ;
     }
     
@@ -30,7 +33,8 @@ class DocumentType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'MyWebsite\WebBundle\Entity\Document'
+            'data_class' => 'MyWebsite\WebBundle\Entity\Admin',
+			'cascade_validation' => true,
         ));
     }
 
@@ -39,6 +43,6 @@ class DocumentType extends AbstractType
      */
     public function getName()
     {
-        return 'mywebsite_webbundle_document';
+        return 'mywebsite_webbundle_admin';
     }
 }

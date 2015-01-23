@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Module extends AbstractEntity
 {
+	const DEFAULT_ISROOT = false;
 	const DEFAULT_ACTIVE = true;
 	
 	private static $number = 0;
@@ -36,6 +37,14 @@ class Module extends AbstractEntity
      * @Assert\NotBlank
      */
     private $name;
+	
+	/**
+     * @var boolean
+     *
+     * @ORM\Column(name="isRoot", type="boolean")
+	 * @Assert\Type(type="bool")
+     */
+    private $isRoot;
 	
 	/**
      * @var boolean
@@ -85,6 +94,7 @@ class Module extends AbstractEntity
     {
 		parent::__construct();
 		$this->name = $name;
+		$this->isRoot = self::DEFAULT_ISROOT;
 		$this->active = self::DEFAULT_ACTIVE;
 		$this->priority = ++self::$number;
 		$this->menus = new ArrayCollection();
@@ -93,7 +103,7 @@ class Module extends AbstractEntity
 	/**
      * @ORM\PostPersist()
      */
-    private function postPersist()
+    public function postPersist()
     {
         if($this->parentModule != null)
 		{
@@ -104,7 +114,7 @@ class Module extends AbstractEntity
 	/**
      * @ORM\PreRemove()
      */
-    private function preRemove()
+    public function preRemove()
     {
         if($this->parentModule != null)
 		{
@@ -143,6 +153,29 @@ class Module extends AbstractEntity
     public function getName()
     {
         return $this->name;
+    }
+	
+	/**
+     * Set isRoot
+     *
+     * @param boolean $isRoot
+     * @return Menu
+     */
+    public function setIsRoot($isRoot)
+    {
+        $this->isRoot = $isRoot;
+
+        return $this;
+    }
+
+    /**
+     * Get isRoot
+     *
+     * @return boolean 
+     */
+    public function getIsRoot()
+    {
+        return $this->isRoot;
     }
 
     /**

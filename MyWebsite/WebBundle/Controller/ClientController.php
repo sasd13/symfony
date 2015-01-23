@@ -24,8 +24,30 @@ class ClientController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
+		$this->container->get('web_moduleHandler')->checkModules();
+		
+		$request->attributes->get('_controller');
+		// will get name\nameBundle\Controller\nameController::nameAction
+		
+		$params = explode('::',$request->attributes->get('_controller'));
+		// $params[0] = 'nameBundle\Controller\nameController';
+		
+		$params = explode('\\',$params[0]);
+		// $params[3] = 'nameController';
+		
+		$controllerName = substr($params[3],0,-10);
+		// $actionName = 'name';
+		
+		$module = $em->getRepository('MyWebsiteWebBundle:Module')->findOneByName($controllerName);
+			
+		if($module == null
+			OR $module->getActive() === false)
+		{
+			return $this->redirect($this->generateUrl($router::ROUTE_HOME));
+		}
+			
 		//Get¨MenuBar
-		$menuBar = $this->container->get('web_generator')->generateMenu('menu_home');
+		$menuBar = $this->container->get('web_generator')->generateMenu('menu_home', 'Client');
 		$request->getSession()->set('menuBar', $menuBar);
 		
 		//Get¨MenuClient
@@ -35,12 +57,12 @@ class ClientController extends Controller
 		/*
 		 * LogIn Action
 		 */
-		if($request->getSession()->get('idClient') == null)
+		if($request->getSession()->get('idUser') == null)
 		{
 			$client = new Client();
 			
 			$form = $this->createForm(new ClientType(), $client, array(
-				'action' => $this->generateUrl($router::ROUTE_CLIENT)
+				'action' => $this->generateUrl($router::ROUTE_PROFILE_CLIENT)
 			));
 			
 			$message = "* Denotes Required Field";
@@ -56,32 +78,31 @@ class ClientController extends Controller
 				 */
 				$form->submit($request->get($form->getName()), false);
 				
-				$clientBuffer = $em->getRepository('MyWebsiteWebBundle:Client')->findOneByLogin($client->getLogin());
+				$clientBuffer = $em->getRepository('MyWebsiteWebBundle:User')->findOneByLogin($client->getLogin());
 				if ($form->isValid()
 					AND $clientBuffer != null
-					AND $clientBuffer->getPassword() === $client->getPassword()
-					AND $clientBuffer->getPrivacyLevel() === Client::PRIVACYLEVEL_LOW)
+					AND $clientBuffer->getPassword() === $client->getPassword())
 				{
-					$request->getSession()->set('idClient', $clientBuffer->getId());
+					$request->getSession()->set('idUser', $clientBuffer->getId());
 					
-					return $this->redirect($this->generateUrl($router::ROUTE_CLIENT));
+					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 				}
 				
 				$message = "* Identifiants erronés";
 			}
 				
-			return $this->render($layouter::LAYOUT_PROFILE_LOGIN, array(
-				'title' => 'MyClient',
+			return $this->render($layouter::LAYOUT_PROFILE_USER_LOGIN, array(
+				'title' => 'MyProfile',
 				'form' => $form->createView(),
 				'message' => $message
 			));
 		}
 		
-		$client = $em->getRepository('MyWebsiteWebBundle:Client')->find($request->getSession()->get('idClient'));
+		$client = $em->getRepository('MyWebsiteWebBundle:Client')->find($request->getSession()->get('idUser'));
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'Client/client-default',
-			'profile' => $client,
+			'subLayout' => 'Client/client',
+			'user' => $client,
 		));
 	}
 	
@@ -92,15 +113,15 @@ class ClientController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idClient') == null)
+		if($request->getSession()->get('idUser') == null)
 		{
-			return $this->redirect($this->generateUrl($router::ROUTE_CLIENT));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 		}
 		
-		$client = $em->getRepository('MyWebsiteWebBundle:Client')->myFindWithCategoriesAndContents($request->getSession()->get('idClient'));
+		$client = $em->getRepository('MyWebsiteWebBundle:Client')->myFindWithCategoriesAndContents($request->getSession()->get('idUser'));
 		
 		$form = $this->createForm(new ClientType(), $client, array(
-			'action' => $this->generateUrl($router::ROUTE_CLIENT_INFO)
+			'action' => $this->generateUrl($router::ROUTE_PROFILE_CLIENT_INFO)
 		));
 		
 		$message = "* Denotes Required Field";
@@ -178,7 +199,7 @@ class ClientController extends Controller
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
 			'subLayout' => 'Client/client-edit',
-			'profile' => $client,
+			'user' => $client,
 			'form' => $form->createView(),
 			'message' => $message,
 		));
@@ -191,17 +212,27 @@ class ClientController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idClient') == null)
+		if($request->getSession()->get('idUser') == null)
 		{
-			return $this->redirect($this->generateUrl($router::ROUTE_CLIENT));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 		}
 		
-		$client = $em->getRepository('MyWebsiteWebBundle:Client')->myFindWithCategoryAndPicture($request->getSession()->get('idClient'));
+		$client = $em->getRepository('MyWebsiteWebBundle:Client')->myFindWithCategoryAndPicture($request->getSession()->get('idUser'));
 		$category = $client->getCategories()->get(0);
 		$oldPicture = ($category->getDocuments()->count() > 0) ? $category->getDocuments()->get(0) : null;
 		
-		$picture = new Document('image');
-		$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router::ROUTE_CLIENT_PICTURE)));
+		$form = null;
+		$picture = null;
+		if($oldPicture == null)
+		{
+			$picture = new Document('image');
+			$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router::ROUTE_PROFILE_CLIENT_PICTURE)));
+		}
+		else
+		{
+			$picture = $oldPicture;
+			$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router::ROUTE_PROFILE_CLIENT_PICTURE)));
+		}
 		
 		$message = "* Denotes Required Field";
 		
@@ -211,23 +242,22 @@ class ClientController extends Controller
 			
 			$message = "La photo de profil n'a pas été enregistrée";
 			
-			die(var_dump($form));
-			
 			if($form->isValid())
 			{
 				$picture->setCategory($category);
 				$em->persist($picture);
 				
+				//die(var_dump($picture->getPath()));
+				
 				if($picture->getPath() !== Document::DEFAULT_PATH)
 				{
 					if($oldPicture != null)
 					{
-						$category->removeDocument($oldPicture);
 						$em->remove($oldPicture);
 					}
 					$category->update();
 					
-					$client->setPictureName($picture->getName());
+					$client->setPictureTitle($picture->getTitle());
 					$client->setPicturePath($picture->getPath());
 					$client->update();
 					
@@ -244,7 +274,7 @@ class ClientController extends Controller
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
 			'subLayout' => 'Client/client-picture-edit',
-			'profile' => $client,
+			'user' => $client,
 			'form' => $form->createView(),
 			'message' => $message
 		));
@@ -256,19 +286,19 @@ class ClientController extends Controller
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
 		
-		if($request->getSession()->get('idClient') == null)
+		if($request->getSession()->get('idUser') == null)
 		{
-			return $this->redirect($this->generateUrl($router::ROUTE_CLIENT));
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 		}
 		
-		$client = $em->getRepository('MyWebsiteWebBundle:Client')->myFindWithCategoryAndPicture($request->getSession()->get('idClient'));
+		$client = $em->getRepository('MyWebsiteWebBundle:Client')->myFindWithCategoryAndPicture($request->getSession()->get('idUser'));
 		$category = $client->getCategories()->get(0);
 		$picture = ($category->getDocuments()->count() > 0) ? $category->getDocuments()->get(0) : null;
 		
 		if(($picture != null) AND is_file($picture->getAbsolutePath()))
 		{
 			$client->setPicturePath(null);
-			$client->setPictureName(null);
+			$client->setPictureTitle(null);
 			
 			$category->removeDocument($picture);
 			$category->update();
@@ -278,7 +308,7 @@ class ClientController extends Controller
 			$em->flush();
 		}
 		
-		return $this->redirect($this->generateUrl($router::ROUTE_CLIENT_PICTURE));
+		return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT_PICTURE));
 	}
 	
 	public function deleteAction()

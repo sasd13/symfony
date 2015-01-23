@@ -15,8 +15,8 @@
 					<span class="required_notification">{{ message }}</span>
 				</li>
 				<li>
-					{{ form_label(form.name, "Nom") }}
-					{{ form_widget(form.name) }}
+					{{ form_label(form.title, "Nom") }}
+					{{ form_widget(form.title) }}
 				</li>
 				<li>
 					{{ form_label(form.hide, "Privé") }}
@@ -28,10 +28,10 @@
 				</li>
 			</ul>
 			<ul class="form-submit">
-				{% if profile.picturePath != null %}
+				{% if user.picturePath != null %}
 					<li>
 						<input type="submit" class="submit" value="Modifier"/>
-						<a href="{{ path('web_client_picture_delete') }}"><input type="button" value="Supprimer"/></a>
+						<a href="{{ path('web_profile_client_picture_delete') }}"><input type="button" value="Supprimer"/></a>
 					</li>
 				{% else %}
 					<li>

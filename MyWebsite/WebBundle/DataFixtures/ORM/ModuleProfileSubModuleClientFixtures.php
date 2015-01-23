@@ -35,7 +35,7 @@ class ModuleProfileSubModuleClientFixtures extends AbstractFixture implements Or
 		$manager->persist($subModule);
 		
 		//Public Menu MyProfile
-		$menu = new Menu('MyProfile', $router::ROUTE_CLIENT);
+		$menu = new Menu('MyProfile', $router::ROUTE_PROFILE_CLIENT);
 		$menu
 			->setIsRoot(true)
 			->setModule($subModule)
@@ -45,10 +45,10 @@ class ModuleProfileSubModuleClientFixtures extends AbstractFixture implements Or
 		//SubMenus for Menu MyProfile
 		$subMenus = new ArrayCollection();
 		
-		$sub = new Menu('Sign up', $router::ROUTE_PROFILE_SIGNUP);
+		$sub = new Menu('Sign up', $router::ROUTE_PROFILE_USER_SIGNUP);
 		$subMenus[] = $sub;
 		
-		$sub = new Menu('Log out', $router::ROUTE_PROFILE_LOGOUT);
+		$sub = new Menu('Log out', $router::ROUTE_PROFILE_USER_LOGOUT);
 		$subMenus[] = $sub;
 		
 		foreach($subMenus as $subMenu)
@@ -62,7 +62,7 @@ class ModuleProfileSubModuleClientFixtures extends AbstractFixture implements Or
 		}
 		
 		//Config Menu Profile
-		$menu = new Menu('Profile', $router::ROUTE_CLIENT);
+		$menu = new Menu('Profile', $router::ROUTE_PROFILE_CLIENT);
 		$menu
 			->setDisplay(Menu::DISPLAY_CONFIG_ONLY)
 			->setIsRoot(true)
@@ -73,15 +73,19 @@ class ModuleProfileSubModuleClientFixtures extends AbstractFixture implements Or
 		//SubMenu for Menu Profile
 		$subMenus = new ArrayCollection();
 		
-		$sub = new Menu('Informations', $router::ROUTE_CLIENT_INFO);
+		$sub = new Menu('Informations', $router::ROUTE_PROFILE_CLIENT_INFO);
 		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
 		$subMenus[] = $sub;
 		
-		$sub = new Menu('Profile picture', $router::ROUTE_CLIENT_PICTURE);
+		$sub = new Menu('Profile picture', $router::ROUTE_PROFILE_CLIENT_PICTURE);
 		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
 		$subMenus[] = $sub;
 		
 		$sub = new Menu('Log in options', $router::ROUTE_PROFILE_USER);
+		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
+		$subMenus[] = $sub;
+		
+		$sub = new Menu('Upgrade to Admin', $router::ROUTE_PROFILE_USER_UPGRADE);
 		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
 		$subMenus[] = $sub;
 		

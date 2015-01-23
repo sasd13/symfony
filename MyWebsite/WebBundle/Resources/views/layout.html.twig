@@ -1,6 +1,3 @@
-{% set idAdmin = app.session.get('idAdmin') %}
-{% set idClient = app.session.get('idClient') %}
-
 <!--
 Author: W3layouts
 Author URL: http://w3layouts.com
@@ -45,6 +42,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<a href="{{ path('web_home') }}"><img src="{{ asset('bundles/mywebsiteweb/') }}images/logo.png" title="Webworld" /></a>
 					</div>
 					<!---End-logo---->
+					{% set idUser = app.session.get('idUser') %}
 					{% set menuBar = app.session.get('menuBar') %}
 					{% if menuBar != null %}
 						<!---start-top-nav---->
@@ -53,7 +51,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<li><a href="{{ path('web_home') }}">Home</a></li>
 								{% for menu in menuBar %}
 									{% if menu.name == 'Admin' %}
-										{% if idAdmin != null %}
+										{% if idUser != null %}
 											<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
 											{% for subMenu in menu.subMenus %}
 												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
@@ -63,11 +61,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 										<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
 										{% for subMenu in menu.subMenus %}
 											{% if subMenu.name == 'Sign up' %}
-												{% if idClient == null %}
+												{% if idUser == null %}
 													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
 												{% endif %}
 											{% elseif subMenu.name == 'Log out' %}
-												{% if idClient != null %}
+												{% if idUser != null %}
 													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
 												{% endif %}
 											{% else %}
@@ -125,8 +123,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<input type="submit" value="Go" />
 						</form>
 						<br/>
-						{% if idClient == null %}
-							<p><a id="log" href="{{ path('web_admin') }}">Go to Administration</a></p>
+						{% if idUser == null %}
+							<p><a id="log" href="{{ path('web_profile_admin') }}">Go to Administration</a></p>
 						{% endif %}
 					</div>					
 					<div class="clear"> </div>
