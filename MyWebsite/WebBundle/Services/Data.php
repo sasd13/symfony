@@ -1,0 +1,32 @@
+<?php
+
+namespace MyWebsite\WebBundle\Services;
+
+use MyWebsite\WebBundle\Entity\Bundle;
+use MyWebsite\WebBundle\Entity\Module;
+use MyWebsite\WebBundle\Entity\Menu;
+use MyWebsite\WebBundle\Entity\Content;
+use MyWebsite\WebBundle\Entity\Document;
+
+class Data
+{
+	const DEFAULT_BUNDLE_ACTIVE = Bundle::DEFAULT_ACTIVE;
+	
+	const DEFAULT_MODULE_ACTIVE = Module::DEFAULT_ACTIVE;
+	
+	const DEFAULT_MENU_ISROOT = Menu::DEFAULT_ISROOT;
+	const DEFAULT_MENU_ACTIVE = Menu::DEFAULT_ACTIVE;
+	const DEFAULT_MENU_DISPLAY_WEB = Menu::DEFAULT_DISPLAY;
+	
+	const DEFAULT_CONTENT_REQUIRED = Content::DEFAULT_REQUIRED;
+	const DEFAULT_CONTENT_POLICYLEVEL_LOW = Content::POLICYLEVEL_LOW;
+	const DEFAULT_CONTENT_POLICYLEVEL_MEDIUM = Content::POLICYLEVEL_MEDIUM;
+	const DEFAULT_CONTENT_POLICYLEVEL_HIGH = Content::POLICYLEVEL_HIGH;
+	
+	const DEFAULT_DOCUMENT_NAME = Document::DEFAULT_NAME;
+	const DEFAULT_DOCUMENT_MIMETYPE = Document::DEFAULT_MIMETYPE;
+	const DEFAULT_DOCUMENT_PATH = Document::DEFAULT_PATH;
+	const DEFAULT_DOCUMENT_HIDE = Document::DEFAULT_HIDE;
+	const DEFAULT_DOCUMENT_SUBDIR_DOCUMENT = Document::SUBDIR_DOCUMENT;
+	const DEFAULT_DOCUMENT_SUBDIR_IMAGE = Document::SUBDIR_IMAGE;
+}

@@ -4,8 +4,8 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use \DateTime;
+use MyWebsite\WebBundle\Model\TimeManagerInterface;
 
 /**
  * TimeManager

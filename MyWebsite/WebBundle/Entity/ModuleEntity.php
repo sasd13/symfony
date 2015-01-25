@@ -4,8 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Model\AbstractEntity;
-use MyWebsite\WebBundle\Entity\Category;
+use MyWebsite\WebBundle\Entity\AbstractEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**

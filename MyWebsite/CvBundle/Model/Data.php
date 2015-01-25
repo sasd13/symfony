@@ -1,6 +1,6 @@
 <?php
 
-namespace MyWebsite\ProfileBundle\Model;
+namespace MyWebsite\CvBundle\Model;
 
 class Data
 {

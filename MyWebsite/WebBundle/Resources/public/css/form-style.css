@@ -121,7 +121,8 @@
 	text-transform: uppercase;
 	font-family: 'open_sansregular';
 	color: #FFF;
-	width: 30%;
+	width: 200px;
+	max-width: 200px;
 	border-radius: 0.3em;
 	-webkit-border-radius: 0.3em;
 	-moz-border-radius: 0.3em;

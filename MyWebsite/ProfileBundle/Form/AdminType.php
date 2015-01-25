@@ -17,11 +17,30 @@ class AdminType extends AbstractType
     {
 		$builder
             ->setMethod('POST')
-			->add('login', 'text')
-			->add('password', 'password')
-			->add('email', 'email')
-			->add('categories', 'collection', array(
-				'type' => new CategoryType()
+			->add('login', 'text', array(
+				'attr' => array(
+					'placeholder' => 'example : ab001',
+				)
+			))
+			->add('password', 'password', array(
+				'attr' => array(
+					'placeholder' => 'password',
+				)
+			))
+			->add('email', 'email', array(
+				'attr' => array(
+					'placeholder' => 'example@email.com',
+				)
+			))
+			->add('firstName', 'text', array(
+				'attr' => array(
+					'placeholder' => 'your first name',
+				)
+			))
+			->add('lastName', 'text', array(
+				'attr' => array(
+					'placeholder' => 'your last name',
+				)
 			))
         ;
     }
@@ -42,6 +61,6 @@ class AdminType extends AbstractType
      */
     public function getName()
     {
-        return 'mywebsite_profilebundle_admin';
+        return 'profile_admin';
     }
 }

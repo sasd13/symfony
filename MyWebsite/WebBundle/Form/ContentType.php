@@ -60,6 +60,6 @@ class ContentType extends AbstractType
      */
     public function getName()
     {
-        return 'mywebsite_webbundle_content';
+        return 'web_content';
     }
 }

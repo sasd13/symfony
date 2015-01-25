@@ -7,58 +7,34 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\ProfileBundle\Entity\Admin;
-use MyWebsite\ProfileBundle\Form\AdminType;
-use MyWebsite\WebBundle\Entity\Category;
-use MyWebsite\WebBundle\Entity\Content;
-use MyWebsite\WebBundle\Entity\Document;
-use MyWebsite\WebBundle\Form\CategoryType;
-use MyWebsite\WebBundle\Form\ContentType;
-use MyWebsite\WebBundle\Form\DocumentType;
 
 class AdminController extends Controller
 {	
 	public function loadAction()
     {
-		$router = $this->container->get('profile_router');
-		$layouter = $this->container->get('profile_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
-		
-		/*
-		 * Check Bundle and Module
-		 */
-		$controller = $request->attributes->get('_controller');
-		// will get name\nameBundle\Controller\nameController::nameAction
-		
-		$check = $this->container->get('web_moduleHandler')->checkHandler($controller);
-			
-		if($check === false)
-		{
-			$router = $this->container->get('web_router');
-			
-			return $this->redirect($this->generateUrl($router::ROUTE_WEB_HOME));
-		}
-			
-		//Get¨MenuBar
-		$menuBar = $this->container->get('profile_generator')->generateMenu('menu_bar', 'Admin');
-		$request->getSession()->set('menuBar', $menuBar);
-		
-		//Get¨MenuAdmin
-		$menuAdmin = $this->container->get('profile_generator')->generateMenu('menu_admin');
-		$request->getSession()->set('menuProfile', $menuAdmin);
+		$router = $this->container->get('profile_router');
+		$layouter = $this->container->get('profile_layouter');
+		$webData = $this->container->get('web_data');
+		$profileData = $this->container->get('profile_data');
 		
 		/*
 		 * LogIn Action
 		 */
 		if($request->getSession()->get('idUser') == null)
 		{
-			//Get¨MenuBar
-			$menuBar = $this->container->get('web_generator')->generateMenu();
-			$request->getSession()->set('menuBar', $menuBar);
+			//Get¨MenuWeb mode Client
+			$menuWeb = $this->container->get('web_generator')->getMenu(array(
+				$webData::DEFAULT_MENU_DISPLAY_WEB,
+				$profileData::CLIENT_MENU_DISPLAY_WEB,
+			));
+			$request->getSession()->set('menuWeb', $menuWeb);
+			//End getting
 		
 			$admin = new Admin();
 			
-			$form = $this->createForm(new AdminType(), $admin, array(
+			$form = $this->createForm('profile_admin', $admin, array(
 				'action' => $this->generateUrl($router::ROUTE_PROFILE_ADMIN)
 			));
 			
@@ -79,10 +55,11 @@ class AdminController extends Controller
 				if ($form->isValid()
 					AND $adminBuffer != null
 					AND $adminBuffer->getPassword() === $admin->getPassword()
-					AND ($adminBuffer->getPrivacyLevel() === Admin::PRIVACYLEVEL_MEDIUM
-						OR $adminBuffer->getPrivacyLevel() === Admin::PRIVACYLEVEL_HIGH))
+					AND ($adminBuffer->getPrivacyLevel() === $profileData::USER_PRIVACYLEVEL_MEDIUM
+						OR $adminBuffer->getPrivacyLevel() === $profileData::USER_PRIVACYLEVEL_HIGH))
 				{
 					$request->getSession()->set('idUser', $adminBuffer->getId());
+					$request->getSession()->set('mode', 'admin');
 					
 					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_ADMIN));
 				}
@@ -97,20 +74,42 @@ class AdminController extends Controller
 			));
 		}
 		
+		if($request->getSession()->get('mode') !== 'admin')
+		{
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
+		}
+		
+		//Get¨MenuWeb mode Admin
+		$menuWeb = $this->container->get('web_generator')->getMenu(array(
+			$webData::DEFAULT_MENU_DISPLAY_WEB,
+			$profileData::ADMIN_MENU_DISPLAY_WEB,
+		));
+		$request->getSession()->set('menuWeb', $menuWeb);
+		//End getting
+		
+		//Get¨MenuProfile mode Admin
+		$menuProfile = $this->container->get('web_generator')->getMenu(array(
+			$profileData::ADMIN_MENU_DISPLAY_PROFILE,
+		));
+		$request->getSession()->set('menuProfile', $menuProfile);
+		//End getting
+		
 		$admin = $em->getRepository('MyWebsiteProfileBundle:Admin')->find($request->getSession()->get('idUser'));
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'Admin:admin',
+			'subLayout' => $layouter::SUBLAYOUT_PROFILE_ADMIN,
 			'user' => $admin,
 		));
 	}
 	
 	public function editAction()
     {
-		$router = $this->container->get('profile_router');
-		$layouter = $this->container->get('profile_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		$router = $this->container->get('profile_router');
+		$layouter = $this->container->get('profile_layouter');
+		$webData = $this->container->get('web_data');
+		$profileData = $this->container->get('profile_data');
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -119,7 +118,7 @@ class AdminController extends Controller
 		
 		$admin = $em->getRepository('MyWebsiteProfileBundle:Admin')->myFindWithCategoriesAndContents($request->getSession()->get('idUser'));
 		
-		$form = $this->createForm(new AdminType(), $admin, array(
+		$form = $this->createForm('profile_admin', $admin, array(
 			'action' => $this->generateUrl($router::ROUTE_PROFILE_ADMIN_INFO)
 		));
 		
@@ -167,21 +166,21 @@ class AdminController extends Controller
 							}
 						}
 							
-						if($content->getLabel() === Data::CONTENT_LABEL_ADMIN_FIRSTNAME
+						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_FIRSTNAME
 							AND $content->getStringValue() !== $admin->getFirstName())
 						{
 							$admin->setFirstName($content->getStringValue());
 							$admin->update();
 						}
 						
-						if($content->getLabel() === Data::CONTENT_LABEL_ADMIN_LASTNAME
+						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_LASTNAME
 							AND $content->getStringValue() !== $admin->getLastName())
 						{
 							$admin->setLastName($content->getStringValue());
 							$admin->update();
 						}
 						
-						if($content->getLabel() === Data::CONTENT_LABEL_USER_EMAIL
+						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_EMAIL
 							AND $content->getStringValue() !== $admin->getEmail())
 						{
 							$admin->setEmail($content->getStringValue());
@@ -197,7 +196,7 @@ class AdminController extends Controller
 		}
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'Admin:admin-edit',
+			'subLayout' => $layouter::SUBLAYOUT_PROFILE_ADMIN_EDIT,
 			'user' => $admin,
 			'form' => $form->createView(),
 			'message' => $message,

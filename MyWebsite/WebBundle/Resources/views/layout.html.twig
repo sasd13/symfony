@@ -43,15 +43,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</div>
 					<!---End-logo---->
 					{% set idUser = app.session.get('idUser') %}
-					{% set menuBar = app.session.get('menuBar') %}
-					{% if menuBar != null %}
-						<!---start-top-nav---->
-						<div class="top-nav" id="navigation">
-							<ul>
-								<li><a href="{{ path('web_home') }}">Home</a></li>
-								{% for menu in menuBar %}
+					{% set menuWeb = app.session.get('menuWeb') %}
+					<!---start-top-nav---->
+					<div class="top-nav" id="navigation">
+						<ul>
+							<li><a href="{{ path('web_home') }}">Home</a></li>
+							{% if menuWeb != null %}
+								{% for menu in menuWeb %}
 									{% if menu.name == 'Admin' %}
-										{% if idUser != null %}
+										{% if app.session.get('mode') == 'admin' %}
 											<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
 											{% for subMenu in menu.subMenus %}
 												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
@@ -81,10 +81,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 										{% endif %}
 									{% endif %}
 								{% endfor %}
-							</ul>
-							<div class="clear"> </div>
-						</div>
-					{% endif %}
+							{% endif %}
+						</ul>
+						<div class="clear"> </div>
+					</div>
 					<div class="clear"> </div>
 					<!---//End-top-nav---->
 				</div>

@@ -7,9 +7,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use MyWebsite\WebBundle\Entity\Module;
-use MyWebsite\WebBundle\Entity\Menu;
-use Doctrine\Common\Collections\ArrayCollection;
 
 class ModuleClientFixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
@@ -25,81 +22,70 @@ class ModuleClientFixtures extends AbstractFixture implements OrderedFixtureInte
 	
 	public function load(ObjectManager $manager)
 	{
-		$router = $this->container->get('profile_router');
-		
 		$bundle = $this->getReference('bundle_profile');
+		$webGenerator = $this->container->get('web_generator');
+		$router = $this->container->get('profile_router');
+		$profileData = $this->container->get('profile_data');
 		
 		//Module Client
-		$module = new Module('Client');
-		$module->setBundle($bundle);
-		$manager->persist($module);
+		$module = $webGenerator->generateModule(
+			$bundle,
+			'Client'
+		);
 		
-		//Public Menu MyProfile
-		$menu = new Menu('MyProfile', $router::ROUTE_PROFILE_CLIENT);
-		$menu
-			->setIsRoot(true)
-			->setModule($module)
-		;
-		$manager->persist($menu);
+		//MenuWeb MyProfile
+		$menu = $webGenerator->generateMenu(
+			$module,
+			'MyProfile', 
+			$router::ROUTE_PROFILE_CLIENT, 
+			$profileData::CLIENT_MENU_DISPLAY_WEB
+		);
 		
-		//SubMenus for Menu MyProfile
-		$subMenus = new ArrayCollection();
+		//SubMenus for MenuWeb MyProfile
+		$subMenu = $webGenerator->generateSubMenu(
+			$menu,
+			'Sign up',
+			$router::ROUTE_PROFILE_USER_SIGNUP
+		);
 		
-		$sub = new Menu('Sign up', $router::ROUTE_PROFILE_USER_SIGNUP);
-		$subMenus[] = $sub;
-		
-		$sub = new Menu('Log out', $router::ROUTE_PROFILE_USER_LOGOUT);
-		$subMenus[] = $sub;
-		
-		foreach($subMenus as $subMenu)
-		{
+		$subMenu = $webGenerator->generateSubMenu(
+			$menu,
+			'Log out',
+			$router::ROUTE_PROFILE_USER_LOGOUT
+		);
 			
-			$subMenu
-				->setModule($module)
-				->setParentMenu($menu)
-			;
-			$manager->persist($subMenu);
-		}
+		//MenuProfile Profile
+		$menu = $webGenerator->generateMenu(
+			$module,
+			'Profile',
+			$router::ROUTE_PROFILE_CLIENT, 
+			$profileData::CLIENT_MENU_DISPLAY_PROFILE
+		);
 		
-		//Config Menu Profile
-		$menu = new Menu('Profile', $router::ROUTE_PROFILE_CLIENT);
-		$menu
-			->setDisplay(Menu::DISPLAY_CONFIG_ONLY)
-			->setIsRoot(true)
-			->setModule($module)
-		;
-		$manager->persist($menu);
+		//SubMenu for MenuProfile Profile
+		$subMenu = $webGenerator->generateSubMenu(
+			$menu,
+			'Informations',
+			$router::ROUTE_PROFILE_CLIENT_INFO
+		);
 		
-		//SubMenu for Menu Profile
-		$subMenus = new ArrayCollection();
+		$subMenu = $webGenerator->generateSubMenu(
+			$menu,
+			'Profile picture',
+			$router::ROUTE_PROFILE_CLIENT_PICTURE
+		);
 		
-		$sub = new Menu('Informations', $router::ROUTE_PROFILE_CLIENT_INFO);
-		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
-		$subMenus[] = $sub;
+		$subMenu = $webGenerator->generateSubMenu(
+			$menu,
+			'Log in options',
+			$router::ROUTE_PROFILE_USER
+		);
 		
-		$sub = new Menu('Profile picture', $router::ROUTE_PROFILE_CLIENT_PICTURE);
-		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
-		$subMenus[] = $sub;
-		
-		$sub = new Menu('Log in options', $router::ROUTE_PROFILE_USER);
-		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
-		$subMenus[] = $sub;
-		
-		$sub = new Menu('Upgrade to Admin', $router::ROUTE_PROFILE_USER_UPGRADE);
-		$sub->setDisplay(Menu::DISPLAY_CONFIG_ONLY);
-		$subMenus[] = $sub;
-		
-		foreach($subMenus as $subMenu)
-		{
-			
-			$subMenu
-				->setModule($module)
-				->setParentMenu($menu)
-			;
-			$manager->persist($subMenu);
-		}
-		
-		$manager->flush();
+		$subMenu = $webGenerator->generateSubMenu(
+			$menu,
+			'Upgrade to Admin',
+			$router::ROUTE_PROFILE_USER_UPGRADE
+		);
 	}
 	
 	public function getOrder()

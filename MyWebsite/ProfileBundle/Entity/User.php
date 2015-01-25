@@ -46,17 +46,6 @@ class User extends ModuleEntity
     private $password;
 	
 	/**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255)
-	 * @Assert\Email(
-     *     message = "'{{ value }}' n'est pas un email valide",
-     *     checkMX = true
-     * )
-     */
-    private $email;
-	
-	/**
      * @var integer
      *
      * @ORM\Column(name="privacyLevel", type="smallint")
@@ -68,6 +57,45 @@ class User extends ModuleEntity
      * )
      */
     private $privacyLevel;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="firstName", type="string", length=255)
+	 * @Assert\NotBlank
+	 * @Assert\Length(
+	 *		min = "2",
+	 *		max = "50",
+	 *		minMessage = "Le prénom doit faire plus de {{ limit }} caractères",
+	 *		maxMessage = "Le prénom doit faire moins de {{ limit }} caractères"
+	 * )
+     */
+    private $firstName;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="lastName", type="string", length=255)
+	 * @Assert\NotBlank
+	 * @Assert\Length(
+	 *		min = "2",
+	 *		max = "50",
+	 *		minMessage = "Le nom doit faire plus de {{ limit }} caractères",
+	 *		maxMessage = "Le nom doit faire moins de {{ limit }} caractères"
+	 * )
+     */
+    private $lastName;
+	
+	/**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255)
+	 * @Assert\Email(
+     *     message = "'{{ value }}' n'est pas un email valide",
+     *     checkMX = true
+     * )
+     */
+    private $email;
 	
 	
 	public function __construct()
@@ -150,29 +178,6 @@ class User extends ModuleEntity
     }
 	
 	/**
-     * Set email
-     *
-     * @param string $email
-     * @return Profile
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string 
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
      * Set privacyLevel
      *
      * @param integer $privacyLevel
@@ -193,5 +198,74 @@ class User extends ModuleEntity
     public function getPrivacyLevel()
     {
         return $this->privacyLevel;
+    }
+	
+	/**
+     * Set firstName
+     *
+     * @param string $firstName
+     * @return Client
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * Get firstName
+     *
+     * @return string 
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     * @return Client
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Get lastName
+     *
+     * @return string 
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+	
+	/**
+     * Set email
+     *
+     * @param string $email
+     * @return Profile
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }

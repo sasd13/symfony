@@ -3,7 +3,7 @@
 namespace MyWebsite\ProfileBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use MyWebsite\ProfileBundle\Model\Data;
+use MyWebsite\ProfileBundle\Services\Data;
 
 /**
  * ClientRepository
@@ -40,7 +40,7 @@ class ClientRepository extends EntityRepository
 			->where('client.id = :id')
 			->setParameter('id', $idClient)
 			->leftJoin('client.categories', 'category', 'WITH', 'category.tag = :tag')
-			->setParameter('tag', Data::CATEGORY_TAG_PICTURE)
+			->setParameter('tag', Data::CLIENT_CATEGORY_TAG_PICTURE)
 			->addSelect('category')
 			->leftJoin('category.documents', 'document')
 			->addSelect('document')

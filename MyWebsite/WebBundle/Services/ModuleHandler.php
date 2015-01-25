@@ -13,20 +13,24 @@ class ModuleHandler
 		$this->em = $em;
 	}
 	
-	public function checkHandler($controller)
+	public function checkHandler($controllerFullName)
 	{
-		$params = explode('::', $controller);
-		// $params[0] = 'name\bundlenameBundle\Controller\controllernameController';
+		// $controllerFullName = 'name\bundlenameBundle\Controller\controllernameController'
 		
-		$params = explode('\\',$params[0]);
+		$params = explode('\\', $controllerFullName);
 		// $params[1] = 'bundlenameBundle';
 		
-		$bundleName = substr($params[1],0,-6);
+		$bundleName = substr($params[1], 0, -6);
 		// $bundleName = 'bundlename';
+		
+		if($bundleName === 'Web')
+		{
+			return true;
+		}
 		
 		$bundle = $this->em->getRepository('MyWebsiteWebBundle:Bundle')->findOneByName($bundleName);
 		
-		$controllerName = substr($params[3],0,-10);
+		$controllerName = substr($params[3], 0, -10);
 		// $controllerName = 'controllername';
 		
 		$controllerName = ($controllerName === 'User') ? 'Client' : $controllerName;
@@ -42,31 +46,5 @@ class ModuleHandler
 		}
 		
 		return true;
-	}
-	
-	public function enableModules($bundleName)
-	{
-		$bundle = $this->em->getRepository('MyWebsiteWebBundle:Bundle')->findOneByName($bundleName);
-		
-		$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->findByBundle($bundle);
-		foreach($modules as $module)
-		{
-			$module->setActive(true);
-		}
-		
-		$this->em->flush();
-	}
-	
-	public function disableModules($bundleName)
-	{
-		$bundle = $this->em->getRepository('MyWebsiteWebBundle:Bundle')->findOneByName($bundleName);
-		
-		$modules = $this->em->getRepository('MyWebsiteWebBundle:Module')->findByBundle($bundle);
-		foreach($modules as $module)
-		{
-			$module->setActive(false);
-		}
-		
-		$this->em->flush();
 	}
 }

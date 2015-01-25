@@ -12,4 +12,42 @@ use Doctrine\ORM\EntityRepository;
  */
 class MenuRepository extends EntityRepository
 {
+	public function myFindMenusByDisplay($arrayDisplay)
+	{
+		$qb = $this->createQueryBuilder('menu')
+			->where('menu.isRoot = :menu_isRoot')
+			->setParameter('menu_isRoot', true)
+			->andWhere('menu.active = :menu_active')
+			->setParameter('menu_active', true)
+			->leftJoin('menu.subMenus', 'subMenu')
+			->addSelect('subMenu')
+			->andWhere('subMenu.active = :subMenu_active')
+			->setParameter('subMenu_active', true)
+			->leftJoin('menu.module', 'module')
+			->addSelect('module')
+			->andWhere('module.active = :module_active')
+			->setParameter('module_active', true)
+			->leftJoin('module.bundle', 'bundle')
+			->addSelect('bundle')
+			->andWhere('bundle.active = :bundle_active')
+			->setParameter('bundle_active', true)
+		;
+		
+		if(count($arrayDisplay) > 0)
+		{
+			$strParam = '';
+			foreach($arrayDisplay as $key => $display)
+			{
+				$strParam = ($key == 0) ? $strParam = $strParam.'menu.display = :menu_display'.($key) : $strParam = $strParam.' OR menu.display = :menu_display'.($key);
+			}
+			$qb = $qb->andWhere($strParam);
+			foreach($arrayDisplay as $key => $display)
+			{
+				$qb = $qb->setParameter('menu_display'.($key), $display);
+			}
+		}
+		$results = $qb->getQuery()->getResult();
+		
+		return $results;
+	}
 }

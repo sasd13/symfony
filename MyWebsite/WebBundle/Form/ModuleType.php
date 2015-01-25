@@ -15,10 +15,14 @@ class ModuleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 		$builder
-			->setMethod('POST')
-            ->add('name', 'text')
+            ->setMethod('POST')
+			->add('name', 'text', array(
+				'attr' => array(
+					'placeholder' => 'example : MyModule',
+				)
+			))
 			->add('active', 'checkbox')
-            ->add('readMe', 'textarea')
+			->add('readMe', 'textarea')
         ;
     }
     
@@ -37,6 +41,6 @@ class ModuleType extends AbstractType
      */
     public function getName()
     {
-        return 'mywebsite_webbundle_module';
+        return 'web_module';
     }
 }

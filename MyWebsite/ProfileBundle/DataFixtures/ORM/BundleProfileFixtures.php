@@ -7,7 +7,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use MyWebsite\WebBundle\Entity\Bundle;
 
 class BundleProfileFixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
@@ -24,12 +23,9 @@ class BundleProfileFixtures extends AbstractFixture implements OrderedFixtureInt
 	public function load(ObjectManager $manager)
 	{
 		//Bundle Profile
-		$bundle = new Bundle('Profile');
-		$manager->persist($bundle);
+		$bundle = $this->container->get('web_generator')->generateBundle('Profile');
 		
 		$this->addReference('bundle_profile', $bundle);
-		
-		$manager->flush();
 	}
 	
 	public function getOrder()

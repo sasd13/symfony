@@ -1,6 +1,10 @@
 {% extends "MyWebsiteWebBundle::layout.html.twig" %}
 
-{% block title %}{{ parent() }} - MyProfile{% endblock %}
+{% set metaTitle = 'MyProfile' %}
+{% if app.session.get('mode') == 'admin' %}
+	{% set metaTitle = 'Admin' %}
+{% endif %}
+{% block title %}{{ parent() }} - {{ metaTitle }}{% endblock %}
 
 {% block css %} 
 	{% stylesheets
@@ -24,7 +28,7 @@
 						<div class="feature-grid-head">
 							<h3><span></span>Menu</h3>
 						</div>
-						{% if user.picturePath is defined %}
+						{% if app.session.get('mode') == 'client' %}
 							<div class="picture">
 								{% if user.picturePath != null %}
 									<img src="{{ asset('bundles/mywebsiteweb/uploads/images/' ~ user.picturePath) }}" title="{{ user.pictureTitle }}"/>

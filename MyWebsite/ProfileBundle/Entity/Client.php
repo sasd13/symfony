@@ -17,34 +17,6 @@ class Client extends User implements CopyInterface
 {
 	/**
      * @var string
-     *
-     * @ORM\Column(name="firstName", type="string", length=255)
-	 * @Assert\NotBlank
-	 * @Assert\Length(
-	 *		min = "2",
-	 *		max = "50",
-	 *		minMessage = "Le prénom doit faire plus de {{ limit }} caractères",
-	 *		maxMessage = "Le prénom doit faire moins de {{ limit }} caractères"
-	 * )
-     */
-    private $firstName;
-	
-	/**
-     * @var string
-     *
-     * @ORM\Column(name="lastName", type="string", length=255)
-	 * @Assert\NotBlank
-	 * @Assert\Length(
-	 *		min = "2",
-	 *		max = "50",
-	 *		minMessage = "Le nom doit faire plus de {{ limit }} caractères",
-	 *		maxMessage = "Le nom doit faire moins de {{ limit }} caractères"
-	 * )
-     */
-    private $lastName;
-	
-	/**
-     * @var string
 	 *
 	 * @ORM\Column(name="pictureTitle", type="string", length=255, nullable=true)
      */
@@ -100,52 +72,6 @@ class Client extends User implements CopyInterface
 		
 		return $client;
 	}
-	
-	/**
-     * Set firstName
-     *
-     * @param string $firstName
-     * @return Client
-     */
-    public function setFirstName($firstName)
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    /**
-     * Get firstName
-     *
-     * @return string 
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * Set lastName
-     *
-     * @param string $lastName
-     * @return Client
-     */
-    public function setLastName($lastName)
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    /**
-     * Get lastName
-     *
-     * @return string 
-     */
-    public function getLastName()
-    {
-        return $this->lastName;
-    }
 	
 	/**
      * Set pictureTitle

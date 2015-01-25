@@ -13,9 +13,28 @@ class WebController extends Controller
 		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		
-		//Get¨MenuBar
-		$menuBar = $this->container->get('web_generator')->generateMenu();
-		$request->getSession()->set('menuBar', $menuBar);
+		$webData = $this->container->get('web_data');
+		$profileData = $this->container->get('profile_data');
+		
+		if($request->getSession()->get('mode') === 'admin')
+		{
+			//Get¨MenuWeb mode Admin
+			$menuWeb = $this->container->get('web_generator')->getMenu(array(
+				$webData::DEFAULT_MENU_DISPLAY_WEB,
+				$profileData::ADMIN_MENU_DISPLAY_WEB,
+			));
+		}
+		else
+		{
+			//Get¨MenuWeb mode Client
+			$menuWeb = $this->container->get('web_generator')->getMenu(array(
+				$webData::DEFAULT_MENU_DISPLAY_WEB,
+				$profileData::CLIENT_MENU_DISPLAY_WEB,
+			));
+		}
+		
+		$request->getSession()->set('menuWeb', $menuWeb);
+		//End getting
 		
 		return $this->render($layouter::LAYOUT_WEB_HOME);
     }

@@ -1,14 +1,14 @@
 <?php
 
-namespace MyWebsite\WebBundle\Model;
+namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Model\TimeManagerInterface;
 use MyWebsite\WebBundle\Entity\TimeManager;
+use MyWebsite\WebBundle\Model\TimeManagerInterface;
 
 /**
- * AbstractModule
+ * AbstractEntity
  *
  * @ORM\MappedSuperclass
  */

@@ -5,20 +5,52 @@ services:
 #    mywebsiteweb.example:
 #        class: %mywebsiteweb.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
+
+#   Cache service
     kernel.listener.web_cache_listener:
         class: MyWebsite\WebBundle\Listener\WebCacheListener
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
-    web_router:
-        class: MyWebsite\WebBundle\Services\Router
-    web_layouter:
-        class: MyWebsite\WebBundle\Services\Layouter
+
+#   Cache service
+    kernel.listener.web_bundle_listener:
+        class: MyWebsite\WebBundle\Listener\BundleListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+        calls:
+            - [setParameters, ["@service_container", "@controller_resolver"]]
+
+#   Global services
     web_moduleHandler:
         class: MyWebsite\WebBundle\Services\ModuleHandler
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+    web_router:
+        class: MyWebsite\WebBundle\Services\Router
+    web_layouter:
+        class: MyWebsite\WebBundle\Services\Layouter
     web_generator:
         class: MyWebsite\WebBundle\Services\Generator
         calls:
-            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setParameters, ["@doctrine.orm.entity_manager", "@service_container"]]
+    web_data:
+        class: MyWebsite\WebBundle\Services\Data
+
+#   Form services
+    web_form.form.type.web_module:
+        class: MyWebsite\WebBundle\Form\ModuleType
+        tags:
+            - { name: form.type, alias: web_module }
+    web_form.form.type.web_category:
+        class: MyWebsite\WebBundle\Form\CategoryType
+        tags:
+            - { name: form.type, alias: web_category }
+    web_form.form.type.web_content:
+        class: MyWebsite\WebBundle\Form\ContentType
+        tags:
+            - { name: form.type, alias: web_content }
+    web_form.form.type.web_document:
+        class: MyWebsite\WebBundle\Form\DocumentType
+        tags:
+            - { name: form.type, alias: web_document }
 

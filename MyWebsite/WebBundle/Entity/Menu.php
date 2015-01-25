@@ -17,8 +17,7 @@ class Menu
 	const DEFAULT_ISROOT = false;
 	const DEFAULT_ACTIVE = true;
 	
-	const DISPLAY_PUBLIC_ONLY = 1;
-	const DISPLAY_CONFIG_ONLY = 2;
+	const DEFAULT_DISPLAY = 1;
 	
 	private static $number = 0;
 	
@@ -107,7 +106,7 @@ class Menu
 		$this->target = $target;
 		$this->isRoot = self::DEFAULT_ISROOT;
 		$this->active = self::DEFAULT_ACTIVE;
-		$this->display = self::DISPLAY_PUBLIC_ONLY;
+		$this->display = self::DEFAULT_DISPLAY;
 		$this->priority = ++self::$number;
     }
 	

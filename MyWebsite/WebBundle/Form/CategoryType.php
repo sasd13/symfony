@@ -19,8 +19,16 @@ class CategoryType extends AbstractType
     {
 		$builder
 			->setMethod('POST')
-            ->add('title', 'text')
-            ->add('tag', 'text')
+            ->add('title', 'text', array(
+				'attr' => array(
+					'placeholder' => 'exemple : Identity',
+				)
+			))
+            ->add('tag', 'text', array(
+				'attr' => array(
+					'placeholder' => 'exemple : tag_identity',
+				)
+			))
             ->add('type', 'choice')
 			->add('contents', 'collection', array(
 				'type' => new ContentType()
@@ -44,6 +52,6 @@ class CategoryType extends AbstractType
      */
     public function getName()
     {
-        return 'mywebsite_webbundle_category';
+        return 'web_category';
     }
 }

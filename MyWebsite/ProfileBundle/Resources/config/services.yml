@@ -2,6 +2,8 @@ services:
 #    my_website_profile.example:
 #        class: MyWebsite\ProfileBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+
+#   Global services
     profile_router:
         class: MyWebsite\ProfileBundle\Services\Router
     profile_layouter:
@@ -9,4 +11,21 @@ services:
     profile_generator:
         class: MyWebsite\ProfileBundle\Services\Generator
         calls:
-            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setParameters, ["@doctrine.orm.entity_manager", "@service_container"]]
+    profile_data:
+        class: MyWebsite\ProfileBundle\Services\Data
+
+#   Form services
+    web_form.form.type.profile_user:
+        class: MyWebsite\ProfileBundle\Form\UserType
+        tags:
+            - { name: form.type, alias: profile_user }
+    web_form.form.type.profile_admin:
+        class: MyWebsite\ProfileBundle\Form\AdminType
+        tags:
+            - { name: form.type, alias: profile_admin }
+    web_form.form.type.profile_client:
+        class: MyWebsite\ProfileBundle\Form\ClientType
+        tags:
+            - { name: form.type, alias: profile_client }
+

@@ -7,46 +7,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\Common\Collections\ArrayCollection;
 use MyWebsite\ProfileBundle\Entity\Client;
-use MyWebsite\ProfileBundle\Form\ClientType;
-use MyWebsite\WebBundle\Entity\Category;
-use MyWebsite\WebBundle\Entity\Content;
 use MyWebsite\WebBundle\Entity\Document;
-use MyWebsite\WebBundle\Form\CategoryType;
-use MyWebsite\WebBundle\Form\ContentType;
-use MyWebsite\WebBundle\Form\DocumentType;
-use MyWebsite\ProfileBundle\Model\Data;
 
 class ClientController extends Controller
 {
 	public function loadAction()
     {
-		$router = $this->container->get('profile_router');
-		$layouter = $this->container->get('profile_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		$router = $this->container->get('profile_router');
+		$layouter = $this->container->get('profile_layouter');
+		$webData = $this->container->get('web_data');
+		$profileData = $this->container->get('profile_data');
 		
-		/*
-		 * Check Bundle and Module
-		 */
-		$controller = $request->attributes->get('_controller');
-		// will get name\nameBundle\Controller\nameController::nameAction
-		
-		$check = $this->container->get('web_moduleHandler')->checkHandler($controller);
-			
-		if($check === false)
-		{
-			$router = $this->container->get('web_router');
-			
-			return $this->redirect($this->generateUrl($router::ROUTE_WEB_HOME));
-		}
-			
-		//Get¨MenuBar
-		$menuBar = $this->container->get('profile_generator')->generateMenu('menu_bar', 'Client');
-		$request->getSession()->set('menuBar', $menuBar);
-		
-		//Get¨MenuClient
-		$menuClient = $this->container->get('profile_generator')->generateMenu('menu_client');
-		$request->getSession()->set('menuProfile', $menuClient);
+		//Get¨MenuWeb mode Client
+		$menuWeb = $this->container->get('web_generator')->getMenu(array(
+			$webData::DEFAULT_MENU_DISPLAY_WEB,
+			$profileData::CLIENT_MENU_DISPLAY_WEB,
+		));
+		$request->getSession()->set('menuWeb', $menuWeb);
+		//End getting
 		
 		/*
 		 * LogIn Action
@@ -55,7 +35,7 @@ class ClientController extends Controller
 		{
 			$client = new Client();
 			
-			$form = $this->createForm(new ClientType(), $client, array(
+			$form = $this->createForm('profile_client', $client, array(
 				'action' => $this->generateUrl($router::ROUTE_PROFILE_CLIENT)
 			));
 			
@@ -78,6 +58,7 @@ class ClientController extends Controller
 					AND $clientBuffer->getPassword() === $client->getPassword())
 				{
 					$request->getSession()->set('idUser', $clientBuffer->getId());
+					$request->getSession()->set('mode', 'client');
 					
 					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 				}
@@ -92,20 +73,33 @@ class ClientController extends Controller
 			));
 		}
 		
+		if($request->getSession()->get('mode') !== 'client')
+		{
+			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_ADMIN));
+		}
+		
+		//Get¨Profile mode Client
+		$menuProfile = $this->container->get('web_generator')->getMenu(array(
+			$profileData::CLIENT_MENU_DISPLAY_PROFILE,
+		));
+		$request->getSession()->set('menuProfile', $menuProfile);
+		//End getting
+		
 		$client = $em->getRepository('MyWebsiteProfileBundle:Client')->find($request->getSession()->get('idUser'));
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'Client:client',
+			'subLayout' => $layouter::SUBLAYOUT_PROFILE_CLIENT,
 			'user' => $client,
 		));
 	}
 	
 	public function editAction()
     {
-		$router = $this->container->get('profile_router');
-		$layouter = $this->container->get('profile_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		$router = $this->container->get('profile_router');
+		$layouter = $this->container->get('profile_layouter');
+		$profileData = $this->container->get('profile_data');
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -114,7 +108,7 @@ class ClientController extends Controller
 		
 		$client = $em->getRepository('MyWebsiteProfileBundle:Client')->myFindWithCategoriesAndContents($request->getSession()->get('idUser'));
 		
-		$form = $this->createForm(new ClientType(), $client, array(
+		$form = $this->createForm('profile_client', $client, array(
 			'action' => $this->generateUrl($router::ROUTE_PROFILE_CLIENT_INFO)
 		));
 		
@@ -162,21 +156,21 @@ class ClientController extends Controller
 							}
 						}
 							
-						if($content->getLabel() === Data::CONTENT_LABEL_CLIENT_FIRSTNAME
+						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_FIRSTNAME
 							AND $content->getStringValue() !== $client->getFirstName())
 						{
 							$client->setFirstName($content->getStringValue());
 							$client->update();
 						}
 						
-						if($content->getLabel() === Data::CONTENT_LABEL_CLIENT_LASTNAME
+						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_LASTNAME
 							AND $content->getStringValue() !== $client->getLastName())
 						{
 							$client->setLastName($content->getStringValue());
 							$client->update();
 						}
 						
-						if($content->getLabel() === Data::CONTENT_LABEL_USER_EMAIL
+						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_EMAIL
 							AND $content->getStringValue() !== $client->getEmail())
 						{
 							$client->setEmail($content->getStringValue());
@@ -192,7 +186,7 @@ class ClientController extends Controller
 		}
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'Client:client-edit',
+			'subLayout' => $layouter::SUBLAYOUT_PROFILE_CLIENT_EDIT,
 			'user' => $client,
 			'form' => $form->createView(),
 			'message' => $message,
@@ -201,10 +195,11 @@ class ClientController extends Controller
 	
 	public function editPictureAction()
     {
-		$router = $this->container->get('profile_router');
-		$layouter = $this->container->get('profile_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		$router = $this->container->get('profile_router');
+		$layouter = $this->container->get('profile_layouter');
+		$webData = $this->container->get('web_data');
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -216,7 +211,9 @@ class ClientController extends Controller
 		$oldPicture = ($category->getDocuments()->count() > 0) ? $category->getDocuments()->get(0) : null;
 		
 		$picture = new Document('image');
-		$form = $this->createForm(new DocumentType(), $picture, array('action' => $this->generateUrl($router::ROUTE_PROFILE_CLIENT_PICTURE)));
+		$form = $this->createForm('web_document', $picture, 
+			array('action' => $this->generateUrl($router::ROUTE_PROFILE_CLIENT_PICTURE)
+		));
 		
 		$message = "* Denotes Required Field";
 		
@@ -231,9 +228,7 @@ class ClientController extends Controller
 				$picture->setCategory($category);
 				$em->persist($picture);
 				
-				//die(var_dump($picture->getPath()));
-				
-				if($picture->getPath() !== Document::DEFAULT_PATH)
+				if($picture->getPath() !== $webData::DEFAULT_DOCUMENT_PATH)
 				{
 					if($oldPicture != null)
 					{
@@ -241,8 +236,8 @@ class ClientController extends Controller
 					}
 					$category->update();
 					
-					$client->setPictureTitle($picture->getTitle());
 					$client->setPicturePath($picture->getPath());
+					$client->setPictureTitle($picture->getTitle());
 					$client->update();
 					
 					$message = "La photo de profil a été enregistrée avec succès";
@@ -257,7 +252,7 @@ class ClientController extends Controller
 		}
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'Client:client-picture-edit',
+			'subLayout' => $layouter::SUBLAYOUT_PROFILE_CLIENT_PICTURE_EDIT,
 			'user' => $client,
 			'form' => $form->createView(),
 			'message' => $message
@@ -266,9 +261,9 @@ class ClientController extends Controller
 	
 	public function deletePictureAction()
     {
-		$router = $this->container->get('profile_router');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		$router = $this->container->get('profile_router');
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -298,8 +293,6 @@ class ClientController extends Controller
 	public function deleteAction()
     {
 		$router = $this->container->get('web_router');
-		$request = $this->getRequest();
-		$em = $this->getDoctrine()->getManager();
 		
 		return $this->redirect($this->generateUrl($router::ROUTE_WEB_EXCEPTION_ERROR));
 	}

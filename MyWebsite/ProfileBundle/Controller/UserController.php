@@ -6,46 +6,44 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use MyWebsite\ProfileBundle\Entity\User;
-use MyWebsite\ProfileBundle\Form\UserType;
 use MyWebsite\ProfileBundle\Entity\Client;
-use MyWebsite\ProfileBundle\Form\ClientType;
 
 class UserController extends Controller
 {
 	public function signupAction()
 	{
-		$router = $this->container->get('profile_router');
-		$layouter = $this->container->get('profile_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		$router = $this->container->get('profile_router');
+		$layouter = $this->container->get('profile_layouter');
+		$webData = $this->container->get('web_data');
+		$profileData = $this->container->get('profile_data');
 		
-		/*
-		 * Check Bundle and Module
-		 */
-		$controller = $request->attributes->get('_controller');
-		// will get name\nameBundle\Controller\nameController::nameAction
-		
-		$check = $this->container->get('web_moduleHandler')->checkHandler($controller);
-			
-		if($check === false)
-		{
-			$router = $this->container->get('web_router');
-			
-			return $this->redirect($this->generateUrl($router::ROUTE_WEB_HOME));
-		}
-		
-		//Get¨MenuBar
-		$menuBar = $this->container->get('web_generator')->generateMenu();
-		$request->getSession()->set('menuBar', $menuBar);
-		
+		//Check Session
 		if($request->getSession()->get('idUser') != null)
 		{
-			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
+			if($request->getSession()->get('mode') === 'admin')
+			{
+				return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_ADMIN));
+			}
+			else
+			{
+				return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
+			}
 		}
+		//End checking
+		
+		//Get¨MenuWeb mode Client
+		$menuWeb = $this->container->get('web_generator')->getMenu(array(
+			$webData::DEFAULT_MENU_DISPLAY_WEB,
+			$profileData::CLIENT_MENU_DISPLAY_WEB,
+		));
+		$request->getSession()->set('menuWeb', $menuWeb);
+		//End getting
 		
 		$client = new Client();
 		
-		$form = $this->createForm(new ClientType(), $client, array(
+		$form = $this->createForm('profile_client', $client, array(
 			'action' => $this->generateUrl($router::ROUTE_PROFILE_USER_SIGNUP)
 		));
 			
@@ -67,6 +65,7 @@ class UserController extends Controller
 				if($client != null)
 				{
 					$request->getSession()->set('idUser', $client->getId());
+					$request->getSession()->set('mode', 'client');
 					
 					return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 				}
@@ -83,25 +82,10 @@ class UserController extends Controller
 	
 	public function loadAction()
     {
-		$router = $this->container->get('profile_router');
-		$layouter = $this->container->get('profile_layouter');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
-		
-		/*
-		 * Check Bundle and Module
-		 */
-		$controller = $request->attributes->get('_controller');
-		// will get name\nameBundle\Controller\nameController::nameAction
-		
-		$check = $this->container->get('web_moduleHandler')->checkHandler($controller);
-			
-		if($check === false)
-		{
-			$router = $this->container->get('web_router');
-			
-			return $this->redirect($this->generateUrl($router::ROUTE_WEB_HOME));
-		}
+		$router = $this->container->get('profile_router');
+		$layouter = $this->container->get('profile_layouter');
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -112,7 +96,7 @@ class UserController extends Controller
 		
 		$oldPassword = $user->getPassword();
 		
-		$form = $this->createForm(new UserType(), $user, array(
+		$form = $this->createForm('profile_user', $user, array(
 			'action' => $this->generateUrl($router::ROUTE_PROFILE_USER)
 		));
 		
@@ -137,7 +121,8 @@ class UserController extends Controller
 		}
 		
 		return $this->render($layouter::LAYOUT_PROFILE, array(
-			'subLayout' => 'User:user',
+			'subLayout' => $layouter::SUBLAYOUT_PROFILE_USER,
+			'user' => $user,
 			'form' => $form->createView(),
 			'message' => $message,
 		));
@@ -154,9 +139,10 @@ class UserController extends Controller
 	
 	public function upgradeAction()
     {
-		$router = $this->container->get('profile_router');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		$router = $this->container->get('profile_router');
+		$profileData = $this->container->get('profile_data');
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -164,7 +150,7 @@ class UserController extends Controller
 		}
 		
 		$user = $em->getRepository('MyWebsiteProfileBundle:User')->find($request->getSession()->get('idUser'));
-		$user->setPrivacyLevel(User::PRIVACYLEVEL_MEDIUM);
+		$user->setPrivacyLevel($profileData::USER_PRIVACYLEVEL_MEDIUM);
 		
 		$em->flush();
 		
@@ -175,9 +161,10 @@ class UserController extends Controller
 	
 	public function downgradeAction()
     {
-		$router = $this->container->get('profile_router');
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		$router = $this->container->get('profile_router');
+		$profileData = $this->container->get('profile_data');
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -185,7 +172,7 @@ class UserController extends Controller
 		}
 		
 		$user = $em->getRepository('MyWebsiteProfileBundle:User')->find($request->getSession()->get('idUser'));
-		$user->setPrivacyLevel(User::PRIVACYLEVEL_LOW);
+		$user->setPrivacyLevel($profileData::USER_PRIVACYLEVEL_LOW);
 		
 		$em->flush();
 		

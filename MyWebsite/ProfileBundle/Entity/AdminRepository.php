@@ -3,7 +3,6 @@
 namespace MyWebsite\ProfileBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use MyWebsite\WebBundle\Entity\Category;
 
 /**
  * AdminRepository
@@ -23,27 +22,6 @@ class AdminRepository extends EntityRepository
 			->addSelect('category')
 			->leftJoin('category.contents', 'content')
 			->addSelect('content')
-		;
-		
-		$results = $qb->getQuery()->getResult();
-		if($results == null)
-		{
-			return null;
-		}
-		
-		return $results[0];
-	}
-	
-	public function myFindWithCategoryAndPicture($idAdmin)
-	{
-		$qb = $this->createQueryBuilder('client')
-			->where('client.id = :id')
-			->setParameter('id', $idAdmin)
-			->leftJoin('client.categories', 'category', 'WITH', 'category.tag = :tag')
-			->setParameter('tag', Category::TAG_PROFILE_PICTURE)
-			->addSelect('category')
-			->leftJoin('category.documents', 'document')
-			->addSelect('document')
 		;
 		
 		$results = $qb->getQuery()->getResult();

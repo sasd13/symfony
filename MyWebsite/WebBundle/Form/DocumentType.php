@@ -16,7 +16,11 @@ class DocumentType extends AbstractType
     {
 		$builder
 			->setMethod('POST')
-			->add('title', 'text')
+			->add('title', 'text', array(
+				'attr' => array(
+					'placeholder' => 'example : Avatar',
+				)
+			))
 			->add('hide', 'checkbox', array(
 				'required' => false,
 			))
@@ -39,6 +43,6 @@ class DocumentType extends AbstractType
      */
     public function getName()
     {
-        return 'mywebsite_webbundle_document';
+        return 'web_document';
     }
 }
