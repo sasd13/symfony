@@ -22,7 +22,7 @@ class Recorder
 		$this->container = $container;
 	}
 	
-	public function recordBundle($bundleName)
+	public function createBundle($bundleName)
 	{
 		$bundle = new Bundle($bundleName);
 		
@@ -32,7 +32,7 @@ class Recorder
 		return $bundle;
 	}
 	
-	public function recordModule($bundle, $moduleName)
+	public function createModule($bundle, $moduleName)
 	{
 		$module = new Module($moduleName);
 		$module->setBundle($bundle);
@@ -43,7 +43,7 @@ class Recorder
 		return $module;
 	}
 	
-	public function recordMenu($module, $menuName, $menuRoute, $display)
+	public function createMenu($module, $menuName, $menuRoute, $display)
 	{
 		$menu = new Menu($menuName, $menuRoute);
 		$menu
@@ -58,7 +58,7 @@ class Recorder
 		return $menu;
 	}
 	
-	public function recordSubMenu($parentMenu, $subMenuName, $subMenuRoute)
+	public function createSubMenu($parentMenu, $subMenuName, $subMenuRoute)
 	{
 		$subMenu = new Menu($subMenuName, $subMenuRoute);
 		$subMenu
@@ -72,7 +72,7 @@ class Recorder
 		return $subMenu;
 	}
 	
-	public function recordCategory($moduleEntity, $type, $title, $tag)
+	public function createCategory($moduleEntity, $type, $title, $tag)
 	{
 		$category = new Category($type);
 		$category
@@ -87,7 +87,7 @@ class Recorder
 		return $category;
 	}
 	
-	public function recordContent($category, $label, $formType, $labelValue, $value, $required, $placeholder)
+	public function createContent($category, $label, $formType, $labelValue, $value, $required, $placeholder)
 	{
 		$content = new Content($label, $formType);
 		$content

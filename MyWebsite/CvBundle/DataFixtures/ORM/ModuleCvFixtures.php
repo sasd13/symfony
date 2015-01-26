@@ -29,21 +29,21 @@ class ModuleCvFixtures extends AbstractFixture implements OrderedFixtureInterfac
 		$profileData = $this->container->get('profile_data');
 		
 		//Module Cv
-		$module = $webRecorder->recordModule(
+		$module = $webRecorder->createModule(
 			$bundle,
 			'Cv'
 		);
 		
 		//MenuWeb CV
-		$menu = $webRecorder->recordMenu(
+		$menu = $webRecorder->createMenu(
 			$module,
-			'CV', 
+			'CVs', 
 			$router::ROUTE_CV_LIST,
 			$webData::DEFAULT_MENU_DISPLAY_WEB
 		);
 		
 		//MenuProfile CV
-		$menu = $webRecorder->recordMenu(
+		$menu = $webRecorder->createMenu(
 			$module,
 			'CV',
 			$router::ROUTE_CV_PROFILE_LIST,
@@ -51,22 +51,16 @@ class ModuleCvFixtures extends AbstractFixture implements OrderedFixtureInterfac
 		);
 		
 		//SubMenus for MenuProfile Profile
-		$subMenu = $webRecorder->recordSubMenu(	
+		$subMenu = $webRecorder->createSubMenu(	
 			$menu,
 			'List',
 			$router::ROUTE_CV_PROFILE_LIST
 		);
 		
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'New',
 			$router::ROUTE_CV_PROFILE_NEW
-		);
-	
-		$subMenu = $webRecorder->recordSubMenu(
-			$menu,
-			'Edit model',
-			$router::ROUTE_CV_PROFILE_MODEL_LIST
 		);
 	}
 	

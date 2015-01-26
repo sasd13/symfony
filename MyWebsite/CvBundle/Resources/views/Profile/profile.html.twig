@@ -1,0 +1,97 @@
+{% extends "MyWebsiteWebBundle::layout.html.twig" %}
+
+{% set metaTitle = 'MyProfile' %}
+{% if app.session.get('mode') == 'admin' %}
+	{% set metaTitle = 'Admin' %}
+{% endif %}
+{% block title %}{{ parent() }} - {{ metaTitle }}{% endblock %}
+
+{% block css %} 
+	{% stylesheets
+			'bundles/mywebsiteweb/css/form-style.css'
+			'bundles/mywebsiteweb/css/tabs.css'
+			filter='cssrewrite' %}
+			<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+	{% endstylesheets %}
+{% endblock %}
+
+{% block class_header %}header2{% endblock %}
+
+{% block section %}
+	<!---Start-content---->
+	<div class="content">
+		<div class="wrap">
+			<!---start-portfolio---->
+			<div class="portfolio">
+				<div class="left-sidebar2">
+					<div class="side-head">
+						<div class="feature-grid-head">
+							<h3><span></span>Menu</h3>
+						</div>
+						{% if app.session.get('mode') == 'client' %}
+							<div class="picture">
+								{% if user.picturePath != null %}
+									<img src="{{ asset('bundles/mywebsiteweb/uploads/images/' ~ user.picturePath) }}" title="{{ user.pictureTitle }}"/>
+								{% else %}
+									<img src="{{ asset('bundles/mywebsiteprofile/') }}images/inconnu.gif" title="Photo de profil"/>
+								{% endif %}
+							</div>
+						{% endif %}
+					</div>
+					<!----side-bar---->
+					<div class="recent-posts">
+						{% set menuProfile = app.session.get('menuProfile') %}
+						{% if menuProfile != null %}
+							{% for menu in menuProfile %}
+								<div class="side-heading side-heading1">
+									<label> </label><span><a href="{{ path(menu.target) }}">{{ menu.name }}</a></span><label> </label>
+									<div class="clear"> </div>
+								</div>
+								{% if menu.subMenus != null %}
+									<div class="recent-post-list">
+										<ul>
+											{% for subMenu in menu.subMenus %}
+												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+											{% endfor %}
+										</ul>
+									</div>
+								{% endif %}
+							{% endfor %}
+						{% endif %}
+					</div>
+					<!---end-side-bar-->
+				</div>
+				<!---->
+				<div class="right-protfolio-grids2">
+					{% include "MyWebsiteCvBundle:Profile:" ~ subLayout ~ ".html.twig" %}
+				</div>
+				<div class="clear"> </div>
+				<!---End-portfolio---->
+			</div>
+        </div>
+	</div>
+	<!---End-content---->
+{% endblock %}
+
+{% block js %}
+	<script>
+		$(document).ready(function() {
+			$("#content").find("[id^='tab']").hide(); // Hide all content
+			$("#tabs li:first").attr("id","current"); // Activate the first tab
+			$("#content #tab1").fadeIn(); // Show first tab's content
+    
+			$('#tabs a').click(function(e) {
+				e.preventDefault();
+				if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+					return;       
+				}
+				else{             
+					$("#content").find("[id^='tab']").hide(); // Hide all content
+					$("#tabs li").attr("id",""); //Reset id's
+					$(this).parent().attr("id","current"); // Activate this
+					$('#' + $(this).attr('name')).fadeIn(); // Show content for the current tab
+				}
+			});
+		});
+	</script>
+{% endblock %}

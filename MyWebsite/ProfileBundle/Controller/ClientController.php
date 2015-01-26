@@ -18,12 +18,12 @@ class ClientController extends Controller
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
 		$webData = $this->container->get('web_data');
-		$profileData = $this->container->get('profile_data');
+		$data = $this->container->get('profile_data');
 		
 		//Get¨MenuWeb mode Client
 		$menuWeb = $this->container->get('web_generator')->generateMenu(array(
 			$webData::DEFAULT_MENU_DISPLAY_WEB,
-			$profileData::CLIENT_MENU_DISPLAY_WEB,
+			$data::CLIENT_MENU_DISPLAY_WEB,
 		));
 		$request->getSession()->set('menuWeb', $menuWeb);
 		//End getting
@@ -80,7 +80,7 @@ class ClientController extends Controller
 		
 		//Get¨Profile mode Client
 		$menuProfile = $this->container->get('web_generator')->generateMenu(array(
-			$profileData::CLIENT_MENU_DISPLAY_PROFILE,
+			$data::CLIENT_MENU_DISPLAY_PROFILE,
 		));
 		$request->getSession()->set('menuProfile', $menuProfile);
 		//End getting
@@ -99,7 +99,7 @@ class ClientController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
-		$profileData = $this->container->get('profile_data');
+		$data = $this->container->get('profile_data');
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -124,64 +124,12 @@ class ClientController extends Controller
 			
 			if($form->isValid())
 			{
-				$categories = $client->getCategories();
-				foreach($categories as $keyCategory => $category)
+				$updated = $this->container->get('profile_recorder')->updateClient($cliet, $clientOld);
+				
+				if($update === true)
 				{
-					$contents = $category->getContents();
-					foreach($contents as $keyContent => $content)
-					{
-						$contentOld = $clientOld
-							->getCategories()
-							->get($keyCategory)
-							->getContents()
-							->get($keyContent)
-						;
-						
-						if($content->getId() === $contentOld->getIdCopy())
-						{
-							if($content->getFormType() === 'textarea')
-							{
-								if($content->getTextValue() !== $contentOld->getTextValue())
-								{
-									$category->update();
-								}
-							}
-							else
-							{
-								//Compare values only, not types
-								if($content->getStringValue() != $contentOld->getStringValue())
-								{
-									$category->update();
-								}
-							}
-						}
-							
-						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_FIRSTNAME
-							AND $content->getStringValue() !== $client->getFirstName())
-						{
-							$client->setFirstName($content->getStringValue());
-							$client->update();
-						}
-						
-						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_LASTNAME
-							AND $content->getStringValue() !== $client->getLastName())
-						{
-							$client->setLastName($content->getStringValue());
-							$client->update();
-						}
-						
-						if($content->getLabel() === $profileData::USER_CONTENT_LABEL_EMAIL
-							AND $content->getStringValue() !== $client->getEmail())
-						{
-							$client->setEmail($content->getStringValue());
-							$client->update();
-						}
-					}
+					$message = "Les informations ont été enregistrées";
 				}
-				
-				$em->flush();
-				
-				$message = "Les informations ont été enregistrées";
 			}
 		}
 		

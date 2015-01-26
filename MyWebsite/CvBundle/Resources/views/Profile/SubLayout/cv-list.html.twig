@@ -1,0 +1,25 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Tous les</span> Curriculum Vitae</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="new-project-form">
+		{% if cvs | length == 0 %}
+			<p>Aucun Cv créé...</p>
+			<br/>
+			<div class="list-content">
+				<button type="button" /><a href="{{ path('cv_profile_new') }}">Ajouter Cv</a></button>
+			</div>
+		{% else %}
+			<p class="required_notification">*activer un Cv le rendra disponible mais désactivera tous les autres</p>
+			<br/><br/>
+			{% for cv in cvs %}
+				{% include "MyWebsiteCvBundle:Profile:SubLayout/cv-list-content.html.twig" %}
+			{% endfor %}
+		{% endif %}
+	</div>
+	<div class="clear"> </div>
+</div>

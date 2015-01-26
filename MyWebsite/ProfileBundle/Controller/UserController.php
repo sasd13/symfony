@@ -61,7 +61,7 @@ class UserController extends Controller
 				AND $client->getPassword() === $request->request->get('confirmPassword'))
 			{				
 				//Try create Client with condition on email
-				$client = $this->container->get('profile_generator')->generateClient($client);
+				$client = $this->container->get('profile_recorder')->createClient($client);
 				if($client != null)
 				{
 					$request->getSession()->set('idUser', $client->getId());

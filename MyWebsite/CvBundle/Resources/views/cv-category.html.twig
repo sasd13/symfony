@@ -1,0 +1,23 @@
+<div class="content-informations clickable">
+	<div class="feature-grid-head">
+		<div class="feature-grid-head-top feature-grid-head-top3">
+			<label> </label><span> </span> <label> </label>
+			<div class="clear"> </div>
+		</div>
+		<h3>{{ category.title }}</h3>
+	</div>
+	<div class="clear"> </div>
+	<div class="hidable">
+		<br/><br/>
+		{% for content in category.contents %}
+			{% for key, list_contenus in element %}
+				{% if key == categorie.tag %}
+					{% for contenu in list_contenus %}
+						{% include "MyWebsiteCvBundle:Web:contenu.html.twig" %}
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+	</div>
+	<div class="clear"> </div>
+</div>

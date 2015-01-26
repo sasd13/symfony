@@ -27,11 +27,6 @@ class ClientType extends AbstractType
 					'placeholder' => 'password',
 				)
 			))
-			->add('email', 'email', array(
-				'attr' => array(
-					'placeholder' => 'example@email.com',
-				)
-			))
 			->add('firstName', 'text', array(
 				'attr' => array(
 					'placeholder' => 'your first name',
@@ -41,6 +36,14 @@ class ClientType extends AbstractType
 				'attr' => array(
 					'placeholder' => 'your last name',
 				)
+			))
+			->add('email', 'email', array(
+				'attr' => array(
+					'placeholder' => 'example@email.com',
+				)
+			))
+			->add('categories', 'collection', array(
+				'type' => new CategoryType()
 			))
         ;
     }

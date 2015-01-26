@@ -32,7 +32,6 @@ class WebController extends Controller
 				$profileData::CLIENT_MENU_DISPLAY_WEB,
 			));
 		}
-		
 		$request->getSession()->set('menuWeb', $menuWeb);
 		//End getting
 		

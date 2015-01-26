@@ -24,28 +24,31 @@
 				{% else %}
 					<div class="da-cv">
 						<div class="feature-grid-left">
-							<img src="{{ asset('bundles/mywebsiteweb/') }}images/{{ cv.photo }}" title="photo" /></a>	
+							{% if cv.picturePath != null %}
+								<a href="#"><img src="{{ asset('bundles/mywebsiteweb/uploads' ~ cv.picturePath) }}" alt="" /></a>
+							{% else %}
+								<a href="#"><img src="{{ asset('bundles/mywebsiteweb/') }}images/fea1.png" alt="" /></a>
+							{% endif %}
 						</div>
 						<div class="feature-grid-right">
-							<h3 class="titreCv">{{ cv.intitule }}</h3>
+							<h3 class="titreCv">{{ cv.title }}</h3>
 							<br/>
 							<div>
-								{{ cv.description | truncate(250, true, '...') }}<br/><br/>
-								{% if cv.mobilite is not null %}
-									Mobilité: {{ cv.profil.ville }}<br/>
+								{% if cv.description is not null %}
+									{{ cv.description }}<br/><br/>
 								{% endif %}
-								{% if cv.mobilite is not null %}
-									Mobilité: {{ cv.mobilite }}<br/>
-								{% endif %}
-								{% if cv.disponibilite is not null %}
-									Disponibilité: {{ cv.disponibilite }}<br/>
-								{% endif %}							
+								{% if cv.disponibility is not null %}
+									Disponibilité: {{ cv.disponibility }}<br/>
+								{% endif %}	
+								{% if cv.mobility is not null %}
+									Mobilité: {{ cv.mobility }}<br/>
+								{% endif %}						
 							</div>
 						</div>
 					</div>
 					<div class="clear"> </div>
-					{% for categorie in list_categories %}
-						{% include "MyWebsiteWebBundle:Web:Cv/categorie.html.twig" %}
+					{% for category in cv.categories %}
+						{% include "MyWebsiteCvBundle::category.html.twig" %}
 					{% endfor %}
 				{% endif %}
 			</div>

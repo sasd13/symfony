@@ -53,7 +53,7 @@ class ModuleEntity extends AbstractEntity
      * Add categories
      *
      * @param \MyWebsite\WebBundle\Entity\Category $categories
-     * @return Profile
+     * @return ModuleEntity
      */
     public function addCategory(\MyWebsite\WebBundle\Entity\Category $categories)
     {

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use MyWebsite\ProfileBundle\Entity\User;
 use MyWebsite\WebBundle\Model\CopyInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Client
@@ -30,6 +31,12 @@ class Client extends User implements CopyInterface
     private $picturePath;
 	
 	/**
+	 * @ORM\OneToMany(targetEntity="MyWebsite\CvBundle\Entity\Cv", mappedBy="client", cascade={"remove"})
+	 * @ORM\JoinColumn(onDelete="CASCADE")
+	 */
+	private $cvs;
+	
+	/**
      * @var boolean
      *
      * @Assert\Type(type="integer")
@@ -40,6 +47,7 @@ class Client extends User implements CopyInterface
 	public function __construct()
 	{
 		parent::__construct();
+		$this->cvs = new ArrayCollection();
 	}
 	
 	public function setIdCopy($idCopy)
@@ -59,15 +67,15 @@ class Client extends User implements CopyInterface
 		$client = new Client();
 		$client
 			->setIdCopy($this->getId())
+			->setFirstName($this->getFirstName())
+			->setLastName($this->getLastName())
 			->setEmail($this->getEmail())
-			->setFirstName($this->firstName)
-			->setLastName($this->lastName)
 			->setPictureTitle($this->pictureTitle)
 			->setPicturePath($this->picturePath)
 		;
 		foreach($this->getCategories() as $category)
 		{
-			$client->addCategory($category->copy());
+			$client->addCategories($category->copy());
 		}
 		
 		return $client;
@@ -117,5 +125,41 @@ class Client extends User implements CopyInterface
     public function getPicturePath()
     {
         return $this->picturePath;
+    }
+	
+	/**
+     * Add cvs
+     *
+     * @param \MyWebsite\CvBundle\Entity\Cv $cvs
+     * @return Client
+     */
+    public function addCv(\MyWebsite\CvBundle\Entity\Cv $cvs)
+    {
+		if(!$this->cvs->contains($cvs))
+		{
+			$this->cvs[] = $cvs;
+		}
+
+        return $this;
+    }
+
+    /**
+     * Remove cvs
+     *
+     * @param \MyWebsite\CvBundle\Entity\Cv $cvs
+     */
+    public function removeCv(\MyWebsite\CvBundle\Entity\Cv $cvs)
+    {
+        $this->cvs->removeElement($cvs);
+    }
+
+    /**
+     * Get cvs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCvs()
+    {
+        return $this->cvs;
     }
 }

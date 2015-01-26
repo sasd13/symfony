@@ -23,7 +23,7 @@ class BundleProfileFixtures extends AbstractFixture implements OrderedFixtureInt
 	public function load(ObjectManager $manager)
 	{
 		//Bundle Profile
-		$bundle = $this->container->get('web_recorder')->recordBundle('Profile');
+		$bundle = $this->container->get('web_recorder')->createBundle('Profile');
 		
 		$this->addReference('bundle_profile', $bundle);
 	}

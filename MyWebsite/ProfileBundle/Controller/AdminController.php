@@ -24,13 +24,16 @@ class AdminController extends Controller
 		 */
 		if($request->getSession()->get('idUser') == null)
 		{
-			//Get¨MenuWeb mode Client
-			$menuWeb = $this->container->get('web_generator')->generateMenu(array(
-				$webData::DEFAULT_MENU_DISPLAY_WEB,
-				$profileData::CLIENT_MENU_DISPLAY_WEB,
-			));
-			$request->getSession()->set('menuWeb', $menuWeb);
-			//End getting
+			if($request->getSession()->get('menuWeb') == null)
+			{
+				//Get¨MenuWeb mode Client
+				$menuWeb = $this->container->get('web_generator')->generateMenu(array(
+					$webData::DEFAULT_MENU_DISPLAY_WEB,
+					$profileData::CLIENT_MENU_DISPLAY_WEB,
+				));
+				$request->getSession()->set('menuWeb', $menuWeb);
+				//End getting
+			}
 		
 			$admin = new Admin();
 			

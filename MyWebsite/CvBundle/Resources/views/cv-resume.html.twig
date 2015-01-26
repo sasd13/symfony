@@ -1,19 +1,29 @@
 <div class="feature-grid">
 	<div class="feature-grid-left">
-		<a href="#"><img src="{{ asset('bundles/mywebsiteweb/') }}images/{{ cv.photo }}" alt="" /></a>	
+		{% if cv.picturePath != null %}
+			<a href="#"><img src="{{ asset('bundles/mywebsiteweb/uploads' ~ cv.picturePath) }}" alt="" /></a>
+		{% else %}
+			<a href="#"><img src="{{ asset('bundles/mywebsiteweb/') }}images/fea1.png" alt="" /></a>
+		{% endif %}
 	</div>
 	<div class="feature-grid-right">
-		<h3 class="titreProjet">{{ cv.intitule | truncate(50, true, '...')}}</h3>
+		<h3 class="titreProjet">{{ cv.title | truncate(50, true, '...')}}</h3>
 		<p>
-			disponibilite : {{ cv.disponibilite }}
-			<br/>
-			mobilite : {{ cv.mobilite }}
-			<br/><br/>
-			<span class="description">
-				{{ cv.description | truncate(400, true, '...') }}
-			</span>
+			{% if cv.disponibility != null %}
+				disponibility : {{ cv.disponibility }}
+				<br/>
+			{% endif %}
+			{% if cv.mobility != null %}
+				mobility : {{ cv.mobility }}
+				<br/><br/>
+			{% endif %}
+			{% if cv.description != null %}
+				<span class="description">
+					{{ cv.description }}
+				</span>
+			{% endif %}			
 		</p>
-		<a class="btn" href="{{ path('mywebsiteweb_cv_afficher', {'idCv': cv.id}) }}">Read More</a>
+		<a class="btn" href="{{ path('cv_load', {'idCv': cv.id}) }}">Read More</a>
 	</div>
 	<div class="clear"> </div>
 </div>

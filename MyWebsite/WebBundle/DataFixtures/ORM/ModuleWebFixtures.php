@@ -28,13 +28,13 @@ class ModuleWebFixtures extends AbstractFixture implements OrderedFixtureInterfa
 		$data = $this->container->get('web_data');
 		
 		//Module Web
-		$module = $recorder->recordModule(
+		$module = $recorder->createModule(
 			$bundle,
 			'Web'
 		);
 		
 		//MenuWeb Home
-		$menu = $recorder->recordMenu(
+		$menu = $recorder->createMenu(
 			$module,
 			'Home', 
 			$router::ROUTE_WEB_HOME, 

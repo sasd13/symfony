@@ -29,29 +29,30 @@ class ModuleAdminFixtures extends AbstractFixture implements OrderedFixtureInter
 		$data = $this->container->get('profile_data');
 		
 		//Module Admin
-		$module = $webRecorder->recordModule(
+		$module = $webRecorder->createModule(
 			$bundle,
 			'Admin'
 		);
-		$module->setActive(false);
+		$module->setActive(true);
 		
 		//MenuWeb Admin
-		$menu = $webRecorder->recordMenu(
+		$menu = $webRecorder->createMenu(
 			$module,
 			'Admin', 
 			$router::ROUTE_PROFILE_ADMIN, 
 			$data::ADMIN_MENU_DISPLAY_WEB
 		);
+		$menu->setPriority(99);
 		
 		//SubMenus for MenuWeb MyProfile
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Log out',
 			$router::ROUTE_PROFILE_USER_LOGOUT
 		);
 		
 		//MenuProfile Profile
-		$menu = $webRecorder->recordMenu(
+		$menu = $webRecorder->createMenu(
 			$module,
 			'Profile',
 			$router::ROUTE_PROFILE_ADMIN, 
@@ -59,19 +60,19 @@ class ModuleAdminFixtures extends AbstractFixture implements OrderedFixtureInter
 		);
 		
 		//SubMenu for MenuProfile Profile
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Informations',
 			$router::ROUTE_PROFILE_ADMIN_INFO
 		);
 		
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Log in options',
 			$router::ROUTE_PROFILE_USER
 		);
 		
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Downgrade to Client only',
 			$router::ROUTE_PROFILE_USER_DOWNGRADE

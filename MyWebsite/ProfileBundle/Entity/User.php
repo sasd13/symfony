@@ -51,9 +51,9 @@ class User extends ModuleEntity
      * @ORM\Column(name="privacyLevel", type="smallint")
 	 * @Assert\Range(
      *      min = 1,
-	 *      max = 3,
-     *      minMessage = "La priorité doit être plus de {{ limit }}",
-	 *      maxMessage = "La priorité doit être moins de {{ limit }}"
+	 *      max = 5,
+     *      minMessage = "Le niveau de privilège doit être plus de {{ limit }}",
+	 *      maxMessage = "Le niveau de privilège doit être moins de {{ limit }}"
      * )
      */
     private $privacyLevel;
@@ -111,6 +111,16 @@ class User extends ModuleEntity
     {
 		//Control before persist
 		//Throw Exception
+    }
+	
+	/**
+     * @ORM\PreUpdate()
+     */
+    public function preUpdate()
+    {
+		//Control before persist
+		//Throw Exception
+		$this->update();
     }
 	
 	/**

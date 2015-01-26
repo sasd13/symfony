@@ -1,0 +1,74 @@
+<div class="feature-grid2">
+	<div class="feature-grid-head feature-grid-head3">
+		<h3><span>Modifier</span> Curriculum Vitae</h3>
+		<div class="feature-grid-head-top">
+			<label> </label><label> </label>
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<div class="cv-tabs">	
+		<!---start-tabs--->
+		<ul id="tabs">
+			<li><a href="#" name="tab1">Liste des Catégories</a></li>
+			<li><a href="#" name="tab2">Ajouter Catégorie</a></li>
+			<li><a href="#" name="tab3">Gestion Cv</a></li>
+		</ul>
+		
+		<div id="content"> 
+			<div id="tab1">
+				<div class="new-project-form">
+					{% if cv.categories | length == 0 %}
+						<br/>
+						<p>Aucune Catégorie créée...</p>
+					{% else %}
+						{% for category in cv.categories %}
+							{% include "MyWebsiteCvBundle:Profile:SubLayout/cv-category-list-content.html.twig" %}
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			
+			<div id="tab2">
+				{% include "MyWebsiteCvBundle:Profile:SubLayout/cv-category-new.html.twig" %}
+			</div>
+			
+			<div id="tab3">
+				<div class="new-project-form">
+					{{ form_start(formCv, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+						{{ form_errors(formCv) }}
+						<ul class="form-content">
+							<li>
+								<h2>Détails du Cv: "{{ cv.title | truncate(30, true, '...') }}"</h2>
+								<span class="required_notification">{{ messageCategory }}</span>
+							</li>
+							<li>
+								{{ form_label(formCv.title, "Titre :") }}
+								{{ form_widget(formCv.title) }}
+							</li>
+							<li>
+								{{ form_label(formCv.disponibility, "Disponibilité :") }}
+								{{ form_widget(formCv.disponibility) }}
+							</li>
+							<li>
+								{{ form_label(formCv.mobility, "Mobilité :") }}
+								{{ form_widget(formCv.mobility) }}
+							</li>
+							<li>
+								{{ form_label(formCv.description, "Description :") }}
+								{{ form_widget(formCv.description) }}
+							</li>
+						</ul>
+						<ul class="form-submit">
+							<li>
+								<input type="submit" class="submit" value="Enregistrer"/>
+								<a href="{{ path('cv_profile_delete', {'idCv': cv.id}) }}"><input type="button" value="Supprimer"/></a>
+							</li>
+						</ul>
+						{{ form_widget(formCv._token) }}
+					{{ form_end(formCv, {'render_rest': false}) }}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="clear"> </div>
+</div>

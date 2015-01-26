@@ -28,7 +28,7 @@ class ModuleExceptionFixtures extends AbstractFixture implements OrderedFixtureI
 		$data = $this->container->get('web_data');
 		
 		//Module Exception
-		$module = $recorder->recordModule(
+		$module = $recorder->createModule(
 			$bundle,
 			'Exception'
 		);

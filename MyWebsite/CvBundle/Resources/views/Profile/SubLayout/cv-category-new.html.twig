@@ -1,0 +1,25 @@
+<div class="new-project-form">
+	{{ form_start(formCategory, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+		{{ form_errors(formCategory) }}
+		<ul class="form-content">
+			<li>
+				<h2>Détails</h2>
+				<span class="required_notification">{{ messageCategory }}</span>
+			</li>
+			<li>
+				{{ form_label(formCategory.title, "Title :") }}
+				{{ form_widget(formCategory.title) }}
+			</li>
+			<li>
+				{{ form_label(formCategory.tag, "Tag :") }}
+				{{ form_widget(formCategory.tag) }}
+			</li>
+		</ul>
+		<ul class="form-submit">
+			<li>
+				<input type="submit" class="submit" value="Enregistrer"/>
+			</li>
+		</ul>
+		{{ form_widget(formCategory._token) }}
+	{{ form_end(formCategory, {'render_rest': false}) }}
+</div>

@@ -18,7 +18,7 @@ class Recorder
 		$this->container = $container;
 	}
 	
-	public function recordClient(\MyWebsite\ProfileBundle\Entity\Client $client)
+	public function createClient(\MyWebsite\ProfileBundle\Entity\Client $client)
 	{
 		$temp_client = $this->em->getRepository('MyWebsiteProfileBundle:Client')->findByEmail($client->getEmail());
 		if($temp_client != null)
@@ -26,63 +26,63 @@ class Recorder
 			return null;
 		}
 		
-		$webGenerator = $this->container->get('web_generator');
-		$profileData = $this->container->get('profile_data');
+		$webRecorder = $this->container->get('web_recorder');
+		$data = $this->container->get('profile_data');
 			
 		//RECORD : Client
 		$this->em->persist($client);
 		
 		//RECORD : Category Client Info Identity
-		$category = $webGenerator->generateCategory(
+		$category = $webRecorder->createCategory(
 			$client,
 			'content',
-			$profileData::USER_CATEGORY_TITLE_INFO,
-			$profileData::USER_CATEGORY_TAG_INFO
+			$data::USER_CATEGORY_TITLE_INFO,
+			$data::USER_CATEGORY_TAG_INFO
 		);
 		
 		//RECORD : Content First Name for Category Info Identity
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
-			$profileData::USER_CONTENT_LABEL_FIRSTNAME, 
+			$data::USER_CONTENT_LABEL_FIRSTNAME, 
 			'text',
-			$profileData::USER_CONTENT_LABELVALUE_FIRSTNAME,
+			$data::USER_CONTENT_LABELVALUE_FIRSTNAME,
 			$client->getFirstName(),
 			true,
 			null
 		);
 			
 		//RECORD : Content Last Name for Category Info Identity
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
-			$profileData::USER_CONTENT_LABEL_LASTNAME, 
+			$data::USER_CONTENT_LABEL_LASTNAME, 
 			'text',
-			$profileData::USER_CONTENT_LABELVALUE_LASTNAME,
+			$data::USER_CONTENT_LABELVALUE_LASTNAME,
 			$client->getLastName(),
 			true,
 			null
 		);
 		
 		//RECORD : Category Client Coordonnees
-		$category = $webGenerator->generateCategory(
+		$category = $webRecorder->createCategory(
 			$client,
 			'content',
-			$profileData::USER_CATEGORY_TITLE_CONTACT,
-			$profileData::USER_CATEGORY_TAG_CONTACT
+			$data::USER_CATEGORY_TITLE_CONTACT,
+			$data::USER_CATEGORY_TAG_CONTACT
 		);
 		
 		//RECORD : Content Email for Category Contact
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
-			$profileData::USER_CONTENT_LABEL_EMAIL, 
+			$data::USER_CONTENT_LABEL_EMAIL, 
 			'email',
-			$profileData::USER_CONTENT_LABELVALUE_EMAIL,
+			$data::USER_CONTENT_LABELVALUE_EMAIL,
 			$client->getEmail(),
 			true,
 			null
 		);
 		
 		//RECORD : Content Telephone for Category Contact
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
 			'client_contact_telephone', 
 			'text',
@@ -93,7 +93,7 @@ class Recorder
 		);
 		
 		//RECORD : Category Client Adresse
-		$category = $webGenerator->generateCategory(
+		$category = $webRecorder->createCategory(
 			$client,
 			'content',
 			'Adresse',
@@ -101,7 +101,7 @@ class Recorder
 		);
 		
 		//RECORD : Content Numero voie for Category Adresse
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
 			'client_adress_numerovoie', 
 			'text',
@@ -112,7 +112,7 @@ class Recorder
 		);
 				
 		//RECORD : Content Voie for Category Adresse
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
 			'client_adress_voie', 
 			'text',
@@ -123,7 +123,7 @@ class Recorder
 		);
 		
 		//RECORD : Content Code postale for Category Adresse
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
 			'client_adress_codepostal', 
 			'text',
@@ -134,7 +134,7 @@ class Recorder
 		);
 		
 		//RECORD : Content Commune for Category Adresse
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
 			'client_adress_commune', 
 			'text',
@@ -145,7 +145,7 @@ class Recorder
 		);
 		
 		//RECORD : Content Pays for Category Adresse
-		$content = $webGenerator->generateContent(
+		$content = $webRecorder->createContent(
 			$category,
 			'client_adress_pays', 
 			'text',
@@ -156,13 +156,77 @@ class Recorder
 		);
 		
 		//RECORD : Category Client Picture
-		$category = $webGenerator->generateCategory(
+		$category = $webRecorder->createCategory(
 			$client,
 			'document',
-			$profileData::CLIENT_CATEGORY_TITLE_PICTURE,
-			$profileData::CLIENT_CATEGORY_TAG_PICTURE
+			$data::CLIENT_CATEGORY_TITLE_PICTURE,
+			$data::CLIENT_CATEGORY_TAG_PICTURE
 		);
 		
 		return $client;
+	}
+	
+	public function updateClient(\MyWebsite\ProfileBundle\Entity\Client $client, \MyWebsite\ProfileBundle\Entity\Client $clientOld)
+	{
+		$data = $this->container->get('profile_data');
+		
+		$categories = $client->getCategories();
+		foreach($categories as $keyCategory => $category)
+		{
+			$contents = $category->getContents();
+			foreach($contents as $keyContent => $content)
+			{
+				$contentOld = $clientOld
+					->getCategories()
+					->get($keyCategory)
+					->getContents()
+					->get($keyContent)
+				;
+					
+				if($content->getId() === $contentOld->getIdCopy())
+				{
+					if($content->getFormType() === 'textarea')
+					{
+						if($content->getTextValue() !== $contentOld->getTextValue())
+						{
+							$category->update();
+						}
+					}
+					else
+					{
+						//Compare values only, not types
+						if($content->getStringValue() != $contentOld->getStringValue())
+						{
+							$category->update();
+						}
+					}
+				}
+					
+				if($content->getLabel() === $data::USER_CONTENT_LABEL_FIRSTNAME
+					AND $content->getStringValue() !== $client->getFirstName())
+				{
+					$client->setFirstName($content->getStringValue());
+					$client->update();
+				}
+				
+				if($content->getLabel() === $data::USER_CONTENT_LABEL_LASTNAME
+					AND $content->getStringValue() !== $client->getLastName())
+				{
+					$client->setLastName($content->getStringValue());
+					$client->update();
+				}
+						
+				if($content->getLabel() === $data::USER_CONTENT_LABEL_EMAIL
+					AND $content->getStringValue() !== $client->getEmail())
+				{
+					$client->setEmail($content->getStringValue());
+					$client->update();
+				}
+			}
+		}
+		
+		$this->em->flush();
+		
+		return true;
 	}
 }

@@ -28,34 +28,35 @@ class ModuleClientFixtures extends AbstractFixture implements OrderedFixtureInte
 		$data = $this->container->get('profile_data');
 		
 		//Module Client
-		$module = $webRecorder->recordModule(
+		$module = $webRecorder->createModule(
 			$bundle,
 			'Client'
 		);
 		
 		//MenuWeb MyProfile
-		$menu = $webRecorder->recordMenu(
+		$menu = $webRecorder->createMenu(
 			$module,
 			'MyProfile', 
 			$router::ROUTE_PROFILE_CLIENT, 
 			$data::CLIENT_MENU_DISPLAY_WEB
 		);
+		$menu->setPriority(99);
 		
 		//SubMenus for MenuWeb MyProfile
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Sign up',
 			$router::ROUTE_PROFILE_USER_SIGNUP
 		);
 		
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Log out',
 			$router::ROUTE_PROFILE_USER_LOGOUT
 		);
 			
 		//MenuProfile Profile
-		$menu = $webRecorder->recordMenu(
+		$menu = $webRecorder->createMenu(
 			$module,
 			'Profile',
 			$router::ROUTE_PROFILE_CLIENT, 
@@ -63,25 +64,25 @@ class ModuleClientFixtures extends AbstractFixture implements OrderedFixtureInte
 		);
 		
 		//SubMenu for MenuProfile Profile
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Informations',
 			$router::ROUTE_PROFILE_CLIENT_INFO
 		);
 		
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Profile picture',
 			$router::ROUTE_PROFILE_CLIENT_PICTURE
 		);
 		
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Log in options',
 			$router::ROUTE_PROFILE_USER
 		);
 		
-		$subMenu = $webRecorder->recordSubMenu(
+		$subMenu = $webRecorder->createSubMenu(
 			$menu,
 			'Upgrade to Admin',
 			$router::ROUTE_PROFILE_USER_UPGRADE

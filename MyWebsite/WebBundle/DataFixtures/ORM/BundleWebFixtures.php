@@ -23,7 +23,7 @@ class BundleWebFixtures extends AbstractFixture implements OrderedFixtureInterfa
 	public function load(ObjectManager $manager)
 	{
 		//Bundle Web
-		$bundle = $this->container->get('web_recorder')->recordBundle('Web');
+		$bundle = $this->container->get('web_recorder')->createBundle('Web');
 		
 		$this->addReference('bundle_web', $bundle);
 	}

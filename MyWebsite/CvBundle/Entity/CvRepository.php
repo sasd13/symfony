@@ -12,4 +12,22 @@ use Doctrine\ORM\EntityRepository;
  */
 class CvRepository extends EntityRepository
 {
+	public function myFindWithCategories($idClient)
+	{
+		$qb = $this->createQueryBuilder('cv')
+			->where('cv.active = :active')
+			->setParameter('active', true)
+			->leftJoin('cv.client', 'client', 'WITH', 'client.id = :id')
+			->setParameter('id', $idClient)
+			->addSelect('client')
+			->leftJoin('cv.categories', 'category')
+			->addSelect('category')
+			->leftJoin('category.contents', 'content')
+			->addSelect('content')
+		;
+		
+		$results = $qb->getQuery()->getResult();
+		die(var_dump($results));
+		return $results;
+	}
 }

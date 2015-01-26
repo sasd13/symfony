@@ -18,7 +18,7 @@ class AbstractEntity implements TimeManagerInterface
 	 * @ORM\OneToOne(targetEntity="MyWebsite\WebBundle\Entity\TimeManager", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
 	 */
-	protected $timeManager;
+	private $timeManager;
 	
 	
 	public function __construct()
