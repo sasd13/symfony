@@ -12,7 +12,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
-#   Cache service
+#   Bundle and module service
     kernel.listener.web_bundle_listener:
         class: MyWebsite\WebBundle\Listener\BundleListener
         tags:
@@ -21,14 +21,18 @@ services:
             - [setParameters, ["@service_container", "@controller_resolver"]]
 
 #   Global services
-    web_moduleHandler:
-        class: MyWebsite\WebBundle\Services\ModuleHandler
+    web_bundleHandler:
+        class: MyWebsite\WebBundle\Services\BundleHandler
         calls:
-            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setParameters, ["@doctrine.orm.entity_manager"]]
     web_router:
         class: MyWebsite\WebBundle\Services\Router
     web_layouter:
         class: MyWebsite\WebBundle\Services\Layouter
+    web_recorder:
+        class: MyWebsite\WebBundle\Services\Recorder
+        calls:
+            - [setParameters, ["@doctrine.orm.entity_manager", "@service_container"]]
     web_generator:
         class: MyWebsite\WebBundle\Services\Generator
         calls:

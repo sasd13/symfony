@@ -15,7 +15,7 @@ class ExceptionController extends Controller
 		return $this->render($layouter::LAYOUT_WEB_EXCEPTION_ERROR);
     }
 	
-	public function error404Action($errorURL)
+	public function error404Action()
     {
 		$layouter = $this->container->get('web_layouter');
 		

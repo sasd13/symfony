@@ -25,7 +25,7 @@ class AdminController extends Controller
 		if($request->getSession()->get('idUser') == null)
 		{
 			//Get¨MenuWeb mode Client
-			$menuWeb = $this->container->get('web_generator')->getMenu(array(
+			$menuWeb = $this->container->get('web_generator')->generateMenu(array(
 				$webData::DEFAULT_MENU_DISPLAY_WEB,
 				$profileData::CLIENT_MENU_DISPLAY_WEB,
 			));
@@ -80,7 +80,7 @@ class AdminController extends Controller
 		}
 		
 		//Get¨MenuWeb mode Admin
-		$menuWeb = $this->container->get('web_generator')->getMenu(array(
+		$menuWeb = $this->container->get('web_generator')->generateMenu(array(
 			$webData::DEFAULT_MENU_DISPLAY_WEB,
 			$profileData::ADMIN_MENU_DISPLAY_WEB,
 		));
@@ -88,7 +88,7 @@ class AdminController extends Controller
 		//End getting
 		
 		//Get¨MenuProfile mode Admin
-		$menuProfile = $this->container->get('web_generator')->getMenu(array(
+		$menuProfile = $this->container->get('web_generator')->generateMenu(array(
 			$profileData::ADMIN_MENU_DISPLAY_PROFILE,
 		));
 		$request->getSession()->set('menuProfile', $menuProfile);

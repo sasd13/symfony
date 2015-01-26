@@ -47,36 +47,41 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<!---start-top-nav---->
 					<div class="top-nav" id="navigation">
 						<ul>
-							<li><a href="{{ path('web_home') }}">Home</a></li>
 							{% if menuWeb != null %}
 								{% for menu in menuWeb %}
 									{% if menu.name == 'Admin' %}
 										{% if app.session.get('mode') == 'admin' %}
 											<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
 											{% for subMenu in menu.subMenus %}
-												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+												{% if subMenu.active == true %}
+													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+												{% endif %}
 											{% endfor %}
 										{% endif %}
 									{% elseif menu.name == 'MyProfile' %}
 										<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
 										{% for subMenu in menu.subMenus %}
-											{% if subMenu.name == 'Sign up' %}
-												{% if idUser == null %}
+											{% if subMenu.active == true %}
+												{% if subMenu.name == 'Sign up' %}
+													{% if idUser == null %}
+														<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+													{% endif %}
+												{% elseif subMenu.name == 'Log out' %}
+													{% if idUser != null %}
+														<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+													{% endif %}
+												{% else %}
 													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
 												{% endif %}
-											{% elseif subMenu.name == 'Log out' %}
-												{% if idUser != null %}
-													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
-												{% endif %}
-											{% else %}
-												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
 											{% endif %}
 										{% endfor %}
 									{% else %}
 										{% if menu.isRoot == true %}
 											<li><a href="{{ path(menu.target) }}">{{ menu.name }}</a></li>
 											{% for subMenu in menu.subMenus %}
-												<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+												{% if subMenu.active == true %}
+													<li><a href="{{ path(subMenu.target) }}">{{ subMenu.name }}</a></li>
+												{% endif %}
 											{% endfor %}
 										{% endif %}
 									{% endif %}

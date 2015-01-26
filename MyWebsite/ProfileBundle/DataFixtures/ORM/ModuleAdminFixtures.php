@@ -23,55 +23,55 @@ class ModuleAdminFixtures extends AbstractFixture implements OrderedFixtureInter
 	public function load(ObjectManager $manager)
 	{
 		$bundle= $this->getReference('bundle_profile');
-		$webGenerator = $this->container->get('web_generator');
+		$webRecorder = $this->container->get('web_recorder');
 		$router = $this->container->get('profile_router');
 		$webData = $this->container->get('web_data');
-		$profileData = $this->container->get('profile_data');
+		$data = $this->container->get('profile_data');
 		
 		//Module Admin
-		$module = $webGenerator->generateModule(
+		$module = $webRecorder->recordModule(
 			$bundle,
 			'Admin'
 		);
 		$module->setActive(false);
 		
 		//MenuWeb Admin
-		$menu = $webGenerator->generateMenu(
+		$menu = $webRecorder->recordMenu(
 			$module,
 			'Admin', 
 			$router::ROUTE_PROFILE_ADMIN, 
-			$profileData::ADMIN_MENU_DISPLAY_WEB
+			$data::ADMIN_MENU_DISPLAY_WEB
 		);
 		
 		//SubMenus for MenuWeb MyProfile
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Log out',
 			$router::ROUTE_PROFILE_USER_LOGOUT
 		);
 		
 		//MenuProfile Profile
-		$menu = $webGenerator->generateMenu(
+		$menu = $webRecorder->recordMenu(
 			$module,
 			'Profile',
 			$router::ROUTE_PROFILE_ADMIN, 
-			$profileData::ADMIN_MENU_DISPLAY_PROFILE
+			$data::ADMIN_MENU_DISPLAY_PROFILE
 		);
 		
 		//SubMenu for MenuProfile Profile
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Informations',
 			$router::ROUTE_PROFILE_ADMIN_INFO
 		);
 		
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Log in options',
 			$router::ROUTE_PROFILE_USER
 		);
 		
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Downgrade to Client only',
 			$router::ROUTE_PROFILE_USER_DOWNGRADE

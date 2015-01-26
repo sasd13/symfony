@@ -6,7 +6,7 @@ services:
         class: MyWebsite\CvBundle\Services\Router
     cv_layouter:
         class: MyWebsite\CvBundle\Services\Layouter
-    cv_generator:
-        class: MyWebsite\CvBundle\Services\Generator
+    cv_recorder:
+        class: MyWebsite\CvBundle\Services\Recorder
         calls:
-            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setParameters, ["@doctrine.orm.entity_manager"]]

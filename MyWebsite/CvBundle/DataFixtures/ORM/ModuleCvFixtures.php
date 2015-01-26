@@ -23,50 +23,50 @@ class ModuleCvFixtures extends AbstractFixture implements OrderedFixtureInterfac
 	public function load(ObjectManager $manager)
 	{
 		$bundle = $this->getReference('bundle_cv');
-		$webGenerator = $this->container->get('web_generator');
+		$webRecorder = $this->container->get('web_recorder');
 		$router = $this->container->get('cv_router');
 		$webData = $this->container->get('web_data');
 		$profileData = $this->container->get('profile_data');
 		
 		//Module Cv
-		$module = $webGenerator->generateModule(
+		$module = $webRecorder->recordModule(
 			$bundle,
 			'Cv'
 		);
 		
 		//MenuWeb CV
-		$menu = $webGenerator->generateMenu(
+		$menu = $webRecorder->recordMenu(
 			$module,
 			'CV', 
-			$router::ROUTE_CV_HOME, 
+			$router::ROUTE_CV_LIST,
 			$webData::DEFAULT_MENU_DISPLAY_WEB
 		);
 		
 		//MenuProfile CV
-		$menu = $webGenerator->generateMenu(
+		$menu = $webRecorder->recordMenu(
 			$module,
 			'CV',
-			$router::ROUTE_PROFILE_CV, 
+			$router::ROUTE_CV_PROFILE_LIST,
 			$profileData::CLIENT_MENU_DISPLAY_PROFILE
 		);
 		
 		//SubMenus for MenuProfile Profile
-		$subMenu = $webGenerator->generateSubMenu(	
+		$subMenu = $webRecorder->recordSubMenu(	
 			$menu,
 			'List',
-			$router::ROUTE_PROFILE_CV_LIST
+			$router::ROUTE_CV_PROFILE_LIST
 		);
 		
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'New',
-			$router::ROUTE_PROFILE_CV_NEW
+			$router::ROUTE_CV_PROFILE_NEW
 		);
 	
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Edit model',
-			$router::ROUTE_PROFILE_CV_MODEL_EDIT
+			$router::ROUTE_CV_PROFILE_MODEL_LIST
 		);
 	}
 	

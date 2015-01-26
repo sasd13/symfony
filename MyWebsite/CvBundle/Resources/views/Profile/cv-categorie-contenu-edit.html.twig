@@ -1,0 +1,27 @@
+<form class="contact_form" action="{{ path('mywebsiteweb_profil_cv_categorie_contenu_modifier') }}" method="post" name="contact_form_contenu">
+	<ul class="form-content">
+		<li>
+			<input type="hidden" name="idContenu" value="{{ contenu.id }}" required />
+			<label for="titre">Titre ou période:</label>
+			<input type="text" name="titre" placeholder="titre" maxlength="50" value="{{ contenu.titre }}" required />
+		</li>
+		<li>
+			<label for="description1">Description 1:</label>
+			<input type="text" name="description1" placeholder="" maxlength="100" value="{{ contenu.description1 }}" required />
+		</li>
+		<li>
+			<label for="description2">Description 2:</label>
+			<input type="text" name="description2" placeholder="" maxlength="100" value="{{ contenu.description2 }}" />
+		</li>
+		<li>
+			<label for="description3">Description 3:</label>
+			<input type="text" name="description3" placeholder="" maxlength="200" value="{{ contenu.description3 }}" />
+		</li>
+	</ul>
+	<ul class="form-submit">
+		<li>
+			<input type="submit" class="submit" value="Modifier"/>
+			<a href="{{ path('mywebsiteweb_profil_cv_categorie_contenu_supprimer', {'idContenu': contenu.id}) }}"><input type="button" value="Supprimer"/></a>
+		</li>
+	</ul>
+</form>

@@ -23,65 +23,65 @@ class ModuleClientFixtures extends AbstractFixture implements OrderedFixtureInte
 	public function load(ObjectManager $manager)
 	{
 		$bundle = $this->getReference('bundle_profile');
-		$webGenerator = $this->container->get('web_generator');
+		$webRecorder = $this->container->get('web_recorder');
 		$router = $this->container->get('profile_router');
-		$profileData = $this->container->get('profile_data');
+		$data = $this->container->get('profile_data');
 		
 		//Module Client
-		$module = $webGenerator->generateModule(
+		$module = $webRecorder->recordModule(
 			$bundle,
 			'Client'
 		);
 		
 		//MenuWeb MyProfile
-		$menu = $webGenerator->generateMenu(
+		$menu = $webRecorder->recordMenu(
 			$module,
 			'MyProfile', 
 			$router::ROUTE_PROFILE_CLIENT, 
-			$profileData::CLIENT_MENU_DISPLAY_WEB
+			$data::CLIENT_MENU_DISPLAY_WEB
 		);
 		
 		//SubMenus for MenuWeb MyProfile
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Sign up',
 			$router::ROUTE_PROFILE_USER_SIGNUP
 		);
 		
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Log out',
 			$router::ROUTE_PROFILE_USER_LOGOUT
 		);
 			
 		//MenuProfile Profile
-		$menu = $webGenerator->generateMenu(
+		$menu = $webRecorder->recordMenu(
 			$module,
 			'Profile',
 			$router::ROUTE_PROFILE_CLIENT, 
-			$profileData::CLIENT_MENU_DISPLAY_PROFILE
+			$data::CLIENT_MENU_DISPLAY_PROFILE
 		);
 		
 		//SubMenu for MenuProfile Profile
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Informations',
 			$router::ROUTE_PROFILE_CLIENT_INFO
 		);
 		
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Profile picture',
 			$router::ROUTE_PROFILE_CLIENT_PICTURE
 		);
 		
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Log in options',
 			$router::ROUTE_PROFILE_USER
 		);
 		
-		$subMenu = $webGenerator->generateSubMenu(
+		$subMenu = $webRecorder->recordSubMenu(
 			$menu,
 			'Upgrade to Admin',
 			$router::ROUTE_PROFILE_USER_UPGRADE

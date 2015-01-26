@@ -34,7 +34,7 @@ class UserController extends Controller
 		//End checking
 		
 		//Get¨MenuWeb mode Client
-		$menuWeb = $this->container->get('web_generator')->getMenu(array(
+		$menuWeb = $this->container->get('web_generator')->generateMenu(array(
 			$webData::DEFAULT_MENU_DISPLAY_WEB,
 			$profileData::CLIENT_MENU_DISPLAY_WEB,
 		));

@@ -1,0 +1,19 @@
+<div class="feature-grid">
+	<div class="feature-grid-left">
+		<a href="#"><img src="{{ asset('bundles/mywebsiteweb/') }}images/{{ cv.photo }}" alt="" /></a>	
+	</div>
+	<div class="feature-grid-right">
+		<h3 class="titreProjet">{{ cv.intitule | truncate(50, true, '...')}}</h3>
+		<p>
+			disponibilite : {{ cv.disponibilite }}
+			<br/>
+			mobilite : {{ cv.mobilite }}
+			<br/><br/>
+			<span class="description">
+				{{ cv.description | truncate(400, true, '...') }}
+			</span>
+		</p>
+		<a class="btn" href="{{ path('mywebsiteweb_cv_afficher', {'idCv': cv.id}) }}">Read More</a>
+	</div>
+	<div class="clear"> </div>
+</div>

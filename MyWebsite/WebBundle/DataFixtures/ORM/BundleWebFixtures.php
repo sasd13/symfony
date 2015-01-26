@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class BundleProfileFixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class BundleWebFixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
 	/**
      * @var ContainerInterface
@@ -22,14 +22,14 @@ class BundleProfileFixtures extends AbstractFixture implements OrderedFixtureInt
 	
 	public function load(ObjectManager $manager)
 	{
-		//Bundle Profile
-		$bundle = $this->container->get('web_recorder')->recordBundle('Profile');
+		//Bundle Web
+		$bundle = $this->container->get('web_recorder')->recordBundle('Web');
 		
-		$this->addReference('bundle_profile', $bundle);
+		$this->addReference('bundle_web', $bundle);
 	}
 	
 	public function getOrder()
     {
-        return 21; // l'ordre dans lequel les fichiers sont chargés
+        return 11; // l'ordre dans lequel les fichiers sont chargés
     }
 }

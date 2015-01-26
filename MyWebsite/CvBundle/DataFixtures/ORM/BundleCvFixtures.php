@@ -24,7 +24,7 @@ class BundleCvFixtures extends AbstractFixture implements OrderedFixtureInterfac
 	public function load(ObjectManager $manager)
 	{
 		//Bundle Cv
-		$bundle = $this->container->get('web_generator')->generateBundle('Cv');
+		$bundle = $this->container->get('web_recorder')->recordBundle('Cv');
 		
 		$this->addReference('bundle_cv', $bundle);
 	}

@@ -19,7 +19,7 @@ class WebController extends Controller
 		if($request->getSession()->get('mode') === 'admin')
 		{
 			//Get¨MenuWeb mode Admin
-			$menuWeb = $this->container->get('web_generator')->getMenu(array(
+			$menuWeb = $this->container->get('web_generator')->generateMenu(array(
 				$webData::DEFAULT_MENU_DISPLAY_WEB,
 				$profileData::ADMIN_MENU_DISPLAY_WEB,
 			));
@@ -27,7 +27,7 @@ class WebController extends Controller
 		else
 		{
 			//Get¨MenuWeb mode Client
-			$menuWeb = $this->container->get('web_generator')->getMenu(array(
+			$menuWeb = $this->container->get('web_generator')->generateMenu(array(
 				$webData::DEFAULT_MENU_DISPLAY_WEB,
 				$profileData::CLIENT_MENU_DISPLAY_WEB,
 			));

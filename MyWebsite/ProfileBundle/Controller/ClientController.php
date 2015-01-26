@@ -21,7 +21,7 @@ class ClientController extends Controller
 		$profileData = $this->container->get('profile_data');
 		
 		//Get¨MenuWeb mode Client
-		$menuWeb = $this->container->get('web_generator')->getMenu(array(
+		$menuWeb = $this->container->get('web_generator')->generateMenu(array(
 			$webData::DEFAULT_MENU_DISPLAY_WEB,
 			$profileData::CLIENT_MENU_DISPLAY_WEB,
 		));
@@ -79,7 +79,7 @@ class ClientController extends Controller
 		}
 		
 		//Get¨Profile mode Client
-		$menuProfile = $this->container->get('web_generator')->getMenu(array(
+		$menuProfile = $this->container->get('web_generator')->generateMenu(array(
 			$profileData::CLIENT_MENU_DISPLAY_PROFILE,
 		));
 		$request->getSession()->set('menuProfile', $menuProfile);

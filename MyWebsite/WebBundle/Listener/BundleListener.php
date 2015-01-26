@@ -38,13 +38,14 @@ class BundleListener
 		$controllerFullName = get_class($controller[0]);
 		// return 'name\bundlenameBundle\Controller\controllernameController'
 		
-		$check = $this->container->get('web_moduleHandler')->checkHandler($controllerFullName);
-		
+		$check = $this->container->get('web_bundleHandler')->checkHandler($controllerFullName);
+		/*
 		if($check === false)
 		{
-			$fakeRequest = $event->getRequest()->duplicate(null, null, array('_controller' => 'MyWebsiteWebBundle:Web:index'));
+			die(var_dump($controller));
+			$fakeRequest = $event->getRequest()->duplicate(null, null, array('_controller' => 'MyWebsiteWebBundle:Exception:error404'));
 			$controller = $this->resolver->getController($fakeRequest);
 			$event->setController($controller);
-		}
+		}*/
 	}
 }

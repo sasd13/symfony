@@ -19,10 +19,6 @@ class MenuRepository extends EntityRepository
 			->setParameter('menu_isRoot', true)
 			->andWhere('menu.active = :menu_active')
 			->setParameter('menu_active', true)
-			->leftJoin('menu.subMenus', 'subMenu')
-			->addSelect('subMenu')
-			->andWhere('subMenu.active = :subMenu_active')
-			->setParameter('subMenu_active', true)
 			->leftJoin('menu.module', 'module')
 			->addSelect('module')
 			->andWhere('module.active = :module_active')
@@ -31,6 +27,9 @@ class MenuRepository extends EntityRepository
 			->addSelect('bundle')
 			->andWhere('bundle.active = :bundle_active')
 			->setParameter('bundle_active', true)
+			->leftJoin('menu.subMenus', 'subMenu')
+			->addSelect('subMenu')
+			->addOrderBy('menu.priority', 'ASC')
 		;
 		
 		if(count($arrayDisplay) > 0)
@@ -47,6 +46,8 @@ class MenuRepository extends EntityRepository
 			}
 		}
 		$results = $qb->getQuery()->getResult();
+		
+		//die(var_dump($results));
 		
 		return $results;
 	}

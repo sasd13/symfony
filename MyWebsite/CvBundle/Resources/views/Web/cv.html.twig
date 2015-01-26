@@ -1,0 +1,65 @@
+{% extends "MyWebsiteWebBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - MyCV{% endblock %}
+
+{% block class_header %}header2{% endblock %}
+
+{% block section %}
+	<!---Start-content---->
+	<div class="content">
+		<div class="wrap">
+			<!---start-Features---->
+			<div class="feature-grids">
+				<div class="feature-grid-head feature-grid-head1">
+					<div class="feature-grid-head-top feature-grid-head-top1">
+						<label> </label><span> </span> <label> </label>
+						<div class="clear"> </div>
+					</div>
+					<h3><span>Mon</span> Curriculum Vitae</h3>
+					<p class="proinfo">Details de mon parcours universitaire et professionnel</p>
+				</div>
+				{% if cv is null %}
+					<br/>
+					<p>Ancun CV disponible...</p>
+				{% else %}
+					<div class="da-cv">
+						<div class="feature-grid-left">
+							<img src="{{ asset('bundles/mywebsiteweb/') }}images/{{ cv.photo }}" title="photo" /></a>	
+						</div>
+						<div class="feature-grid-right">
+							<h3 class="titreCv">{{ cv.intitule }}</h3>
+							<br/>
+							<div>
+								{{ cv.description | truncate(250, true, '...') }}<br/><br/>
+								{% if cv.mobilite is not null %}
+									Mobilité: {{ cv.profil.ville }}<br/>
+								{% endif %}
+								{% if cv.mobilite is not null %}
+									Mobilité: {{ cv.mobilite }}<br/>
+								{% endif %}
+								{% if cv.disponibilite is not null %}
+									Disponibilité: {{ cv.disponibilite }}<br/>
+								{% endif %}							
+							</div>
+						</div>
+					</div>
+					<div class="clear"> </div>
+					{% for categorie in list_categories %}
+						{% include "MyWebsiteCvBundle:Web:categorie.html.twig" %}
+					{% endfor %}
+				{% endif %}
+			</div>
+			<!---End-Features---->
+		</div>
+	</div>
+	<!---End-content---->
+{% endblock %}
+
+{% block js %}
+	<script type="text/javascript">
+		$('.clickable').click(function() {
+			$(this).find('.hidable').slideToggle(500);
+			return false;
+		});
+	</script>  
+{% endblock %}

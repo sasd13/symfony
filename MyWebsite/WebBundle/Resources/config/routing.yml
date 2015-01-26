@@ -6,7 +6,7 @@ web_exception_error:
     pattern:  /error
     defaults: { _controller: MyWebsiteWebBundle:Exception:error}
 web_exception_error404:
-    pattern:  /{errorURL}
+    pattern:  /error404
     defaults: { _controller: MyWebsiteWebBundle:Exception:error404}
-    requirements:
-        errorURL: ".*"
+    #requirements:
+        #errorURL: ".*"
