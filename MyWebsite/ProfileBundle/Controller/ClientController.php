@@ -15,15 +15,18 @@ class ClientController extends Controller
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
 		$webData = $this->container->get('web_data');
-		$data = $this->container->get('profile_data');
+		$profileData = $this->container->get('profile_data');
+		//End services
 		
 		//Get¨MenuWeb mode Client
 		$menuWeb = $this->container->get('web_generator')->generateMenu(array(
 			$webData::DEFAULT_MENU_DISPLAY_WEB,
-			$data::CLIENT_MENU_DISPLAY_WEB,
+			$profileData::CLIENT_MENU_DISPLAY_WEB,
 		));
 		$request->getSession()->set('menuWeb', $menuWeb);
 		//End getting
@@ -80,7 +83,7 @@ class ClientController extends Controller
 		
 		//Get¨Profile mode Client
 		$menuProfile = $this->container->get('web_generator')->generateMenu(array(
-			$data::CLIENT_MENU_DISPLAY_PROFILE,
+			$profileData::CLIENT_MENU_DISPLAY_PROFILE,
 		));
 		$request->getSession()->set('menuProfile', $menuProfile);
 		//End getting
@@ -97,9 +100,12 @@ class ClientController extends Controller
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
-		$data = $this->container->get('profile_data');
+		$profileData = $this->container->get('profile_data');
+		//End services
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -116,7 +122,7 @@ class ClientController extends Controller
 		
 		if($request->getMethod() === 'POST')
 		{
-			$clientOld = $client->copy();
+			$clientOld = $this->container->get('profile_copy')->getClientCopy($client);
 			
 			$form->submit($request->get($form->getName()), false);
 			
@@ -124,9 +130,9 @@ class ClientController extends Controller
 			
 			if($form->isValid())
 			{
-				$updated = $this->container->get('profile_recorder')->updateClient($cliet, $clientOld);
+				$updated = $this->container->get('profile_recorder')->updateClient($client, $clientOld);
 				
-				if($update === true)
+				if($updated === true)
 				{
 					$message = "Les informations ont été enregistrées";
 				}
@@ -145,9 +151,12 @@ class ClientController extends Controller
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
 		$webData = $this->container->get('web_data');
+		//End services
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -211,7 +220,10 @@ class ClientController extends Controller
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
+		//End services
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -240,7 +252,9 @@ class ClientController extends Controller
 	
 	public function deleteAction()
     {
-		$router = $this->container->get('web_router');
+		//Services
+		$router = $this->container->get('profile_router');
+		//End services
 		
 		return $this->redirect($this->generateUrl($router::ROUTE_WEB_EXCEPTION_ERROR));
 	}

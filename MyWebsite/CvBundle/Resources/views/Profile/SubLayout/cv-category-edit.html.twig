@@ -1,73 +1,75 @@
 <div class="feature-grid2">
 	<div class="feature-grid-head feature-grid-head3">
-		<h3><span>Modifier</span> Catégorie</h3>
+		<h3><span>Modifier</span> Curriculum Vitae</h3>
 		<div class="feature-grid-head-top">
 			<label> </label><label> </label>
 			<div class="clear"> </div>
 		</div>
 	</div>
-	<div class="category-tabs">	
-		<!---start-tabs--->
-		<ul id="tabs">
-			<li><a href="#" name="tab1">Liste des Contenus</a></li>
-			<li><a href="#" name="tab2">Ajouter Contenu</a></li>
-			<li><a href="#" name="tab3">Gestion Categorie</a></li>
+	
+	{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+		{{ form_errors(form) }}
+		<span class="required_notification">{{ message }}</span>
+		<ul class="form-content">
+			<li>
+				<h2>Modifier catégorie : {{ category.title }}</h2>
+			</li>
+			<li>
+				{{ form_label(form.title, 'Titre') }}
+				{{ form_widget(form.title) }}
+			</li>
 		</ul>
-
-		<div id="content"> 
-			<div id="tab1">
-				{% if list_contenus | length == 0 %}
-					<br/>
-					<p>Aucun Contenu créé...</p>
-				{% else %}
-					{% set i = 1 %}
-					{% for contenu in list_contenus %}
-						<div class="contact_form border">
-							<h2>Contenu {{ i }}</h2>
-						</div>
-						{% include "MyWebsiteCvBundle:Profile:SubLayout/cv-category-contenu-edit.html.twig" %}
-						{% set i = i+1 %}
-						<br/><br/><br/>
-					{% endfor %}
-				{% endif %}
-			</div>
-			
-			<div id="tab2">
-				<div class="contact_form border">
-					<h2>Nouveau contenu</h2>
-					<span class="required_notification">* Denotes Required Field</span>
+		<ul class="form-submit">
+			<li>
+				<input type="submit" class="submit" value="Enregistrer"/>
+			</li>
+		</ul>
+		<br/><br/><br/><br/>
+		<ul class="form-content">
+			<li>
+				<h2>Liste des contenus</h2>
+			</li>
+		</ul>
+		{% if (category.contents | length <= 1) %}
+			<br/>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;Aucune contenu créé...</p>
+		{% else %}
+			{% for content in category.contents if content.tag != 'category_content_info' %}
+				<div class="contact_form list-content border">
+					<div class="list-content-left">
+						{{ content.labelValue | truncate(20, true, '...') ~ ' :'}}
+						{% if content.formType == 'textarea' %}
+							{{ content.textValue | truncate(40, true, '...') }}
+						{% else %}
+							{{ content.stringValue | truncate(40, true, '...') }}
+						{% endif %}
+					</div>
+					<div class="list-content-right">
+						<button type="button" /><a href="{{ path('cv_profile_category_content_edit', {'idContent': content.id}) }}">Modifier</a></button>
+					</div>
 				</div>
-				{% include "MyWebsiteCvBundle:Profile:SubLayout/cv-category-contenu-new.html.twig" %}
-			</div>
-			
-			<div id="tab3">
-				<div class="new-project-form">
-					<form class="contact_form" action="{{ path('cv_profile_category_edit') }}" method="post" name="contact_form">
-						<ul class="form-content">
-							<li>
-								<h2>Détails de la Catégorie</h2>
-								<span class="required_notification">* Denotes Required Field</span>
-								<input type="hidden" name="idCategory" value="{{ category.id }}" required />
-							</li>
-							<li>
-								<label for="title">Intitule:</label>
-								<input type="text" name="title" placeholder="Expérience professionnelle" maxlength="100" value="{{ category.title }}" required />
-							</li>
-							<li>
-								<label for="tag">Tag:</label>
-								<input type="text" name="tag" placeholder="experience" maxlength="20" value="{{ category.tag }}" required />
-							</li>
-						</ul>
-						<ul class="form-submit">
-							<li>
-								<input type="submit" class="submit" value="Modifier"/>
-								<a href="{{ path('cv_profile_category_delete', {'idCategory': category.id}) }}"><input type="button" value="Supprimer"/></a>
-							</li>
-						</ul>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="clear"> </div>
+			{% endfor %}
+		{% endif %}
+		{{ form_widget(form._token) }}
+	{{ form_end(form, {'render_rest': false}) }}
+	<br/><br/><br/><br/>
+	<form class="contact_form" action="{{ path('cv_profile_category_content_new', {'idCategory': category.id}) }}" method="post" name="contact_form_contenu">
+		<ul class="form-content">
+			<li>
+				<h2>Ajouter un contenu</h2>
+			</li>
+			<li>
+				<input type="text" name="new_category_content_labelBavlue" placeholder="label : Langue" maxlength="50"/>
+				<input type="text" name="new_category_content_stringValue" placeholder="value : Anglais" maxlength="50"/>
+			</li>
+			<li>
+				<textarea name="new_category_content_textValue"></textarea>
+			</li>
+		</ul>
+		<ul class="form-submit">
+			<li>
+				<input type="submit" class="submit" value="Enregistrer"/>
+			</li>
+		</ul>
+	</form>
 </div>

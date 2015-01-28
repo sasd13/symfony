@@ -5,9 +5,9 @@ namespace MyWebsite\WebBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use MyWebsite\WebBundle\Model\AbstractEntity;
 use MyWebsite\WebBundle\Model\DocumentInterface;
 use \DateTime;
-use MyWebsite\WebBundle\Model\CopyInterface;
 
 /**
  * Document
@@ -16,7 +16,7 @@ use MyWebsite\WebBundle\Model\CopyInterface;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\DocumentRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Document implements DocumentInterface, CopyInterface
+class Document extends AbstractEntity implements DocumentInterface
 {
 	const DEFAULT_NAME = 'inconnu.gif';
 	const DEFAULT_MIMETYPE = 'text/plain';
@@ -96,13 +96,6 @@ class Document implements DocumentInterface, CopyInterface
      * )
      */
     public $file;
-	
-	/**
-     * @var boolean
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $idCopy;
 	
 	
 	public function __construct($type = 'document')
@@ -207,35 +200,6 @@ class Document implements DocumentInterface, CopyInterface
 			unlink($this->getAbsolutePath());
         }
     }
-	
-	public function setIdCopy($idCopy)
-	{
-		$this->idCopy = $idCopy;
-		
-		return $this;
-	}
-	
-	public function getIdCopy()
-	{
-		return $this->idCopy;
-	}
-	
-	public function copy()
-	{
-		$document = new Document();
-		$document
-			->setIdCopy($this->id)
-			->setTitle($this->title)
-			->setOriginalName($this->originalName)
-			->setMimeType($this->mimeType)
-			->setHide($this->hide)
-			->setPath($this->path)
-			->setUploadDate($this->uploadDate)
-			->setCategory($this->category)
-		;
-		
-		return $document;
-	}
 	
     /**
      * Get id

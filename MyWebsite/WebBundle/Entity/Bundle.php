@@ -4,7 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Entity\AbstractEntity;
+use MyWebsite\WebBundle\Entity\AbstractTimedEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -14,7 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\BundleRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Bundle extends AbstractEntity
+class Bundle extends AbstractTimedEntity
 {
 	const DEFAULT_ACTIVE = true;
 	

@@ -20,49 +20,59 @@ cv_profile_new:
 
 cv_profile_edit:
 # affiche les categories en lecture seule et les contenus en ecriture #
-    pattern:  /profile/cv/edit/{idCv}-{active}
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileEdit, idCv: 0, active: false}
+    pattern:  /profile/cv-{idCv}/edit
+    defaults: { _controller: MyWebsiteCvBundle:Cv:profileEdit, idCv: 0}
+    requirements:
+        idCv: \d*
+
+cv_profile_active:
+    pattern:  /profile/cv-{idCv}/active-{active}
+    defaults: { _controller: MyWebsiteCvBundle:Cv:profileActive, idCv: 0, active: false}
     requirements:
         idCv: \d*
         active: true|false
 
 cv_profile_delete:
-    pattern:  /profile/cv/delete/{idCv}
+    pattern:  /profile/cv-{idCv}/delete
     defaults: { _controller: MyWebsiteCvBundle:Cv:profileDelete, idCv: 0}
     requirements:
         idCv: \d*
 
 cv_profile_category_new:
 # affiche form category #
-    pattern:  /profile/cv/category/new
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileModelCategoryNew}
+    pattern:  /profile/cv-{idCv}/category/new
+    defaults: { _controller: MyWebsiteCvBundle:Cv:profileCategoryNew, idCv: 0}
+    requirements:
+        idCv: \d*
 
 cv_profile_category_edit:
 # affiche form category avec title uniquement et la list des contents et/ou ajouter content #
-    pattern:  /profile/cv/category/edit/{idCategory}
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileModelCategoryEdit, idCategory: 0}
+    pattern:  /profile/cv/category-{idCategory}/edit
+    defaults: { _controller: MyWebsiteCvBundle:Cv:profileCategoryEdit, idCategory: 0}
     requirements:
         idCategory: \d*
 
 cv_profile_category_delete:
-    pattern:  /profile/cv/category/delete/{idCategory}
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileModelCategoryDelete, idCategory: 0}
+    pattern:  /profile/cv/category-{idCategory}/delete
+    defaults: { _controller: MyWebsiteCvBundle:Cv:profileCategoryDelete, idCategory: 0}
     requirements:
         idCategory: \d*
 
 cv_profile_category_content_new:
 # creation avec formType text ou textarea #
-    pattern:  /profile/cv/category/content/new
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileModelContentNew}
+    pattern:  /profile/cv/category-{idCategory}/content/new
+    defaults: { _controller: MyWebsiteCvBundle:Cv:profileContentNew, idCategory: 0}
+    requirements:
+        idCategory: \d*
 
 cv_profile_category_content_edit:
-    pattern:  /profile/cv/category/content/edit/{idContent}
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileModelContentList, idContent: 0}
+    pattern:  /profile/cv/category/content/edit
+    defaults: { _controller: MyWebsiteCvBundle:Cv:profileContentList, idContent: 0}
     requirements:
         idContent: \d*
 
 cv_profile_category_content_delete:
-    pattern:  /profile/cv/category/content/delete/{idContent}
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileModelContentDelete, idContent: 0}
+    pattern:  /profile/cv/category/content-{idContent}/delete
+    defaults: { _controller: MyWebsiteCvBundle:Cv:profileContentDelete, idContent: 0}
     requirements:
         idContent: \d*

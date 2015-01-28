@@ -14,10 +14,13 @@ class UserController extends Controller
 	{
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
 		$webData = $this->container->get('web_data');
 		$profileData = $this->container->get('profile_data');
+		//End services
 		
 		//Check Session
 		if($request->getSession()->get('idUser') != null)
@@ -84,8 +87,11 @@ class UserController extends Controller
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
+		//End services
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -130,19 +136,24 @@ class UserController extends Controller
 	
 	public function logoutAction()
     {
-		$router = $this->container->get('web_router');
+		//Services
+		$webRouter = $this->container->get('web_router');
+		//End services
 		
 		$this->getRequest()->getSession()->clear();
 		
-        return $this->redirect($this->generateUrl($router::ROUTE_WEB_HOME));
+        return $this->redirect($this->generateUrl($webRouter::ROUTE_WEB_HOME));
     }
 	
 	public function upgradeAction()
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$profileData = $this->container->get('profile_data');
+		//End services
 		
 		if($request->getSession()->get('idUser') == null)
 		{
@@ -163,8 +174,11 @@ class UserController extends Controller
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$profileData = $this->container->get('profile_data');
+		//End services
 		
 		if($request->getSession()->get('idUser') == null)
 		{

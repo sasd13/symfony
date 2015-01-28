@@ -5,7 +5,6 @@ namespace MyWebsite\ProfileBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use MyWebsite\ProfileBundle\Entity\User;
-use MyWebsite\WebBundle\Model\CopyInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -14,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table(name="profile_client")
  * @ORM\Entity(repositoryClass="MyWebsite\ProfileBundle\Entity\ClientRepository")
  */
-class Client extends User implements CopyInterface
+class Client extends User
 {
 	/**
      * @var string
@@ -36,49 +35,11 @@ class Client extends User implements CopyInterface
 	 */
 	private $cvs;
 	
-	/**
-     * @var boolean
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $idCopy;
-	
 	
 	public function __construct()
 	{
 		parent::__construct();
 		$this->cvs = new ArrayCollection();
-	}
-	
-	public function setIdCopy($idCopy)
-	{
-		$this->idCopy = $idCopy;
-		
-		return $this;
-	}
-	
-	public function getIdCopy()
-	{
-		return $this->idCopy;
-	}
-	
-	public function copy()
-	{
-		$client = new Client();
-		$client
-			->setIdCopy($this->getId())
-			->setFirstName($this->getFirstName())
-			->setLastName($this->getLastName())
-			->setEmail($this->getEmail())
-			->setPictureTitle($this->pictureTitle)
-			->setPicturePath($this->picturePath)
-		;
-		foreach($this->getCategories() as $category)
-		{
-			$client->addCategories($category->copy());
-		}
-		
-		return $client;
 	}
 	
 	/**

@@ -4,7 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Entity\AbstractEntity;
+use MyWebsite\WebBundle\Entity\AbstractTimedEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -15,7 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  */
-class ModuleEntity extends AbstractEntity
+class ModuleEntity extends AbstractTimedEntity
 {
 	/**
      * @var integer

@@ -15,7 +15,7 @@ use MyWebsite\WebBundle\Entity\ModuleEntity;
  */
 class Cv extends ModuleEntity
 {
-	const DEFAULT_ACTIVE = true;
+	const DEFAULT_ACTIVE = false;
 	
 	/**
      * @var string
@@ -28,16 +28,16 @@ class Cv extends ModuleEntity
 	/**
      * @var string
      *
-     * @ORM\Column(name="picturePath", type="string", length=255, nullable=true)
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
-    private $picturePath;
+    private $description;
 	
 	/**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     * @ORM\Column(name="picturePath", type="string", length=255, nullable=true)
      */
-    private $description;
+    private $picturePath;
 	
 	/**
      * @var string
@@ -66,6 +66,7 @@ class Cv extends ModuleEntity
 	 * @ORM\JoinColumn(nullable=false)
 	 */
 	private $client;
+	
 	
 	public function __construct()
 	{

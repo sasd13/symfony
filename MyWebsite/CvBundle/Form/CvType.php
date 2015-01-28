@@ -24,9 +24,6 @@ class CvType extends AbstractType
 					'placeholder' => 'example : Mon Cv',
 				)
 			))
-			->add('description', 'textarea', array(
-				'required' => false
-			))
 			->add('disponibility', 'text', array(
 				'required' => false,
 				'attr' => array(
@@ -38,6 +35,9 @@ class CvType extends AbstractType
 				'attr' => array(
 					'placeholder' => 'Paris et environs',
 				)
+			))
+			->add('description', 'textarea', array(
+				'required' => false
 			))
 			->add('categories', 'collection', array(
 				'type' => new CategoryType()

@@ -4,9 +4,8 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Entity\AbstractEntity;
+use MyWebsite\WebBundle\Entity\AbstractTimedEntity;
 use Doctrine\Common\Collections\ArrayCollection;
-use MyWebsite\WebBundle\Model\CopyInterface;
 
 /**
  * Category
@@ -15,7 +14,7 @@ use MyWebsite\WebBundle\Model\CopyInterface;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\CategoryRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Category extends AbstractEntity implements CopyInterface
+class Category extends AbstractTimedEntity
 {
 	/**
      * @var integer
@@ -68,13 +67,6 @@ class Category extends AbstractEntity implements CopyInterface
 	 */
 	private $moduleEntity;
 	
-	/**
-     * @var boolean
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $idCopy;
-	
 	
 	public function __construct($type = 'content')
 	{
@@ -108,39 +100,6 @@ class Category extends AbstractEntity implements CopyInterface
     {
         $this->moduleEntity->removeCategory($this);
     }
-	
-	public function setIdCopy($idCopy)
-	{
-		$this->idCopy = $idCopy;
-		
-		return $this;
-	}
-	
-	public function getIdCopy()
-	{
-		return $this->idCopy;
-	}
-	
-	public function copy()
-	{
-		$category = new Category($this->type);
-		$category
-			->setIdCopy($this->id)
-			->setTitle($this->title)
-			->setTag($this->tag)
-			->setModuleEntity($this->moduleEntity)
-		;
-		foreach($this->contents as $content)
-		{
-			$category->addContent($content->copy());
-		}
-		foreach($this->documents as $document)
-		{
-			$category->addDocument($document->copy());
-		}
-		
-		return $category;
-	}
 	
 	/**
      * Get id

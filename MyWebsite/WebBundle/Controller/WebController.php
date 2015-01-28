@@ -9,12 +9,14 @@ class WebController extends Controller
 {
 	public function indexAction()
     {
-		$router = $this->container->get('web_router');
-		$layouter = $this->container->get('web_layouter');
 		$request = $this->getRequest();
 		
+		//Services
+		$router = $this->container->get('web_router');
+		$layouter = $this->container->get('web_layouter');
 		$webData = $this->container->get('web_data');
 		$profileData = $this->container->get('profile_data');
+		//End services
 		
 		if($request->getSession()->get('mode') === 'admin')
 		{

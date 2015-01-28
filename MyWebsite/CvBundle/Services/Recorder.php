@@ -54,17 +54,6 @@ class Recorder
 			'exemple : Mon Cv'
 		);
 		
-		//RECORD : Content Description for Category Info
-		$content = $webRecorder->createContent(
-			$category,
-			$data::CV_CONTENT_LABEL_DESCRIPTION, 
-			'textarea',
-			$data::CV_CONTENT_LABELVALUE_DESCRIPTION,
-			$cv->getDescription(),
-			false,
-			null
-		);
-		
 		//RECORD : Content Disponibility for Category Info
 		$content = $webRecorder->createContent(
 			$category,
@@ -87,6 +76,17 @@ class Recorder
 			'example : Paris and Ile-de-France'
 		);
 		
+		//RECORD : Content Description for Category Info
+		$content = $webRecorder->createContent(
+			$category,
+			$data::CV_CONTENT_LABEL_DESCRIPTION, 
+			'textarea',
+			$data::CV_CONTENT_LABELVALUE_DESCRIPTION,
+			$cv->getDescription(),
+			false,
+			null
+		);
+		
 		return $cv;
 	}
 	
@@ -94,13 +94,13 @@ class Recorder
 	{
 		$data = $this->container->get('cv_data');
 		
-		$categories = $client->getCategories();
+		$categories = $cv->getCategories();
 		foreach($categories as $keyCategory => $category)
 		{
 			$contents = $category->getContents();
 			foreach($contents as $keyContent => $content)
 			{
-				$contentOld = $clientOld
+				$contentOld = $cvOld
 					->getCategories()
 					->get($keyCategory)
 					->getContents()
@@ -130,13 +130,6 @@ class Recorder
 					AND $content->getStringValue() !== $cv->getTitle())
 				{
 					$cv->setTitle($content->getStringValue());
-					$cv->update();
-				}
-				
-				if($content->getLabel() === $data::CV_CONTENT_LABEL_PICTUREPATH
-					AND $content->getStringValue() !== $cv->getPicturePath())
-				{
-					$cv->setPicturePath($content->getStringValue());
 					$cv->update();
 				}
 				

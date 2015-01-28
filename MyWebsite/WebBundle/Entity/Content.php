@@ -4,7 +4,7 @@ namespace MyWebsite\WebBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use MyWebsite\WebBundle\Model\CopyInterface;
+use MyWebsite\WebBundle\Model\AbstractEntity;
 
 /**
  * Content
@@ -13,7 +13,7 @@ use MyWebsite\WebBundle\Model\CopyInterface;
  * @ORM\Entity(repositoryClass="MyWebsite\WebBundle\Entity\ContentRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Content implements CopyInterface
+class Content extends AbstractEntity
 {
 	const DEFAULT_REQUIRED = false;
 	
@@ -115,13 +115,6 @@ class Content implements CopyInterface
 	 */
 	private $category;
 	
-	/**
-     * @var boolean
-     *
-     * @Assert\Type(type="integer")
-     */
-    private $idCopy;
-	
 	
 	public function __construct($label, $formType = 'text')
 	{
@@ -157,36 +150,6 @@ class Content implements CopyInterface
     {
         $this->category->removeContent($this);
     }
-	
-	public function setIdCopy($idCopy)
-	{
-		$this->idCopy = $idCopy;
-		
-		return $this;
-	}
-	
-	public function getIdCopy()
-	{
-		return $this->idCopy;
-	}
-	
-	public function copy()
-	{
-		$content = new Content($this->label, $this->formType);
-		$content
-			->setIdCopy($this->id)
-			->setLabelValue($this->labelValue)
-			->setStringValue($this->stringValue)
-			->setTextValue($this->textValue)
-			->setRequired($this->required)
-			->setPolicyLevel($this->policyLevel)
-			->setPriority($this->priority)
-			->setPlaceholder($this->placeholder)
-			->setCategory($this->category)
-		;
-		
-		return $content;
-	}
 
     /**
      * Get id

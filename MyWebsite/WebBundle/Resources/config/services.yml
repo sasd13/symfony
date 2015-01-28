@@ -39,6 +39,10 @@ services:
             - [setParameters, ["@doctrine.orm.entity_manager", "@service_container"]]
     web_data:
         class: MyWebsite\WebBundle\Services\Data
+    web_copy:
+        class: MyWebsite\WebBundle\Services\Copy
+        calls:
+            - [setParameters, ["@service_container"]]
 
 #   Form services
     web_form.form.type.web_module:

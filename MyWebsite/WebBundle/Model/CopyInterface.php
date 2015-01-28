@@ -9,5 +9,4 @@ interface CopyInterface
 {
 	public function setIdCopy($idCopy);
 	public function getIdCopy();
-	public function copy();
 }

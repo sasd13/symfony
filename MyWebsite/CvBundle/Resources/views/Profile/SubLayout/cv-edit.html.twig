@@ -6,69 +6,60 @@
 			<div class="clear"> </div>
 		</div>
 	</div>
-	<div class="cv-tabs">	
-		<!---start-tabs--->
-		<ul id="tabs">
-			<li><a href="#" name="tab1">Liste des Catégories</a></li>
-			<li><a href="#" name="tab2">Ajouter Catégorie</a></li>
-			<li><a href="#" name="tab3">Gestion Cv</a></li>
+	
+	{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+		{% if cv.categories | length > 0 %}
+			{{ form_errors(form) }}
+			<span class="required_notification">{{ message }}</span>
+			<ul class="form-content">
+				{% set category = attribute(cv.categories, 0) %}
+				{% set formCategory = attribute(form.categories, 0) %}
+				{% include "MyWebsiteCvBundle:Profile:SubLayout/Form/cv-category.html.twig" %}		
+			</ul>
+			<ul class="form-submit">
+				<li>
+					<input type="submit" class="submit" value="Enregistrer"/>
+				</li>
+			</ul>
+			<br/><br/><br/><br/>
+		{% endif %}
+		<ul class="form-content">
+			<li>
+				<h2>Liste des catégories</h2>
+			</li>
 		</ul>
-		
-		<div id="content"> 
-			<div id="tab1">
-				<div class="new-project-form">
-					{% if cv.categories | length == 0 %}
-						<br/>
-						<p>Aucune Catégorie créée...</p>
-					{% else %}
-						{% for category in cv.categories %}
-							{% include "MyWebsiteCvBundle:Profile:SubLayout/cv-category-list-content.html.twig" %}
-						{% endfor %}
-					{% endif %}
+		{% if (cv.categories | length <= 1) %}
+			<br/>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;Aucune catégorie créée...</p>
+		{% else %}
+			{% for category in cv.categories if category.tag != 'cv_category_info' %}
+				<div class="contact_form list-content border">
+					<div class="list-content-left">
+						{{ category.title | truncate(40, true, '...') }}
+					</div>
+					<div class="list-content-right">
+						<button type="button" /><a href="{{ path('cv_profile_category_edit', {'idCategory': category.id}) }}">Modifier</a></button>
+					</div>
 				</div>
-			</div>
-			
-			<div id="tab2">
-				{% include "MyWebsiteCvBundle:Profile:SubLayout/cv-category-new.html.twig" %}
-			</div>
-			
-			<div id="tab3">
-				<div class="new-project-form">
-					{{ form_start(formCv, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
-						{{ form_errors(formCv) }}
-						<ul class="form-content">
-							<li>
-								<h2>Détails du Cv: "{{ cv.title | truncate(30, true, '...') }}"</h2>
-								<span class="required_notification">{{ messageCategory }}</span>
-							</li>
-							<li>
-								{{ form_label(formCv.title, "Titre :") }}
-								{{ form_widget(formCv.title) }}
-							</li>
-							<li>
-								{{ form_label(formCv.disponibility, "Disponibilité :") }}
-								{{ form_widget(formCv.disponibility) }}
-							</li>
-							<li>
-								{{ form_label(formCv.mobility, "Mobilité :") }}
-								{{ form_widget(formCv.mobility) }}
-							</li>
-							<li>
-								{{ form_label(formCv.description, "Description :") }}
-								{{ form_widget(formCv.description) }}
-							</li>
-						</ul>
-						<ul class="form-submit">
-							<li>
-								<input type="submit" class="submit" value="Enregistrer"/>
-								<a href="{{ path('cv_profile_delete', {'idCv': cv.id}) }}"><input type="button" value="Supprimer"/></a>
-							</li>
-						</ul>
-						{{ form_widget(formCv._token) }}
-					{{ form_end(formCv, {'render_rest': false}) }}
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="clear"> </div>
+			{% endfor %}
+		{% endif %}
+		{{ form_widget(form._token) }}
+	{{ form_end(form, {'render_rest': false}) }}
+	<br/><br/><br/><br/>
+	<form class="contact_form" action="{{ path('cv_profile_category_new', {'idCv': cv.id}) }}" method="post" name="contact_form_contenu">
+		<ul class="form-content">
+			<li>
+				<h2>Ajouter une catégorie</h2>
+			</li>
+			<li>
+				<label for="new_category_title">Titre</label>
+				<input type="text" name="new_category_title" placeholder="example : Formation" maxlength="50" required />
+			</li>
+		</ul>
+		<ul class="form-submit">
+			<li>
+				<input type="submit" class="submit" value="Enregistrer"/>
+			</li>
+		</ul>
+	</form>
 </div>

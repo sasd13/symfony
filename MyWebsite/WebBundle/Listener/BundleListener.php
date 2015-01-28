@@ -42,10 +42,10 @@ class BundleListener
 		/*
 		if($check === false)
 		{
-			die(var_dump($controller));
 			$fakeRequest = $event->getRequest()->duplicate(null, null, array('_controller' => 'MyWebsiteWebBundle:Exception:error404'));
 			$controller = $this->resolver->getController($fakeRequest);
 			$event->setController($controller);
-		}*/
+		}
+		*/
 	}
 }

@@ -3,6 +3,7 @@
 namespace MyWebsite\CvBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use MyWebsite\CvBundle\Services\Data;
 
 /**
  * CvRepository
@@ -12,14 +13,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class CvRepository extends EntityRepository
 {
-	public function myFindWithCategories($idClient)
+	public function myFindWithCategories($idCv)
 	{
 		$qb = $this->createQueryBuilder('cv')
-			->where('cv.active = :active')
-			->setParameter('active', true)
-			->leftJoin('cv.client', 'client', 'WITH', 'client.id = :id')
-			->setParameter('id', $idClient)
-			->addSelect('client')
+			->where('cv.id = :id')
+			->setParameter('id', $idCv)
 			->leftJoin('cv.categories', 'category')
 			->addSelect('category')
 			->leftJoin('category.contents', 'content')
@@ -27,7 +25,52 @@ class CvRepository extends EntityRepository
 		;
 		
 		$results = $qb->getQuery()->getResult();
-		die(var_dump($results));
-		return $results;
+		if($results == null)
+		{
+			return null;
+		}
+		
+		return $results[0];
+	}
+	
+	public function myFindWithCategoryInfo($idCv)
+	{
+		$qb = $this->createQueryBuilder('cv')
+			->where('cv.id = :id')
+			->setParameter('id', $idCv)
+			->leftJoin('cv.categories', 'category', 'WITH', 'category.tag = :tag')
+			->setParameter('tag', Data::CV_CATEGORY_TAG_INFO)
+			->addSelect('category')
+			->leftJoin('category.contents', 'content')
+			->addSelect('content')
+		;
+		
+		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		
+		return $results[0];
+	}
+	
+	public function myFindByCategoryTitle($idCv, $titleCategory)
+	{
+		$qb = $this->createQueryBuilder('cv')
+			->where('cv.id = :id')
+			->setParameter('id', $idCv)
+			->leftJoin('cv.categories', 'category')
+			->addSelect('category')
+			->andWhere('category.title = :title')
+			->setParameter('title', $titleCategory)
+		;
+		
+		$results = $qb->getQuery()->getResult();
+		if($results == null)
+		{
+			return null;
+		}
+		//die(var_dump($results[0]));
+		return $results[0];
 	}
 }

@@ -14,10 +14,13 @@ class AdminController extends Controller
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
 		$webData = $this->container->get('web_data');
 		$profileData = $this->container->get('profile_data');
+		//End services
 		
 		/*
 		 * LogIn Action
@@ -109,10 +112,13 @@ class AdminController extends Controller
     {
 		$request = $this->getRequest();
 		$em = $this->getDoctrine()->getManager();
+		
+		//Services
 		$router = $this->container->get('profile_router');
 		$layouter = $this->container->get('profile_layouter');
 		$webData = $this->container->get('web_data');
 		$profileData = $this->container->get('profile_data');
+		//End services
 		
 		if($request->getSession()->get('idUser') == null)
 		{
