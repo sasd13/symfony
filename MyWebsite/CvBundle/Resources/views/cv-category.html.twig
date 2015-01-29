@@ -10,22 +10,19 @@
 	<div class="hidable">
 		<br/><br/>
 		{% for content in category.contents %}
-			{% if loop.index0 % 2 == 0 %}
-				<div class="contenu-line">
-					<div class="feature-grid-left">
-						<h4>{{ content.stringValue }}</h4>	
-					</div>
-			{% else %}
-					<div class="feature-grid-right">
-						{% if content.formType == 'textarea' %}
-							<h4>{{ content.textValue }}</h4>
-						{% else %}
-							<h4>{{ content.stringValue }}</h4>
-						{% endif %}
-					</div>
-					<div class="clear"> </div>
+			<div class="contenu-line">
+				<div class="feature-grid-left">
+					<h4>{{ content.labelValue }}</h4>	
 				</div>
-			{% endif %}
+				<div class="feature-grid-right">
+					{% if content.formType == 'textarea' %}
+						<h4>{{ content.textValue }}</h4>
+					{% else %}
+						<h4>{{ content.stringValue }}</h4>
+					{% endif %}
+				</div>
+				<div class="clear"> </div>
+			</div>
 		{% endfor %}
 	</div>
 	<div class="clear"> </div>

@@ -19,7 +19,9 @@ class ContentType extends AbstractType
 		$builder
 			->setMethod('POST')
 			->add('label')
-            ->add('labelValue')
+            ->add('labelValue', 'text', array(
+				'required' => false
+			))
 			->add('formType')
             ->add('required')
             ->add('policyLevel')

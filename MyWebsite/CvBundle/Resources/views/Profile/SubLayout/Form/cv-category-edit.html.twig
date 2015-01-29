@@ -10,25 +10,26 @@
 	{% for formContent in formCategory.contents %}
 		{% set j = j+1 %}
 		{% set content = attribute(category.contents, j) %}
-		{% if j % 2 == 0 %}
-			<li>
-		{% endif %}
-		{% if content.formType == 'textarea' %}
-			{{ form_widget(formContent.textValue, {'attr': {
+		<li>
+			{{ form_widget(formContent.labelValue, {'attr': {
 					'name':  content.id ~ '_label_' ~ content.label,
-					'placeholder' : content.placeHolder
+					'placeholder' : content.label
 				}}) 
 			}}
-		{% else %}
-			{{ form_widget(formContent.stringValue, {'attr': {
-					'name':  content.id ~ '_label_' ~ content.label,
-					'placeholder' : content.placeHolder
-				}}) 
-			}}
-		{% endif %}
-		{% if j % 2 == 1 %}
-			</li>
-		{% endif %}
+			{% if content.formType == 'textarea' %}
+				{{ form_widget(formContent.textValue, {'attr': {
+						'name':  content.id ~ '_label_' ~ content.label,
+						'placeholder' : content.placeHolder
+					}}) 
+				}}
+			{% else %}
+				{{ form_widget(formContent.stringValue, {'attr': {
+						'name':  content.id ~ '_label_' ~ content.label,
+						'placeholder' : content.placeHolder
+					}}) 
+				}}
+			{% endif %}
+		</li>
 	{% endfor %}
 </ul>
 <ul class="form-submit2">

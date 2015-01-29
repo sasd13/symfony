@@ -160,6 +160,7 @@ class CvController extends Controller
 			return $this->redirect($this->generateUrl($router::ROUTE_CV_PROFILE_LIST));
 		}
 		
+		//New category
 		$category = new Category('content');
 		$category
 			->setTitle('New category')
@@ -167,29 +168,27 @@ class CvController extends Controller
 		;
 		$cv->addCategory($category);
 		
+		$content = new Content('langue', 'text');
+		$content
+			->setCategory($category)
+			->setPlaceholder('anglais')
+		;
+		$category->addContent($content);
+		$cv->addCategory($category);
+		
+		//Adding lines
 		foreach($cv->getCategories() as $key => $category)
 		{
 			if($key >= 1)
 			{
 				for($i=0; $i<1; $i++)
 				{
-					$content = new Content('cv_content_label', 'text');
+					$content = new Content('langue', 'text');
 					$content
 						->setCategory($category)
-						->setLabelValue('labelValue')
-						->setPlaceholder('label : Langues')
+						->setPlaceholder('anglais')
 					;
 					$category->addContent($content);
-			
-					$content = new Content('cv_content_value', 'text');
-					$content
-						->setCategory($category)
-						->setLabelValue('labelValue')
-						->setPlaceholder('value : Anglais')
-					;
-					$category->addContent($content);
-					
-							
 					$cv->addCategory($category);
 				}
 			}
@@ -221,40 +220,6 @@ class CvController extends Controller
 				}
 			}
 		}
-		
-		foreach($cv->getCategories() as $key => $category)
-		{
-			if($key >= 1)
-			{
-				for($i=0; $i<1; $i++)
-				{
-					$content = new Content('cv_content_label', 'text');
-					$content
-						->setCategory($category)
-						->setLabelValue('labelValue')
-						->setPlaceholder('label : Langues')
-					;
-					$category->addContent($content);
-			
-					$content = new Content('cv_content_value', 'text');
-					$content
-						->setCategory($category)
-						->setLabelValue('labelValue')
-						->setPlaceholder('value : Anglais')
-					;
-					$category->addContent($content);
-					
-							
-					$cv->addCategory($category);
-				}
-			}
-		}
-		
-		$form = $this->createForm('cv_cv', $cv, array(
-			'action' => $this->generateUrl($router::ROUTE_CV_PROFILE_EDIT, array(
-				'idCv' => $cv->getId()
-			))
-		));
 		
 		$client = $em->getRepository('MyWebsiteProfileBundle:Client')->find($request->getSession()->get('idUser'));
 		
