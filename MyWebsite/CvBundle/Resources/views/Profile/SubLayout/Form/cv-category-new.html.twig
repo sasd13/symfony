@@ -1,0 +1,42 @@
+<ul class="form-content">
+	<li>
+		{{ form_label(formCategory.title, 'Titre') }}
+		{{ form_widget(formCategory.title, {
+			'required': false
+			})
+		}}
+	</li>
+	<li>
+		<p>Détails de la catégorie</p>
+	</li>
+	{% set j = -1 %}
+	{% for formContent in formCategory.contents %}
+		{% set j = j+1 %}
+		{% set content = attribute(category.contents, j) %}
+		{% if j % 2 == 0 %}
+			<li>
+		{% endif %}
+		{% if content.formType == 'textarea' %}
+			{{ form_widget(formContent.textValue, {'attr': {
+					'name':  content.id ~ '_label_' ~ content.label,
+					'placeholder' : content.placeHolder
+				}}) 
+			}}
+		{% else %}
+			{{ form_widget(formContent.stringValue, {'attr': {
+					'name':  content.id ~ '_label_' ~ content.label,
+					'placeholder' : content.placeHolder
+				}}) 
+			}}
+		{% endif %}
+		{% if j % 2 == 1 %}
+			</li>
+		{% endif %}
+	{% endfor %}
+</ul>
+<ul class="form-submit">
+	<li>
+		<input type="button" class="submit" value="Ajouter contenu"/>
+	</li>
+</ul>
+<br/>

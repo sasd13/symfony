@@ -38,38 +38,11 @@ cv_profile_delete:
     requirements:
         idCv: \d*
 
-cv_profile_category_new:
-# affiche form category #
-    pattern:  /profile/cv-{idCv}/category/new
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileCategoryNew, idCv: 0}
-    requirements:
-        idCv: \d*
-
-cv_profile_category_edit:
-# affiche form category avec title uniquement et la list des contents et/ou ajouter content #
-    pattern:  /profile/cv/category-{idCategory}/edit
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileCategoryEdit, idCategory: 0}
-    requirements:
-        idCategory: \d*
-
 cv_profile_category_delete:
     pattern:  /profile/cv/category-{idCategory}/delete
     defaults: { _controller: MyWebsiteCvBundle:Cv:profileCategoryDelete, idCategory: 0}
     requirements:
         idCategory: \d*
-
-cv_profile_category_content_new:
-# creation avec formType text ou textarea #
-    pattern:  /profile/cv/category-{idCategory}/content/new
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileContentNew, idCategory: 0}
-    requirements:
-        idCategory: \d*
-
-cv_profile_category_content_edit:
-    pattern:  /profile/cv/category/content/edit
-    defaults: { _controller: MyWebsiteCvBundle:Cv:profileContentList, idContent: 0}
-    requirements:
-        idContent: \d*
 
 cv_profile_category_content_delete:
     pattern:  /profile/cv/category/content-{idContent}/delete

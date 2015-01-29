@@ -94,7 +94,7 @@ class Menu
 	private $parentMenu;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="parentMenu", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="parentMenu", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $subMenus;

@@ -94,57 +94,122 @@ class Recorder
 	{
 		$data = $this->container->get('cv_data');
 		
-		$categories = $cv->getCategories();
-		foreach($categories as $keyCategory => $category)
+		foreach($cv->getCategories() as $keyCategory => $category)
 		{
-			$contents = $category->getContents();
-			foreach($contents as $keyContent => $content)
-			{
-				$contentOld = $cvOld
-					->getCategories()
-					->get($keyCategory)
-					->getContents()
-					->get($keyContent)
-				;
+			$categoryOld = $cvOld
+				->getCategories()
+				->get($keyCategory)
+			;
 					
-				if($content->getId() === $contentOld->getIdCopy())
+			if($category->getId() != null
+				AND $category->getId() === $categoryOld->getId())
+			{
+				$contents = $category->getContents();
+				foreach($contents as $keyContent => $content)
 				{
-					if($content->getFormType() === 'textarea')
+					$contentOld = $categoryOld
+						->getContents()
+						->get($keyContent)
+					;
+					
+					if($content->getId() != null
+						AND $content->getId() === $contentOld->getIdCopy())
 					{
-						if($content->getTextValue() !== $contentOld->getTextValue())
+						if($content->getFormType() === 'textarea')
 						{
-							$category->update();
+							if($content->getTextValue() !== $contentOld->getTextValue())
+							{
+								$category->update();
+							}
+						}
+						else
+						{
+							//Compare values only, not types
+							if($content->getStringValue() != $contentOld->getStringValue())
+							{
+								$category->update();
+							}
 						}
 					}
 					else
 					{
-						//Compare values only, not types
-						if($content->getStringValue() != $contentOld->getStringValue())
+						if($content->getStringValue() == null
+							AND $content->getTextValue() == null)
 						{
-							$category->update();
+							$category->removeContent($content);
+							$categoryOld->removeContent($contentOld);
+							continue;
+						}
+						else
+						{
+							$bufferCategory = $this->em->getRepository('MyWebsiteWebBundle:Category')->myFindByContent($category->getId(), $content->getLabel());
+							if($bufferCategory == null)
+							{
+								$this->em->persist($content);
+							}
 						}
 					}
-				}
 					
-				if($content->getLabel() === $data::CV_CONTENT_LABEL_TITLE
-					AND $content->getStringValue() !== $cv->getTitle())
-				{
-					$cv->setTitle($content->getStringValue());
-					$cv->update();
-				}
+					if($content->getLabel() === $data::CV_CONTENT_LABEL_TITLE
+						AND $content->getStringValue() !== $cv->getTitle())
+					{
+						$cv->setTitle($content->getStringValue());
+						$cv->update();
+					}
 				
-				if($content->getLabel() === $data::CV_CONTENT_LABEL_DESCRIPTION
-					AND $content->getStringValue() !== $cv->getDescription())
-				{
-					$cv->setDescription($content->getTextValue());
-					$cv->update();
-				}
+					if($content->getLabel() === $data::CV_CONTENT_LABEL_DISPONIBILITY
+						AND $content->getStringValue() !== $cv->getMobility())
+					{
+						$cv->setMobility($content->getStringValue());
+						$cv->update();
+					}
 				
-				if($content->getLabel() === $data::CV_CONTENT_LABEL_MOBILITY
-					AND $content->getStringValue() !== $cv->getMobility())
+					if($content->getLabel() === $data::CV_CONTENT_LABEL_MOBILITY
+						AND $content->getStringValue() !== $cv->getMobility())
+					{
+						$cv->setMobility($content->getStringValue());
+						$cv->update();
+					}
+				
+					if($content->getLabel() === $data::CV_CONTENT_LABEL_DESCRIPTION
+						AND $content->getStringValue() !== $cv->getDescription())
+					{
+						$cv->setDescription($content->getTextValue());
+						$cv->update();
+					}
+				}
+			}
+			else
+			{
+				if($category->getTitle() != null
+					AND $category->getTitle() !== 'New category')
 				{
-					$cv->setMobility($content->getStringValue());
-					$cv->update();
+					$bufferCv = $this->em->getRepository('MyWebsiteCvBundle:Cv')->myFindByCategory($cv->getId(), $category->getTitle());
+					if($bufferCv == null)
+					{
+						foreach($category->getContents() as $keyContent => $content)
+						{
+							$contentOld = $categoryOld
+								->getContents()
+								->get($keyContent)
+							;
+							
+							if($content->getStringValue() == null
+								AND $content->getTextValue() == null)
+							{
+								$category->removeContent($content);
+								$categoryOld->removeContent($contentOld);
+								continue;
+							}
+						}
+						
+						$this->em->persist($category);
+					}
+				}
+				else
+				{
+					$cv->removeCategory($category);
+					$cvOld->removeCategory($categoryOld);
 				}
 			}
 		}

@@ -3,6 +3,7 @@
 <ul class="form-content">
 	<li>
 		<h2>{{ category.title }}</h2>
+		<span class="required_notification">* Denotes Required Field</span>
 	</li>
 	{% if category.contents.count > 0 %}
 		{% if category.type == 'content' %}

@@ -27,7 +27,7 @@ class ModuleEntity extends AbstractTimedEntity
     private $id;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Category", mappedBy="moduleEntity", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Category", mappedBy="moduleEntity", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $categories;

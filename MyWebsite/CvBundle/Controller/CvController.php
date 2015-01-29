@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use MyWebsite\CvBundle\Entity\Cv;
 use MyWebsite\WebBundle\Entity\Category;
+use MyWebsite\WebBundle\Entity\Content;
 
 class CvController extends Controller
 {
@@ -143,6 +144,7 @@ class CvController extends Controller
 		//Services
 		$router = $this->container->get('cv_router');
 		$layouter = $this->container->get('cv_layouter');
+		$data =  $this->container->get('cv_data');
 		//End services
 		
 		if($request->getSession()->get('idUser') == null)
@@ -151,10 +153,46 @@ class CvController extends Controller
 			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
 		}
 		
-		$cv = $em->getRepository('MyWebsiteCvBundle:Cv')->myFindWithCategories($idCv);
+		$cv = $em->getRepository('MyWebsiteCvBundle:Cv')->myFindWithCategoriesAndContents($idCv);
+		
 		if($cv == null)
 		{
 			return $this->redirect($this->generateUrl($router::ROUTE_CV_PROFILE_LIST));
+		}
+		
+		$category = new Category('content');
+		$category
+			->setTitle('New category')
+			->setModuleEntity($cv)
+		;
+		$cv->addCategory($category);
+		
+		foreach($cv->getCategories() as $key => $category)
+		{
+			if($key >= 1)
+			{
+				for($i=0; $i<1; $i++)
+				{
+					$content = new Content('cv_content_label', 'text');
+					$content
+						->setCategory($category)
+						->setLabelValue('labelValue')
+						->setPlaceholder('label : Langues')
+					;
+					$category->addContent($content);
+			
+					$content = new Content('cv_content_value', 'text');
+					$content
+						->setCategory($category)
+						->setLabelValue('labelValue')
+						->setPlaceholder('value : Anglais')
+					;
+					$category->addContent($content);
+					
+							
+					$cv->addCategory($category);
+				}
+			}
 		}
 		
 		$form = $this->createForm('cv_cv', $cv, array(
@@ -183,6 +221,40 @@ class CvController extends Controller
 				}
 			}
 		}
+		
+		foreach($cv->getCategories() as $key => $category)
+		{
+			if($key >= 1)
+			{
+				for($i=0; $i<1; $i++)
+				{
+					$content = new Content('cv_content_label', 'text');
+					$content
+						->setCategory($category)
+						->setLabelValue('labelValue')
+						->setPlaceholder('label : Langues')
+					;
+					$category->addContent($content);
+			
+					$content = new Content('cv_content_value', 'text');
+					$content
+						->setCategory($category)
+						->setLabelValue('labelValue')
+						->setPlaceholder('value : Anglais')
+					;
+					$category->addContent($content);
+					
+							
+					$cv->addCategory($category);
+				}
+			}
+		}
+		
+		$form = $this->createForm('cv_cv', $cv, array(
+			'action' => $this->generateUrl($router::ROUTE_CV_PROFILE_EDIT, array(
+				'idCv' => $cv->getId()
+			))
+		));
 		
 		$client = $em->getRepository('MyWebsiteProfileBundle:Client')->find($request->getSession()->get('idUser'));
 		
@@ -218,119 +290,7 @@ class CvController extends Controller
 	
 	}
 	
-	public function profileCategoryNewAction($idCv)
-	{
-		$request = $this->getRequest();
-		$em = $this->getDoctrine()->getManager();
-		
-		//Services
-		$router = $this->container->get('cv_router');
-		$recorder = $this->container->get('cv_recorder');
-		//End services
-		
-		$cv = $em->getRepository('MyWebsiteCvBundle:Cv')->find($idCv);
-		if($cv == null)
-		{
-			return $this->redirect($this->generateUrl($router::ROUTE_CV_PROFILE_LIST));
-		}
-		
-		$titleCategory = $request->request->get('new_category_title');
-		
-		$bufferCv = $em->getRepository('MyWebsiteCvBundle:Cv')->myFindByCategoryTitle($idCv, $titleCategory);
-		if($bufferCv == null)
-		{
-			$category = $this->container->get('web_recorder')->createCategory(
-				$cv,
-				'content',
-				$titleCategory,
-				strtolower('cv_category_'.$titleCategory)
-			);
-			
-			if($category != null)
-			{
-				return $this->redirect($this->generateUrl($router::ROUTE_CV_PROFILE_CATEGORY_EDIT, array(
-					'idCategory' => $category->getId()
-				)));
-			}
-		}
-		
-		return $this->redirect($this->generateUrl($router::ROUTE_CV_PROFILE_LIST));
-	}
-	
-	public function profileCategoryEditAction($idCategory)
-	{
-		$request = $this->getRequest();
-		$em = $this->getDoctrine()->getManager();
-		
-		//Services
-		$router = $this->container->get('cv_router');
-		$layouter = $this->container->get('cv_layouter');
-		//End services
-		
-		if($request->getSession()->get('idUser') == null)
-		{
-			$router = $this->container->get('web_router');
-			return $this->redirect($this->generateUrl($router::ROUTE_PROFILE_CLIENT));
-		}
-		
-		$category = $em->getRepository('MyWebsiteWebBundle:Category')->myFindWithContents($idCategory);
-		//die(var_dump($category->getContents()));
-		if($category == null)
-		{
-			return $this->redirect($this->generateUrl($router::ROUTE_CV_PROFILE_LIST));
-		}
-		
-		$form = $this->createForm('web_category', $category, array(
-			'action' => $this->generateUrl($router::ROUTE_CV_PROFILE_CATEGORY_EDIT, array(
-				'idCategory' => $category->getId()
-			))
-		));
-		
-		$message = "* Denotes Required Field";
-		
-		if($request->getMethod() === 'POST')
-		{
-			$categoryOld = $this->container->get('web_copy')->getCategoryCopy($category);
-			
-			$form->submit($request->get($form->getName()), false);
-			
-			$message = "Les informations n'ont pas été enregistrées";
-			
-			if($form->isValid())
-			{
-				$updated = $this->container->get('web_recorder')->updateCategory($category, $categoryOld);
-				
-				if($updated === true)
-				{
-					$message = "Les informations ont été enregistrées avec succès";
-				}
-			}
-		}
-		
-		$client = $em->getRepository('MyWebsiteProfileBundle:Client')->find($request->getSession()->get('idUser'));
-		$cv = $em->getRepository('MyWebsiteCvBundle:Cv')->find($category->getModuleEntity()->getId());
-		
-		return $this->render($layouter::LAYOUT_CV_PROFILE, array(
-			'subLayout' => $layouter::SUBLAYOUT_CV_PROFILE_CATEGORY_EDIT,
-			'user' => $client,
-			'cv' => $cv,
-			'category' => $category,
-			'form' => $form->createView(),
-			'message' => $message,
-		));
-	}
-	
 	public function profileCategoryDeleteAction($idCategory)
-	{
-	
-	}
-	
-	public function profileContentNewAction()
-	{
-	
-	}
-	
-	public function profileContentEditAction($idContent)
 	{
 	
 	}

@@ -53,7 +53,7 @@ class Bundle extends AbstractTimedEntity
     private $readMe;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Module", mappedBy="bundle", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Module", mappedBy="bundle", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $modules;

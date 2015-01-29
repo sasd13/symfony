@@ -1,0 +1,33 @@
+<div class="new-project-form">
+	{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
+		{{ form_errors(form) }}
+		<ul class="form-content">
+			<li>
+				<h2>Informations générales</h2>
+				<span class="required_notification">{{ message }}</span>
+			</li>
+			<li>
+				{{ form_label(form.title, "Titre :") }}
+				{{ form_widget(form.title) }}
+			</li>
+			<li>
+				{{ form_label(form.disponibility, "Disponibilité :") }}
+				{{ form_widget(form.disponibility) }}
+			</li>
+			<li>
+				{{ form_label(form.mobility, "Mobilité :") }}
+				{{ form_widget(form.mobility) }}
+			</li>
+			<li>
+				{{ form_label(form.description, "Description :") }}
+				{{ form_widget(form.description) }}
+			</li>
+		</ul>
+		<ul class="form-submit">
+			<li>
+				<input type="submit" class="submit" value="Continuer"/>
+			</li>
+		</ul>
+		{{ form_widget(form._token) }}
+	{{ form_end(form, {'render_rest': false}) }}
+</div>

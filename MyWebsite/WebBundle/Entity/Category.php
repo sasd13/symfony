@@ -50,13 +50,13 @@ class Category extends AbstractTimedEntity
     private $type;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Content", mappedBy="category", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Content", mappedBy="category", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $contents;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Document", mappedBy="category", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Document", mappedBy="category", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $documents;
@@ -72,6 +72,7 @@ class Category extends AbstractTimedEntity
 	{
 		parent::__construct();
 		$this->type = $type;
+		$this->tag = 'tag';
 		$this->contents = new ArrayCollection();
 		$this->documents = new ArrayCollection();
 	}

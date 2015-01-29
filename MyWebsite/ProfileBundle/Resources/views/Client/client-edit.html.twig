@@ -11,7 +11,7 @@
 			{{ form_errors(form) }}
 			<div class="form-submit2">
 				<input type="submit" class="submit" value="Enregistrer"/>
-				<span class="required_notification">{{ message }}</span>
+				<a href="{{ path('profile_client_delete') }}"><input type="button" value="Clôturer compte"/></a>
 			</div>
 			<br/>
 			<ul class="form-content">

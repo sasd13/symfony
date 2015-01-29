@@ -119,6 +119,7 @@ class Content extends AbstractEntity
 	public function __construct($label, $formType = 'text')
 	{
 		$this->label = strtolower($label);
+		$this->labelValue = $label;
 		$this->formType = $formType;
 		$this->required = self::DEFAULT_REQUIRED;
 		$this->contextChanged = false;

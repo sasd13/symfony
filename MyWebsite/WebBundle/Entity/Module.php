@@ -70,7 +70,7 @@ class Module extends AbstractTimedEntity
 	private $bundle;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="module", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="MyWebsite\WebBundle\Entity\Menu", mappedBy="module", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $menus;

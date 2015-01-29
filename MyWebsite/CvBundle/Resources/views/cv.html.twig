@@ -47,8 +47,8 @@
 						</div>
 					</div>
 					<div class="clear"> </div>
-					{% for category in cv.categories %}
-						{% include "MyWebsiteCvBundle::category.html.twig" %}
+					{% for category in cv.categories if category.tag != 'cv_category_info' %}
+						{% include "MyWebsiteCvBundle::cv-category.html.twig" %}
 					{% endfor %}
 				{% endif %}
 			</div>

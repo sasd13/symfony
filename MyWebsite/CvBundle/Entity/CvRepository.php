@@ -13,7 +13,7 @@ use MyWebsite\CvBundle\Services\Data;
  */
 class CvRepository extends EntityRepository
 {
-	public function myFindWithCategories($idCv)
+	public function myFindWithCategoriesAndContents($idCv)
 	{
 		$qb = $this->createQueryBuilder('cv')
 			->where('cv.id = :id')
@@ -33,28 +33,7 @@ class CvRepository extends EntityRepository
 		return $results[0];
 	}
 	
-	public function myFindWithCategoryInfo($idCv)
-	{
-		$qb = $this->createQueryBuilder('cv')
-			->where('cv.id = :id')
-			->setParameter('id', $idCv)
-			->leftJoin('cv.categories', 'category', 'WITH', 'category.tag = :tag')
-			->setParameter('tag', Data::CV_CATEGORY_TAG_INFO)
-			->addSelect('category')
-			->leftJoin('category.contents', 'content')
-			->addSelect('content')
-		;
-		
-		$results = $qb->getQuery()->getResult();
-		if($results == null)
-		{
-			return null;
-		}
-		
-		return $results[0];
-	}
-	
-	public function myFindByCategoryTitle($idCv, $titleCategory)
+	public function myFindByCategory($idCv, $categoryTitle)
 	{
 		$qb = $this->createQueryBuilder('cv')
 			->where('cv.id = :id')
@@ -62,7 +41,7 @@ class CvRepository extends EntityRepository
 			->leftJoin('cv.categories', 'category')
 			->addSelect('category')
 			->andWhere('category.title = :title')
-			->setParameter('title', $titleCategory)
+			->setParameter('title', $categoryTitle)
 		;
 		
 		$results = $qb->getQuery()->getResult();
@@ -70,7 +49,7 @@ class CvRepository extends EntityRepository
 		{
 			return null;
 		}
-		//die(var_dump($results[0]));
+		
 		return $results[0];
 	}
 }

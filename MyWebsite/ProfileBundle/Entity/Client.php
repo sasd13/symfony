@@ -30,7 +30,7 @@ class Client extends User
     private $picturePath;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="MyWebsite\CvBundle\Entity\Cv", mappedBy="client", cascade={"remove"})
+	 * @ORM\OneToMany(targetEntity="MyWebsite\CvBundle\Entity\Cv", mappedBy="client", cascade={"persist", "remove"})
 	 * @ORM\JoinColumn(onDelete="CASCADE")
 	 */
 	private $cvs;

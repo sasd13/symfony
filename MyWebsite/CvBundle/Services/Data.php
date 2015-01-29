@@ -4,7 +4,7 @@ namespace MyWebsite\CvBundle\Services;
 
 class Data
 {
-	const CV_CATEGORY_TITLE_INFO = 'Informations';
+	const CV_CATEGORY_TITLE_INFO = 'Informations générales';
 	const CV_CATEGORY_TAG_INFO = 'cv_category_info';
 	
 	const CV_CONTENT_LABEL_TITLE = 'cv_content_title';

@@ -1,43 +1,12 @@
-<div class="feature-grid2">
-	<div class="feature-grid-head feature-grid-head3">
-		<h3><span>Nouveau</span> Curriculum Vitae</h3>
-		<div class="feature-grid-head-top">
-			<label> </label><label> </label>
-			<div class="clear"> </div>
+<div class="right-protfolio-grids2">
+	<div class="feature-grid2">
+		<div class="feature-grid-head feature-grid-head3">
+			<h3><span>Nouveau</span> Curriculum Vitae</h3>
+			<div class="feature-grid-head-top">
+				<label> </label><label> </label>
+				<div class="clear"> </div>
+			</div>
 		</div>
+		{% include "MyWebsiteCvBundle:Profile:SubLayout/Form/cv-new.html.twig" %}
 	</div>
-	<div class="new-project-form">
-		{{ form_start(form, { 'attr':{'class':'contact_form', 'name':'contact_form'} }) }}
-			{{ form_errors(form) }}
-			<ul class="form-content">
-				<li>
-					<h2>Détails</h2>
-					<span class="required_notification">{{ message }}</span>
-				</li>
-				<li>
-					{{ form_label(form.title, "Titre :") }}
-					{{ form_widget(form.title) }}
-				</li>
-				<li>
-					{{ form_label(form.disponibility, "Disponibilité :") }}
-					{{ form_widget(form.disponibility) }}
-				</li>
-				<li>
-					{{ form_label(form.mobility, "Mobilité :") }}
-					{{ form_widget(form.mobility) }}
-				</li>
-				<li>
-					{{ form_label(form.description, "Description :") }}
-					{{ form_widget(form.description) }}
-				</li>
-			</ul>
-			<ul class="form-submit">
-				<li>
-					<input type="submit" class="submit" value="Enregistrer"/>
-				</li>
-			</ul>
-			{{ form_widget(form._token) }}
-		{{ form_end(form, {'render_rest': false}) }}
-	</div>
-	<div class="clear"> </div>
 </div>
