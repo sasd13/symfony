@@ -1,0 +1,103 @@
+#tabs {
+  overflow: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#tabs li {
+  float: left;
+  margin: 0 .5em 0 0;
+}
+
+#tabs a {
+  position: relative;
+  background: #273A43;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#273A43), to(#273A43));
+  background-image: -webkit-linear-gradient(top, #273A43, #273A43);
+  background-image: -moz-linear-gradient(top, #273A43, #273A43);
+  background-image: -ms-linear-gradient(top, #273A43, #273A43);
+  background-image: -o-linear-gradient(top, #273A43, #273A43);
+  background-image: linear-gradient(to bottom, #273A43, #273A43);  
+  padding: .7em 2.2em;
+  float: left;
+  color: white;
+  text-decoration: none;
+  text-shadow: 0 1px 0 rgba(255,255,255,.8);
+  -webkit-border-radius: 5px 0 0 0;
+  -moz-border-radius: 5px 0 0 0;
+  border-radius: 5px 0 0 0;
+  -moz-box-shadow: 0 2px 2px rgba(0,0,0,.4);
+  -webkit-box-shadow: 0 2px 2px rgba(0,0,0,.4);
+  box-shadow: 0 2px 2px rgba(0,0,0,.4);
+}
+
+#tabs a:hover,
+#tabs a:hover::after,
+#tabs a:focus,
+#tabs a:focus::after {
+  background: #fff;
+  color: black;
+}
+
+#tabs a:focus {
+  outline: 0;
+}
+
+#tabs a::after {
+  content:'';
+  position:absolute;
+  z-index: 1;
+  top: 0;
+  right: -.5em;  
+  bottom: 0;
+  width: 1em;
+  background: #273A43;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#273A43), to(#273A43));
+  background-image: -webkit-linear-gradient(top, #273A43, #273A43);
+  background-image: -moz-linear-gradient(top, #273A43, #273A43);
+  background-image: -ms-linear-gradient(top, #273A43, #273A43);
+  background-image: -o-linear-gradient(top, #273A43, #273A43);
+  background-image: linear-gradient(to bottom, #273A43, #273A43);  
+  -moz-box-shadow: 2px 2px 2px rgba(0,0,0,.4);
+  -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,.4);
+  box-shadow: 2px 2px 2px rgba(0,0,0,.4);
+  -webkit-transform: skew(10deg);
+  -moz-transform: skew(10deg);
+  -ms-transform: skew(10deg);
+  -o-transform: skew(10deg);
+  transform: skew(10deg);
+  -webkit-border-radius: 0 5px 0 0;
+  -moz-border-radius: 0 5px 0 0;
+  border-radius: 0 5px 0 0;  
+}
+
+#tabs #current a {
+  background: #fff;
+  color: black;
+  z-index: 3;
+}
+
+#tabs #current a::after {
+  background: #fff;
+  color: black;
+  z-index: 3;
+}
+
+#content {
+    background: #fff;
+    padding-left: 2em;
+	padding-right: 2em;
+	padding-top: 5em;
+	padding-bottom: 0em;
+    min-height: 200px;
+    position: relative;
+    z-index: 2;	
+    -moz-border-radius: 0 5px 5px 5px;
+    -webkit-border-radius: 0 5px 5px 5px;
+    border-radius: 0 5px 5px 5px;
+    -moz-box-shadow: 0 -2px 3px -2px rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0 -2px 3px -2px rgba(0, 0, 0, .5);
+    box-shadow: 0 -2px 3px -2px rgba(0, 0, 0, .5);
+}

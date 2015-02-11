@@ -1,0 +1,56 @@
+parameters:
+#    mywebsiteweb.example.class: MyWebsite\WebBundle\Example
+
+services:
+#    mywebsiteweb.example:
+#        class: %mywebsiteweb.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+#   Cache service
+    kernel.listener.web_cache_listener:
+        class: MyWebsite\WebBundle\Listener\WebCacheListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+#   Bundle and module service
+    kernel.listener.web_bundle_listener:
+        class: MyWebsite\WebBundle\Listener\BundleListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+        calls:
+            - [setParameters, ["@service_container", "@controller_resolver"]]
+
+#   Global services
+    web_bundleManager:
+        class: MyWebsite\WebBundle\Services\BundleManager
+        calls:
+            - [setParameters, ["@doctrine.orm.entity_manager"]]
+    web_recorder:
+        class: MyWebsite\WebBundle\Services\WebRecorder
+        calls:
+            - [setParameters, ["@doctrine.orm.entity_manager", "@service_container"]]
+    web_menuGenerator:
+        class: MyWebsite\WebBundle\Services\WebMenuGenerator
+        calls:
+            - [setParameters, ["@doctrine.orm.entity_manager", "@service_container"]]
+    web_data:
+        class: MyWebsite\WebBundle\Services\WebData
+
+#   Form services
+    web_form.form.type.web_module:
+        class: MyWebsite\WebBundle\Form\ModuleType
+        tags:
+            - { name: form.type, alias: web_module }
+    web_form.form.type.web_category:
+        class: MyWebsite\WebBundle\Form\CategoryType
+        tags:
+            - { name: form.type, alias: web_category }
+    web_form.form.type.web_content:
+        class: MyWebsite\WebBundle\Form\ContentType
+        tags:
+            - { name: form.type, alias: web_content }
+    web_form.form.type.web_document:
+        class: MyWebsite\WebBundle\Form\DocumentType
+        tags:
+            - { name: form.type, alias: web_document }
+

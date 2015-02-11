@@ -1,0 +1,96 @@
+{% extends "MyWebsiteWebBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - MyCV{% endblock %}
+
+{% block class_header %}header2{% endblock %}
+
+{% block section %}
+	<!---Start-content---->
+	<div class="content">
+		<div class="wrap">
+			<!---start-Features---->
+			<div class="feature-grids">
+				<div class="feature-grid-head feature-grid-head1">
+					<div class="feature-grid-head-top feature-grid-head-top1">
+						<label> </label><span> </span> <label> </label>
+						<div class="clear"> </div>
+					</div>
+					<h3><span>Mon</span> Curriculum Vitae</h3>
+					<p class="proinfo">Details de mon parcours universitaire et professionnel</p>
+				</div>
+				{% if cv is null %}
+					<br/>
+					<p>Ancun CV disponible...</p>
+				{% else %}
+					<div class="da-cv">
+						<div class="feature-grid-left">
+							{% if cv.picturePath != null %}
+								<a href="#"><img src="{{ asset('bundles/mywebsiteweb/uploads' ~ cv.picturePath) }}" alt="" /></a>
+							{% else %}
+								<a href="#"><img src="{{ asset('bundles/mywebsiteweb/') }}images/fea1.png" alt="" /></a>
+							{% endif %}
+						</div>
+						<div class="feature-grid-right">
+							<h3 class="titreCv">{{ cv.title }}</h3>
+							<br/>
+							<div>
+								{% if cv.description is not null %}
+									{{ cv.description }}<br/><br/>
+								{% endif %}
+								{% if cv.disponibility is not null %}
+									Disponibilité: {{ cv.disponibility }}<br/>
+								{% endif %}	
+								{% if cv.mobility is not null %}
+									Mobilité: {{ cv.mobility }}<br/>
+								{% endif %}						
+							</div>
+						</div>
+					</div>
+					<div class="clear"> </div>
+					{% for category in cv.categories if category.tag != 'cv_category_info' %}
+						<div class="content-informations clickable">
+							<div class="feature-grid-head">
+								<div class="feature-grid-head-top feature-grid-head-top3">
+									<label> </label><span> </span> <label> </label>
+									<div class="clear"> </div>
+								</div>
+								<h3>{{ category.title }}</h3>
+							</div>
+							<div class="clear"> </div>
+							<div class="hidable">
+								<br/><br/>
+								{% for content in category.contents %}
+									<div class="contenu-line">
+										<div class="feature-grid-left">
+											<h4>{{ content.labelValue }}</h4>
+										</div>
+										<div class="feature-grid-right">
+											{% if content.formType == 'textarea' %}
+												<h4>{{ content.textValue }}</h4>
+											{% else %}
+												<h4>{{ content.stringValue }}</h4>
+											{% endif %}
+										</div>
+										<div class="clear"> </div>
+									</div>
+								{% endfor %}
+							</div>
+							<div class="clear"> </div>
+						</div>
+					{% endfor %}
+				{% endif %}
+			</div>
+			<!---End-Features---->
+		</div>
+	</div>
+	<!---End-content---->
+{% endblock %}
+
+{% block js %}
+	<script type="text/javascript">
+		$('.clickable').click(function() {
+			$(this).find('.hidable').slideToggle(500);
+			return false;
+		});
+	</script>  
+{% endblock %}

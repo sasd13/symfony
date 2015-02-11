@@ -1,0 +1,15 @@
+my_website_project:
+    resource: "@MyWebsiteProjectBundle/Resources/config/routing.yml"
+    prefix:   /
+
+my_website_cv:
+    resource: "@MyWebsiteCvBundle/Resources/config/routing.yml"
+    prefix:   /
+
+my_website_profile:
+    resource: "@MyWebsiteProfileBundle/Resources/config/routing.yml"
+    prefix:   /
+
+my_website_web:
+    resource: "@MyWebsiteWebBundle/Resources/config/routing.yml"
+    prefix:   /

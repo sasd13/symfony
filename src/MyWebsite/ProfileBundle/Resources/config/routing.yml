@@ -1,0 +1,38 @@
+profile_user_edit:
+    pattern:  /user
+    defaults: { _controller: MyWebsiteProfileBundle:User:edit}
+profile_user_signup:
+    pattern:  /signup
+    defaults: { _controller: MyWebsiteProfileBundle:User:signup}
+profile_user_logout:
+    pattern:  /logout
+    defaults: { _controller: MyWebsiteProfileBundle:User:logout}
+profile_user_upgrade:
+    pattern:  /user/upgrade
+    defaults: { _controller: MyWebsiteProfileBundle:User:upgrade}
+profile_user_downgrade:
+    pattern:  /user/downgrade
+    defaults: { _controller: MyWebsiteProfileBundle:User:downgrade}
+
+profile_admin_home:
+    pattern:  /admin
+    defaults: { _controller: MyWebsiteProfileBundle:Admin:home}
+profile_admin_edit:
+    pattern:  /admin/edit
+    defaults: { _controller: MyWebsiteProfileBundle:Admin:edit}
+
+profile_client_home:
+    pattern:  /profile
+    defaults: { _controller: MyWebsiteProfileBundle:Client:home}
+profile_client_edit:
+    pattern:  /profile/edit
+    defaults: { _controller: MyWebsiteProfileBundle:Client:edit}
+profile_client_picture_edit:
+    pattern:  /profile/picture/edit
+    defaults: { _controller: MyWebsiteProfileBundle:Client:editPicture}
+profile_client_picture_delete:
+    pattern:  /profile/picture/delete
+    defaults: { _controller: MyWebsiteProfileBundle:Client:deletePicture}
+profile_client_delete:
+    pattern:  /profile/delete
+    defaults: { _controller: MyWebsiteProfileBundle:Client:delete}
