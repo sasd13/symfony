@@ -14,7 +14,6 @@ class CvController extends Controller
 	{
 		$request = $this->container->get('request');
 		$em = $this->getDoctrine()->getManager();
-		
 		$client = ($request->getSession()->get('idUser') != null)
 			? $em->getRepository('MyWebsiteProfileBundle:Client')->find($request->getSession()->get('idUser'))
 			: null
